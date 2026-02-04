@@ -32,8 +32,7 @@ class TargetScene : public QGraphicsScene
     Q_OBJECT
 
 public:
-    explicit TargetScene(QObject *parent = nullptr);
-    ~TargetScene();
+    explicit TargetScene(QObject* parent = nullptr);
 
     // Image management
     /// @brief Sets the target image as the background of the scene
@@ -59,7 +58,7 @@ public:
     /// automatically update the display when document data changes.
     /// 
     /// \param doc The document to connect to. Can be nullptr to disconnect.
-    void setDocument(ShotGroupDocument *doc);
+    void setDocument(ShotGroupDocument* doc);
 
     // Impact glyphs
     /// @brief Adds a new impact glyph marker to the scene
@@ -71,7 +70,7 @@ public:
     /// \param position Scene coordinates where the impact occurred
     /// \param diameterPixels Diameter of the impact marker in pixels
     /// \return Pointer to the created ImpactGlyphItem
-    ImpactGlyphItem *addImpactGlyph(int id, const QPointF &position, double diameterPixels);
+    ImpactGlyphItem* addImpactGlyph(int id, const QPointF& position, double diameterPixels);
     
     /// @brief Removes an impact glyph by its ID
     /// 
@@ -188,20 +187,20 @@ private:
     void updateFromDocument();
 
 private:
-    QGraphicsPixmapItem *m_targetImageItem = nullptr;  ///< Background target image item (z-value -1000)
-    ShotGroupDocument *m_document = nullptr;           ///< Connected document for automatic updates
+    QGraphicsPixmapItem* m_pTargetImageItem = nullptr;  ///< Background target image item (z-value -1000)
+    ShotGroupDocument* m_pDocument = nullptr;           ///< Connected document for automatic updates
 
     // Impact glyphs (keyed by impact ID)
     QMap<int, ImpactGlyphItem*> m_impactGlyphs;        ///< Map of impact ID to glyph item (z-value 100)
 
     // Point of Aim
-    POAGlyphItem *m_poaGlyph = nullptr;                ///< X-shaped point of aim marker (z-value 90)
+    POAGlyphItem* m_pPoaGlyph = nullptr;                ///< X-shaped point of aim marker (z-value 90)
 
     // Group circles
-    GroupCircleItem *m_fullGroupCircle = nullptr;      ///< 100% group circle (z-value 50)
-    GroupCircleItem *m_80GroupCircle = nullptr;        ///< 80% group circle (z-value 51)
-    GroupCircleItem *m_90GroupCircle = nullptr;        ///< 90% group circle (z-value 52)
+    GroupCircleItem* m_pFullGroupCircle = nullptr;      ///< 100% group circle (z-value 50)
+    GroupCircleItem* m_p80GroupCircle = nullptr;        ///< 80% group circle (z-value 51)
+    GroupCircleItem* m_p90GroupCircle = nullptr;        ///< 90% group circle (z-value 52)
 
     // Scale calibration line
-    ScaleLineItem *m_scaleLine = nullptr;               ///< Reference line for scale calibration (z-value 200)
+    ScaleLineItem* m_pScaleLine = nullptr;               ///< Reference line for scale calibration (z-value 200)
 };

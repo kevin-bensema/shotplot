@@ -1,5 +1,4 @@
-#ifndef TARGETVIEW_H
-#define TARGETVIEW_H
+#pragma once
 
 #include <QGraphicsView>
 #include <QPointF>
@@ -36,7 +35,7 @@ public:
     /// configured to use manual pan/zoom handling rather than Qt's default
     /// drag mode.
     /// \param parent The parent widget
-    explicit TargetView(QWidget *parent = nullptr);
+    explicit TargetView(QWidget* parent = nullptr);
 
     /// Sets the current workflow state for event delegation
     ///
@@ -44,12 +43,12 @@ public:
     /// the state's handler methods. The cursor is updated to match the
     /// state's preferred cursor. Setting nullptr disables state delegation
     /// and resets the cursor to the default arrow.
-    /// \param state The workflow state to receive mouse events, or nullptr to disable
-    void setWorkflowState(WorkflowState* state);
+    /// \param pState The workflow state to receive mouse events, or nullptr to disable
+    void setWorkflowState(WorkflowState* pState);
     
     /// Returns the current workflow state
     /// \return The current workflow state, or nullptr if none is set
-    WorkflowState* workflowState() const { return m_currentState; }
+    WorkflowState* workflowState() const;
 
     // Zoom controls
     
@@ -85,7 +84,7 @@ public:
     
     /// Returns the current zoom factor
     /// \return The current zoom factor (1.0 = 100%, 2.0 = 200%, etc.)
-    double zoomFactor() const { return m_zoomFactor; }
+    double zoomFactor() const;
 
 signals:
     /// Emitted when the mouse position changes over the view
@@ -103,7 +102,7 @@ protected:
     /// Scrolls up zoom in, scrolls down zoom out. The zoom is applied
     /// immediately and respects the configured zoom limits.
     /// \param event The wheel event containing scroll delta information
-    void wheelEvent(QWheelEvent *event) override;
+    void wheelEvent(QWheelEvent* event) override;
     
     /// Handles mouse button press events
     ///
@@ -113,7 +112,7 @@ protected:
     /// Left clicks are deferred to mouseReleaseEvent to distinguish clicks
     /// from drag gestures.
     /// \param event The mouse press event
-    void mousePressEvent(QMouseEvent *event) override;
+    void mousePressEvent(QMouseEvent* event) override;
     
     /// Handles mouse movement events
     ///
@@ -123,7 +122,7 @@ protected:
     /// delegates movement to the current state's handleMouseMove() for
     /// state-specific visual feedback.
     /// \param event The mouse move event
-    void mouseMoveEvent(QMouseEvent *event) override;
+    void mouseMoveEvent(QMouseEvent* event) override;
     
     /// Handles mouse button release events
     ///
@@ -132,7 +131,7 @@ protected:
     /// this was a click (not a drag), and if so, delegates to the current
     /// state's handleMouseClick().
     /// \param event The mouse release event
-    void mouseReleaseEvent(QMouseEvent *event) override;
+    void mouseReleaseEvent(QMouseEvent* event) override;
 
 private:
     /// Updates the cursor based on the current workflow state
@@ -148,7 +147,7 @@ private:
     /// When set, this state handles clicks, right-clicks, and mouse movement
     /// for state-specific behavior. The cursor is synchronized with the state's
     /// preferred cursor.
-    WorkflowState *m_currentState = nullptr;
+    WorkflowState* m_pCurrentState = nullptr;
     
     // Pan/zoom state
     
@@ -170,22 +169,4 @@ private:
     /// Tracks the cumulative zoom level for zoom limit enforcement and
     /// programmatic zoom control. Updated whenever zoom operations occur.
     double m_zoomFactor = 1.0;
-    
-    /// Multiplicative step factor for zoom in/out operations
-    static constexpr double ZOOM_STEP = 1.15;
-    
-    /// Minimum allowed zoom factor (10% zoom)
-    static constexpr double MIN_ZOOM = 0.1;
-    
-    /// Maximum allowed zoom factor (1000% zoom)
-    static constexpr double MAX_ZOOM = 10.0;
-    
-    /// Maximum pixel distance for click detection (in viewport coordinates)
-    ///
-    /// If the mouse moves less than this distance between press and release,
-    /// the event is treated as a click and delegated to the state. Otherwise,
-    /// it's treated as a drag and initiates panning.
-    static constexpr double CLICK_THRESHOLD = 5.0;  // pixels
 };
-
-#endif // TARGETVIEW_H

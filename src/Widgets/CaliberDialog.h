@@ -27,7 +27,7 @@ public:
     /// The dialog defaults to .308 caliber (0.308 inches) selection.
     ///
     /// \param parent Parent widget (typically the main window)
-    explicit CaliberDialog(QWidget *parent = nullptr);
+    explicit CaliberDialog(QWidget* parent = nullptr);
     
     ~CaliberDialog();
 
@@ -46,16 +46,6 @@ public:
     /// \param diameter Bullet diameter in inches (0.1 to 1.0 range)
     void setBulletDiameter(double diameter);
 
-private slots:
-    /// @brief Handles preset combo box selection changes
-    ///
-    /// When a preset is selected (non-zero diameter), updates the diameter
-    /// spin box and disables it. When "Custom..." is selected (zero diameter),
-    /// enables the spin box for manual entry.
-    ///
-    /// \param index Selected preset index
-    void onPresetChanged(int index);
-
 private:
     /// @brief Sets up the dialog UI layout and widgets
     ///
@@ -65,14 +55,10 @@ private:
     
     /// @brief Populates the preset combo box with caliber options
     ///
-    /// Loads all preset calibers from PRESETS and sets the default selection
-    /// to .308 caliber.
+    /// Loads all preset calibers and sets the default selection to .308 caliber.
     void populatePresets();
 
 private:
-    QComboBox *m_presetCombo = nullptr;      ///< Combo box for preset caliber selection
-    QDoubleSpinBox *m_diameterSpin = nullptr; ///< Spin box for diameter input (inches)
-    
-    /// Static list of preset caliber names and their corresponding diameters in inches
-    static const QList<QPair<QString, double>> PRESETS;
+    QComboBox* m_pPresetCombo = nullptr;      ///< Combo box for preset caliber selection
+    QDoubleSpinBox* m_pDiameterSpin = nullptr; ///< Spin box for diameter input (inches)
 };

@@ -6,7 +6,14 @@
 #include <QScrollBar>
 #include <cmath>
 
-TargetView::TargetView(QWidget *parent)
+namespace {
+    constexpr double kZoomStep = 1.15;
+    constexpr double kMinZoom = 0.1;
+    constexpr double kMaxZoom = 10.0;
+    constexpr double kClickThreshold = 5.0;  // pixels
+}
+
+TargetView::TargetView(QWidget* parent)
     : QGraphicsView(parent)
 {
     // Disable scroll bars - pan/zoom handled manually
@@ -32,28 +39,33 @@ TargetView::TargetView(QWidget *parent)
     setDragMode(QGraphicsView::NoDrag);
 }
 
-void TargetView::setWorkflowState(WorkflowState* state)
+void TargetView::setWorkflowState(WorkflowState* pState)
 {
-    m_currentState = state;
+    m_pCurrentState = pState;
     updateCursor();
+}
+
+WorkflowState* TargetView::workflowState() const
+{
+    return m_pCurrentState;
 }
 
 void TargetView::zoomIn()
 {
-    double newZoom = m_zoomFactor * ZOOM_STEP;
-    if (newZoom <= MAX_ZOOM)
+    double newZoom = m_zoomFactor * kZoomStep;
+    if (newZoom <= kMaxZoom)
     {
-        scale(ZOOM_STEP, ZOOM_STEP);
+        scale(kZoomStep, kZoomStep);
         m_zoomFactor = newZoom;
     }
 }
 
 void TargetView::zoomOut()
 {
-    double newZoom = m_zoomFactor / ZOOM_STEP;
-    if (newZoom >= MIN_ZOOM)
+    double newZoom = m_zoomFactor / kZoomStep;
+    if (newZoom >= kMinZoom)
     {
-        scale(1.0 / ZOOM_STEP, 1.0 / ZOOM_STEP);
+        scale(1.0 / kZoomStep, 1.0 / kZoomStep);
         m_zoomFactor = newZoom;
     }
 }
@@ -80,14 +92,19 @@ void TargetView::zoomFit()
 
 void TargetView::setZoomFactor(double factor)
 {
-    if (factor < MIN_ZOOM || factor > MAX_ZOOM) return;
+    if (factor < kMinZoom || factor > kMaxZoom) return;
     
     double scaleFactor = factor / m_zoomFactor;
     scale(scaleFactor, scaleFactor);
     m_zoomFactor = factor;
 }
 
-void TargetView::wheelEvent(QWheelEvent *event)
+double TargetView::zoomFactor() const
+{
+    return m_zoomFactor;
+}
+
+void TargetView::wheelEvent(QWheelEvent* event)
 {
     // Zoom with mouse wheel
     if (event->angleDelta().y() > 0)
@@ -101,7 +118,7 @@ void TargetView::wheelEvent(QWheelEvent *event)
     event->accept();
 }
 
-void TargetView::mousePressEvent(QMouseEvent *event)
+void TargetView::mousePressEvent(QMouseEvent* event)
 {
     m_mousePressPos = event->pos();
     m_lastMousePos = event->pos();
@@ -117,10 +134,10 @@ void TargetView::mousePressEvent(QMouseEvent *event)
     }
     
     // Right button - context menu or state action
-    if (event->button() == Qt::RightButton && m_currentState)
+    if (event->button() == Qt::RightButton && m_pCurrentState)
     {
         QPointF scenePos = mapToScene(event->pos());
-        m_currentState->handleRightClick(scenePos);
+        m_pCurrentState->handleRightClick(scenePos);
         event->accept();
         return;
     }
@@ -129,7 +146,7 @@ void TargetView::mousePressEvent(QMouseEvent *event)
     event->accept();
 }
 
-void TargetView::mouseMoveEvent(QMouseEvent *event)
+void TargetView::mouseMoveEvent(QMouseEvent* event)
 {
     // Emit position for status bar
     QPointF scenePos = mapToScene(event->pos());
@@ -152,7 +169,7 @@ void TargetView::mouseMoveEvent(QMouseEvent *event)
         QPointF delta = event->pos() - m_mousePressPos;
         double distance = std::sqrt(delta.x() * delta.x() + delta.y() * delta.y());
         
-        if (distance >= CLICK_THRESHOLD && !m_isPanning)
+        if (distance >= kClickThreshold && !m_isPanning)
         {
             // Start panning
             m_isPanning = true;
@@ -161,15 +178,15 @@ void TargetView::mouseMoveEvent(QMouseEvent *event)
     }
     
     // Delegate to state for hover effects, line drawing, etc.
-    if (m_currentState)
+    if (m_pCurrentState)
     {
-        m_currentState->handleMouseMove(scenePos);
+        m_pCurrentState->handleMouseMove(scenePos);
     }
     
     event->accept();
 }
 
-void TargetView::mouseReleaseEvent(QMouseEvent *event)
+void TargetView::mouseReleaseEvent(QMouseEvent* event)
 {
     if (m_isPanning)
     {
@@ -183,13 +200,13 @@ void TargetView::mouseReleaseEvent(QMouseEvent *event)
     QPointF delta = event->pos() - m_mousePressPos;
     double distance = std::sqrt(delta.x() * delta.x() + delta.y() * delta.y());
     
-    if (distance < CLICK_THRESHOLD && event->button() == Qt::LeftButton)
+    if (distance < kClickThreshold && event->button() == Qt::LeftButton)
     {
         // This was a click - delegate to state
-        if (m_currentState)
+        if (m_pCurrentState)
         {
             QPointF scenePos = mapToScene(event->pos());
-            m_currentState->handleMouseClick(scenePos);
+            m_pCurrentState->handleMouseClick(scenePos);
         }
     }
     
@@ -198,9 +215,9 @@ void TargetView::mouseReleaseEvent(QMouseEvent *event)
 
 void TargetView::updateCursor()
 {
-    if (m_currentState)
+    if (m_pCurrentState)
     {
-        setCursor(m_currentState->cursor());
+        setCursor(m_pCurrentState->cursor());
     }
     else
     {

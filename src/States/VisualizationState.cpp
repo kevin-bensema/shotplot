@@ -6,10 +6,10 @@
 #include <QToolBar>
 #include <QLabel>
 
-VisualizationState::VisualizationState(ShotGroupDocument *document, TargetView *view, TargetScene *scene)
-    : WorkflowState(document, view)
-    , m_view(view)
-    , m_scene(scene)
+VisualizationState::VisualizationState(ShotGroupDocument* pDocument, TargetView* pView, TargetScene* pScene)
+    : WorkflowState(pDocument, pView)
+    , m_pView(pView)
+    , m_pScene(pScene)
 {
 }
 
@@ -25,7 +25,7 @@ void VisualizationState::onExit()
     // TODO: Clean up
 }
 
-void VisualizationState::handleMouseClick(const QPointF &scenePos)
+void VisualizationState::handleMouseClick(const QPointF& scenePos)
 {
     Q_UNUSED(scenePos)
     // TODO: Handle plaque placement/dragging
@@ -33,10 +33,15 @@ void VisualizationState::handleMouseClick(const QPointF &scenePos)
 
 bool VisualizationState::isComplete() const
 {
-    return m_document && m_document->impactCount() >= 1;
+    return m_pDocument && m_pDocument->impactCount() >= 1;
 }
 
-void VisualizationState::populateToolbar(QToolBar *toolbar)
+QString VisualizationState::stateName() const
 {
-    toolbar->addWidget(new QLabel(tr("Configure visualization (not yet implemented)")));
+    return tr("Visualization");
+}
+
+void VisualizationState::populateToolbar(QToolBar* pToolbar)
+{
+    pToolbar->addWidget(new QLabel(tr("Configure visualization (not yet implemented)")));
 }

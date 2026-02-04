@@ -26,12 +26,10 @@ public:
     /// Constructs a group circle item with the specified type
     /// \param type The circle type (determines color)
     /// \param parent Optional parent graphics item
-    explicit GroupCircleItem(Type type, QGraphicsItem *parent = nullptr);
-    
-    ~GroupCircleItem();
+    explicit GroupCircleItem(Type type, QGraphicsItem* parent = nullptr);
 
     /// Returns the circle type
-    Type circleType() const { return m_type; }
+    Type circleType() const;
 
     /// Sets the circle geometry and updates the item position
     ///
@@ -40,23 +38,21 @@ public:
     /// notification and repaint.
     /// \param center The center point of the circle
     /// \param radius The radius of the circle
-    void setCircle(const QPointF &center, double radius);
+    void setCircle(const QPointF& center, double radius);
     
     /// Returns the circle center point
-    QPointF circleCenter() const { return m_center; }
+    QPointF circleCenter() const;
     
     /// Returns the circle radius
-    double radius() const { return m_radius; }
+    double radius() const;
 
     // QGraphicsItem interface
     QRectF boundingRect() const override;
-    void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
+    void paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget) override;
 
 private:
     Type m_type;
     QPointF m_center;
     double m_radius = 0.0;
     QColor m_color;
-    double m_lineWidth = 2.0;
-    int m_fillOpacity = 40;  // 0-255
 };

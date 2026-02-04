@@ -2,7 +2,14 @@
 
 #include <QPainter>
 
-GroupCircleItem::GroupCircleItem(Type type, QGraphicsItem *parent)
+namespace
+{
+    constexpr double kLineWidth = 2.0;
+    constexpr int kFillOpacity = 40;  // 0-255
+    constexpr double kCrossSize = 5.0;
+}
+
+GroupCircleItem::GroupCircleItem(Type type, QGraphicsItem* parent)
     : QGraphicsItem(parent)
     , m_type(type)
 {
@@ -21,9 +28,22 @@ GroupCircleItem::GroupCircleItem(Type type, QGraphicsItem *parent)
     }
 }
 
-GroupCircleItem::~GroupCircleItem() = default;
+GroupCircleItem::Type GroupCircleItem::circleType() const
+{
+    return m_type;
+}
 
-void GroupCircleItem::setCircle(const QPointF &center, double radius)
+QPointF GroupCircleItem::circleCenter() const
+{
+    return m_center;
+}
+
+double GroupCircleItem::radius() const
+{
+    return m_radius;
+}
+
+void GroupCircleItem::setCircle(const QPointF& center, double radius)
 {
     prepareGeometryChange();
     m_center = center;
@@ -34,12 +54,12 @@ void GroupCircleItem::setCircle(const QPointF &center, double radius)
 
 QRectF GroupCircleItem::boundingRect() const
 {
-    double padding = m_lineWidth + 2;
+    double padding = kLineWidth + 2;
     double r = m_radius + padding;
     return QRectF(-r, -r, r * 2, r * 2);
 }
 
-void GroupCircleItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
+void GroupCircleItem::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget)
 {
     Q_UNUSED(option)
     Q_UNUSED(widget)
@@ -53,19 +73,18 @@ void GroupCircleItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *o
 
     // Fill with semi-transparent color
     QColor fillColor = m_color;
-    fillColor.setAlpha(m_fillOpacity);
+    fillColor.setAlpha(kFillOpacity);
     painter->setBrush(fillColor);
 
     // Outline
     QPen pen(m_color);
-    pen.setWidthF(m_lineWidth);
+    pen.setWidthF(kLineWidth);
     painter->setPen(pen);
 
     // Draw circle (centered at item's position, which is m_center)
     painter->drawEllipse(QPointF(0, 0), m_radius, m_radius);
 
     // Draw small crosshair at center
-    double crossSize = 5.0;
-    painter->drawLine(QPointF(-crossSize, 0), QPointF(crossSize, 0));
-    painter->drawLine(QPointF(0, -crossSize), QPointF(0, crossSize));
+    painter->drawLine(QPointF(-kCrossSize, 0), QPointF(kCrossSize, 0));
+    painter->drawLine(QPointF(0, -kCrossSize), QPointF(0, kCrossSize));
 }

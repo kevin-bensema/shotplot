@@ -4,7 +4,12 @@
 #include <QFont>
 #include <cmath>
 
-ImpactGlyphItem::ImpactGlyphItem(int shotNumber, double diameter, QGraphicsItem *parent)
+namespace {
+    constexpr double kLineWidth = 2.0;      ///< Width of the circle outline in pixels
+    constexpr double kGapAngle = 15.0;      ///< Angular size of each gap in degrees
+}
+
+ImpactGlyphItem::ImpactGlyphItem(int shotNumber, double diameter, QGraphicsItem* parent)
     : QGraphicsItem(parent)
     , m_shotNumber(shotNumber)
     , m_diameter(diameter)
@@ -12,8 +17,6 @@ ImpactGlyphItem::ImpactGlyphItem(int shotNumber, double diameter, QGraphicsItem 
 {
     setFlag(QGraphicsItem::ItemIsSelectable);
 }
-
-ImpactGlyphItem::~ImpactGlyphItem() = default;
 
 void ImpactGlyphItem::setShotNumber(int number)
 {
@@ -34,14 +37,29 @@ void ImpactGlyphItem::setColor(const QColor &color)
     update();
 }
 
+int ImpactGlyphItem::shotNumber() const
+{
+    return m_shotNumber;
+}
+
+double ImpactGlyphItem::diameter() const
+{
+    return m_diameter;
+}
+
+QColor ImpactGlyphItem::color() const
+{
+    return m_color;
+}
+
 QRectF ImpactGlyphItem::boundingRect() const
 {
-    double padding = m_lineWidth + 2;
+    double padding = kLineWidth + 2;
     double radius = m_diameter / 2.0 + padding;
     return QRectF(-radius, -radius, radius * 2, radius * 2);
 }
 
-void ImpactGlyphItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
+void ImpactGlyphItem::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget)
 {
     Q_UNUSED(option)
     Q_UNUSED(widget)
@@ -52,7 +70,7 @@ void ImpactGlyphItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *o
     
     // Set up pen for the segmented circle
     QPen pen(m_color);
-    pen.setWidthF(m_lineWidth);
+    pen.setWidthF(kLineWidth);
     pen.setCapStyle(Qt::FlatCap);
     painter->setPen(pen);
     painter->setBrush(Qt::NoBrush);
@@ -65,8 +83,8 @@ void ImpactGlyphItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *o
     
     // Each arc segment spans (90 - gapAngle) degrees
     // Starting after each gap
-    double arcSpan = 90.0 - m_gapAngle;
-    double halfGap = m_gapAngle / 2.0;
+    double arcSpan = 90.0 - kGapAngle;
+    double halfGap = kGapAngle / 2.0;
     
     // Arc 1: NE quadrant (from ~95 to ~175 degrees) - after N gap, before W gap
     painter->drawArc(rect, (90 + halfGap) * 16, arcSpan * 16);

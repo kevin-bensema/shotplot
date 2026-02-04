@@ -27,9 +27,9 @@ public:
     /// @param diameterPixels The visual diameter of the impact glyph in pixels,
     ///                       required to restore the glyph during undo.
     /// @param parent Optional parent command for command grouping.
-    RemoveImpactCommand(ShotGroupDocument *document, TargetScene *scene,
+    RemoveImpactCommand(ShotGroupDocument* pDocument, TargetScene* pScene,
                         const ShotImpact &impact, double diameterPixels,
-                        QUndoCommand *parent = nullptr);
+                        QUndoCommand* pParent = nullptr);
     
     ~RemoveImpactCommand();
 
@@ -48,8 +48,8 @@ public:
     void redo() override;
 
 private:
-    ShotGroupDocument *m_document;  ///< The document model containing impact data
-    TargetScene *m_scene;            ///< The scene containing visual impact glyphs
+    ShotGroupDocument* m_pDocument;  ///< The document model containing impact data
+    TargetScene* m_pScene;            ///< The scene containing visual impact glyphs
     ShotImpact m_impact;             ///< Copy of the impact being removed (for undo)
     double m_diameterPixels;         ///< Visual diameter in pixels (needed to restore glyph)
 };

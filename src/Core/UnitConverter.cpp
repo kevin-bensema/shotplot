@@ -2,6 +2,24 @@
 
 #include <cmath>
 
+namespace
+{
+    /// MOA conversion factor: 1 MOA = 1.047 inches at 100 yards
+    ///
+    /// This is the standard definition used in shooting sports. Some approximations
+    /// use 1.0 inch per MOA, but this class uses the exact value.
+    constexpr double kMoaFactor = 1.047;  ///< inches per MOA at 100 yards
+    
+    /// Conversion factor from radians to milliradians
+    constexpr double kMradPerRadian = 1000.0;
+    
+    /// Conversion factor from yards to inches
+    constexpr double kInchesPerYard = 36.0;
+    
+    /// Conversion factor from yards to meters
+    constexpr double kYardsToMetersFactor = 0.9144;
+}
+
 double UnitConverter::pixelsToInches(double pixels, double pixelsPerInch)
 {
     if (pixelsPerInch <= 0.0)
@@ -22,9 +40,9 @@ double UnitConverter::inchesToMOA(double inches, double distanceYards)
     {
         return 0.0;
     }
-    // MOA = inches / (distance_yards / 100) / MOA_FACTOR
+    // MOA = inches / (distance_yards / 100) / kMoaFactor
     // At 100 yards, 1 MOA = 1.047 inches
-    return inches / (distanceYards / 100.0) / MOA_FACTOR;
+    return inches / (distanceYards / 100.0) / kMoaFactor;
 }
 
 double UnitConverter::inchesToMRAD(double inches, double distanceYards)
@@ -34,32 +52,32 @@ double UnitConverter::inchesToMRAD(double inches, double distanceYards)
         return 0.0;
     }
     // Convert yards to inches, then calculate angle in radians, then to milliradians
-    double distanceInches = distanceYards * INCHES_PER_YARD;
+    double distanceInches = distanceYards * kInchesPerYard;
     double radians = inches / distanceInches;
-    return radians * MRAD_PER_RADIAN;
+    return radians * kMradPerRadian;
 }
 
 double UnitConverter::moaToInches(double moa, double distanceYards)
 {
     // At 100 yards, 1 MOA = 1.047 inches
-    return moa * (distanceYards / 100.0) * MOA_FACTOR;
+    return moa * (distanceYards / 100.0) * kMoaFactor;
 }
 
 double UnitConverter::mradToInches(double mrad, double distanceYards)
 {
-    double distanceInches = distanceYards * INCHES_PER_YARD;
-    double radians = mrad / MRAD_PER_RADIAN;
+    double distanceInches = distanceYards * kInchesPerYard;
+    double radians = mrad / kMradPerRadian;
     return radians * distanceInches;
 }
 
 double UnitConverter::yardsToMeters(double yards)
 {
-    return yards * 0.9144;
+    return yards * kYardsToMetersFactor;
 }
 
 double UnitConverter::metersToYards(double meters)
 {
-    return meters / 0.9144;
+    return meters / kYardsToMetersFactor;
 }
 
 QString UnitConverter::formatWithUnit(double value, Unit unit, int precision)

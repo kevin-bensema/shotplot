@@ -4,15 +4,17 @@
 #include <QToolButton>
 #include <QLabel>
 
-const QStringList WorkflowToolbar::STATE_NAMES = {
-    "Caliber",
-    "Scale",
-    "POA",
-    "Mark Impacts",
-    "Visualization"
-};
+namespace {
+    const QStringList kStateNames = {
+        "Caliber",
+        "Scale",
+        "POA",
+        "Mark Impacts",
+        "Visualization"
+    };
+}
 
-WorkflowToolbar::WorkflowToolbar(QWidget *parent)
+WorkflowToolbar::WorkflowToolbar(QWidget* parent)
     : QToolBar(parent)
 {
     setWindowTitle(tr("Workflow"));
@@ -24,34 +26,40 @@ WorkflowToolbar::~WorkflowToolbar() = default;
 
 void WorkflowToolbar::setupButtons()
 {
-    for (int i = 0; i < STATE_NAMES.size(); ++i)
+    for (int i = 0; i < kStateNames.size(); ++i)
     {
         if (i > 0)
         {
-            QLabel *arrow = new QLabel(" → ");
-            addWidget(arrow);
+            QLabel* pArrow = new QLabel(" → ");
+            addWidget(pArrow);
         }
         
-        QToolButton *button = new QToolButton(this);
-        button->setText(STATE_NAMES[i]);
-        button->setCheckable(true);
-        button->setEnabled(false);
-        button->setProperty("stateIndex", i);
+        QToolButton* pButton = new QToolButton(this);
+        pButton->setText(kStateNames[i]);
+        pButton->setCheckable(true);
+        pButton->setEnabled(false);
+        pButton->setProperty("stateIndex", i);
         
-        connect(button, &QToolButton::clicked, this, &WorkflowToolbar::onButtonClicked);
+        connect(pButton, &QToolButton::clicked, this, [this]() {
+            QToolButton* pSenderButton = qobject_cast<QToolButton*>(sender());
+            if (!pSenderButton) return;
+            
+            int index = pSenderButton->property("stateIndex").toInt();
+            emit stateSelected(index);
+        });
         
-        addWidget(button);
-        m_buttons.append(button);
+        addWidget(pButton);
+        m_buttons.append(pButton);
     }
 }
 
-void WorkflowToolbar::setDocument(ShotGroupDocument *doc)
+void WorkflowToolbar::setDocument(ShotGroupDocument* doc)
 {
-    m_document = doc;
+    m_pDocument = doc;
     
-    if (m_document)
+    if (m_pDocument)
     {
-        connect(m_document, &ShotGroupDocument::dataChanged,
+        connect(m_pDocument, &ShotGroupDocument::dataChanged,
                 this, &WorkflowToolbar::updateStateEnablement);
     }
     
@@ -70,11 +78,11 @@ void WorkflowToolbar::setCurrentState(int index)
 
 void WorkflowToolbar::updateStateEnablement()
 {
-    if (!m_document)
+    if (!m_pDocument)
     {
-        for (auto *button : m_buttons)
+        for (auto* pButton : m_buttons)
         {
-            button->setEnabled(false);
+            pButton->setEnabled(false);
         }
         return;
     }
@@ -83,23 +91,14 @@ void WorkflowToolbar::updateStateEnablement()
     m_buttons[0]->setEnabled(true);
     
     // State 1: Scale - enabled after caliber is set
-    m_buttons[1]->setEnabled(m_document->canEnableScaleFactorState());
+    m_buttons[1]->setEnabled(m_pDocument->canEnableScaleFactorState());
     
     // State 2: POA - enabled after scale factor is set
-    m_buttons[2]->setEnabled(m_document->canEnablePointOfAimState());
+    m_buttons[2]->setEnabled(m_pDocument->canEnablePointOfAimState());
     
     // State 3: Mark Impacts - enabled after scale factor is set
-    m_buttons[3]->setEnabled(m_document->canEnableMarkImpactsState());
+    m_buttons[3]->setEnabled(m_pDocument->canEnableMarkImpactsState());
     
     // State 4: Visualization - enabled after at least one impact
-    m_buttons[4]->setEnabled(m_document->canEnableVisualizationState());
-}
-
-void WorkflowToolbar::onButtonClicked()
-{
-    QToolButton *button = qobject_cast<QToolButton*>(sender());
-    if (!button) return;
-    
-    int index = button->property("stateIndex").toInt();
-    emit stateSelected(index);
+    m_buttons[4]->setEnabled(m_pDocument->canEnableVisualizationState());
 }

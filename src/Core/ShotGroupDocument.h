@@ -43,16 +43,16 @@ public:
     /// displayed on the target visualization.
     struct PlaqueConfig
     {
-        bool enabled = false;      ///< Whether the plaque is visible
-        int x = 50;                ///< X position in pixels
-        int y = 50;                ///< Y position in pixels
-        int width = 300;           ///< Width in pixels
-        int height = 200;          ///< Height in pixels
-        QString title = "Shot Group Statistics";  ///< Plaque title text
+        bool enabled;              ///< Whether the plaque is visible
+        int x;                     ///< X position in pixels
+        int y;                     ///< Y position in pixels
+        int width;                 ///< Width in pixels
+        int height;                ///< Height in pixels
+        QString title;             ///< Plaque title text
         QString formatString;      ///< Format string for statistics display
     };
 
-    explicit ShotGroupDocument(QObject *parent = nullptr);
+    explicit ShotGroupDocument(QObject* parent = nullptr);
     ~ShotGroupDocument();
 
     // ===== Image Data =====
@@ -138,7 +138,7 @@ public:
     /// The returned reference remains valid until the document is destroyed.
     /// 
     /// \return Reference to the Statistics object
-    const Statistics& statistics() const;
+    const Statistics &statistics() const;
 
     // ===== File Management =====
     QString filePath() const;
@@ -165,14 +165,14 @@ public:
     /// \param errorMsg Optional pointer to receive error message on failure
     /// \return True if save succeeded, false otherwise
     /// \note Currently not implemented (returns false)
-    bool saveToFile(const QString &filePath, QString *errorMsg = nullptr);
+    bool saveToFile(const QString &filePath, QString* pErrorMsg = nullptr);
     /// @brief Loads the document from a file
     /// 
     /// \param filePath The source file path
     /// \param errorMsg Optional pointer to receive error message on failure
     /// \return True if load succeeded, false otherwise
     /// \note Currently not implemented (returns false)
-    bool loadFromFile(const QString &filePath, QString *errorMsg = nullptr);
+    bool loadFromFile(const QString &filePath, QString* pErrorMsg = nullptr);
 
     /// @brief Serializes the document to a JSON object
     /// 
@@ -191,7 +191,7 @@ public:
     /// \param json The JSON object to load from
     /// \param errorMsg Optional pointer to receive error message on failure
     /// \return True if deserialization succeeded, false otherwise
-    bool fromJson(const QJsonObject &json, QString *errorMsg = nullptr);
+    bool fromJson(const QJsonObject &json, QString* pErrorMsg = nullptr);
 
 signals:
     /// Emitted when any document data changes (image, calibration, impacts, metadata)
@@ -218,8 +218,8 @@ private:
     bool m_hasPointOfAim = false;
     
     // Session parameters
-    double m_targetDistance = 100.0;
-    DistanceUnit m_distanceUnit = DistanceUnit::Yards;
+    double m_targetDistance;
+    DistanceUnit m_distanceUnit;
     QDate m_sessionDate;
     
     // Impacts
@@ -232,10 +232,10 @@ private:
     QString m_notes;
     
     // Visualization settings
-    bool m_showFullGroupCircle = true;
-    bool m_show80PercentCircle = false;
-    bool m_show90PercentCircle = false;
-    bool m_showPointOfAim = true;
+    bool m_showFullGroupCircle;
+    bool m_show80PercentCircle;
+    bool m_show90PercentCircle;
+    bool m_showPointOfAim;
     PlaqueConfig m_plaqueConfig;
     
     // Statistics

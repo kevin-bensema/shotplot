@@ -7,7 +7,8 @@
 #include <QDoubleSpinBox>
 #include <QDialogButtonBox>
 
-const QList<QPair<QString, double>> CaliberDialog::PRESETS = {
+namespace {
+    const QList<QPair<QString, double>> kPresets = {
     {".17 HMR", 0.172},
     {".22 LR / .223 / 5.56mm", 0.224},
     {"6mm / .243", 0.243},
@@ -22,9 +23,10 @@ const QList<QPair<QString, double>> CaliberDialog::PRESETS = {
     {".45 ACP", 0.452},
     {".50 BMG", 0.510},
     {"Custom...", 0.0}
-};
+    };
+}
 
-CaliberDialog::CaliberDialog(QWidget *parent)
+CaliberDialog::CaliberDialog(QWidget* parent)
     : QDialog(parent)
 {
     setWindowTitle(tr("Set Bullet Diameter"));
@@ -36,60 +38,74 @@ CaliberDialog::~CaliberDialog() = default;
 
 void CaliberDialog::setupUi()
 {
-    QVBoxLayout *layout = new QVBoxLayout(this);
+    QVBoxLayout* pLayout = new QVBoxLayout(this);
     
     // Instruction
-    QLabel *label = new QLabel(tr("Select the bullet diameter for accurate shot marking:"));
-    label->setWordWrap(true);
-    layout->addWidget(label);
+    QLabel* pLabel = new QLabel(tr("Select the bullet diameter for accurate shot marking:"));
+    pLabel->setWordWrap(true);
+    pLayout->addWidget(pLabel);
     
-    layout->addSpacing(10);
+    pLayout->addSpacing(10);
     
     // Preset combo
-    QHBoxLayout *presetLayout = new QHBoxLayout();
-    presetLayout->addWidget(new QLabel(tr("Preset:")));
-    m_presetCombo = new QComboBox();
-    connect(m_presetCombo, QOverload<int>::of(&QComboBox::currentIndexChanged),
-            this, &CaliberDialog::onPresetChanged);
-    presetLayout->addWidget(m_presetCombo, 1);
-    layout->addLayout(presetLayout);
+    QHBoxLayout* pPresetLayout = new QHBoxLayout();
+    pPresetLayout->addWidget(new QLabel(tr("Preset:")));
+    m_pPresetCombo = new QComboBox();
+    connect(m_pPresetCombo, QOverload<int>::of(&QComboBox::currentIndexChanged),
+            [this](int index) {
+                if (index < 0 || index >= kPresets.size()) return;
+                
+                double diameter = kPresets[index].second;
+                if (diameter > 0.0)
+                {
+                    m_pDiameterSpin->setValue(diameter);
+                    m_pDiameterSpin->setEnabled(false);
+                }
+                else
+                {
+                    // Custom - enable editing
+                    m_pDiameterSpin->setEnabled(true);
+                }
+            });
+    pPresetLayout->addWidget(m_pPresetCombo, 1);
+    pLayout->addLayout(pPresetLayout);
     
     // Custom diameter
-    QHBoxLayout *diameterLayout = new QHBoxLayout();
-    diameterLayout->addWidget(new QLabel(tr("Diameter:")));
-    m_diameterSpin = new QDoubleSpinBox();
-    m_diameterSpin->setRange(0.1, 1.0);
-    m_diameterSpin->setDecimals(3);
-    m_diameterSpin->setSingleStep(0.001);
-    m_diameterSpin->setSuffix(" inches");
-    diameterLayout->addWidget(m_diameterSpin, 1);
-    layout->addLayout(diameterLayout);
+    QHBoxLayout* pDiameterLayout = new QHBoxLayout();
+    pDiameterLayout->addWidget(new QLabel(tr("Diameter:")));
+    m_pDiameterSpin = new QDoubleSpinBox();
+    m_pDiameterSpin->setRange(0.1, 1.0);
+    m_pDiameterSpin->setDecimals(3);
+    m_pDiameterSpin->setSingleStep(0.001);
+    m_pDiameterSpin->setSuffix(" inches");
+    pDiameterLayout->addWidget(m_pDiameterSpin, 1);
+    pLayout->addLayout(pDiameterLayout);
     
-    layout->addSpacing(10);
+    pLayout->addSpacing(10);
     
     // Buttons
-    QDialogButtonBox *buttonBox = new QDialogButtonBox(
+    QDialogButtonBox* pButtonBox = new QDialogButtonBox(
         QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
-    connect(buttonBox, &QDialogButtonBox::accepted, this, &QDialog::accept);
-    connect(buttonBox, &QDialogButtonBox::rejected, this, &QDialog::reject);
-    layout->addWidget(buttonBox);
+    connect(pButtonBox, &QDialogButtonBox::accepted, this, &QDialog::accept);
+    connect(pButtonBox, &QDialogButtonBox::rejected, this, &QDialog::reject);
+    pLayout->addWidget(pButtonBox);
     
     setMinimumWidth(350);
 }
 
 void CaliberDialog::populatePresets()
 {
-    for (const auto &preset : PRESETS)
+    for (const auto &preset : kPresets)
     {
-        m_presetCombo->addItem(preset.first, preset.second);
+        m_pPresetCombo->addItem(preset.first, preset.second);
     }
     
     // Default to .308
-    for (int i = 0; i < PRESETS.size(); ++i)
+    for (int i = 0; i < kPresets.size(); ++i)
     {
-        if (qFuzzyCompare(PRESETS[i].second, 0.308))
+        if (qFuzzyCompare(kPresets[i].second, 0.308))
         {
-            m_presetCombo->setCurrentIndex(i);
+            m_pPresetCombo->setCurrentIndex(i);
             break;
         }
     }
@@ -97,40 +113,24 @@ void CaliberDialog::populatePresets()
 
 double CaliberDialog::bulletDiameter() const
 {
-    return m_diameterSpin->value();
+    return m_pDiameterSpin->value();
 }
 
 void CaliberDialog::setBulletDiameter(double diameter)
 {
-    m_diameterSpin->setValue(diameter);
+    m_pDiameterSpin->setValue(diameter);
     
     // Try to find matching preset
-    for (int i = 0; i < PRESETS.size(); ++i)
+    for (int i = 0; i < kPresets.size(); ++i)
     {
-        if (qFuzzyCompare(PRESETS[i].second, diameter))
+        if (qFuzzyCompare(kPresets[i].second, diameter))
         {
-            m_presetCombo->setCurrentIndex(i);
+            m_pPresetCombo->setCurrentIndex(i);
             return;
         }
     }
     
     // Custom value - select "Custom..."
-    m_presetCombo->setCurrentIndex(PRESETS.size() - 1);
+    m_pPresetCombo->setCurrentIndex(kPresets.size() - 1);
 }
 
-void CaliberDialog::onPresetChanged(int index)
-{
-    if (index < 0 || index >= PRESETS.size()) return;
-    
-    double diameter = PRESETS[index].second;
-    if (diameter > 0.0)
-    {
-        m_diameterSpin->setValue(diameter);
-        m_diameterSpin->setEnabled(false);
-    }
-    else
-    {
-        // Custom - enable editing
-        m_diameterSpin->setEnabled(true);
-    }
-}

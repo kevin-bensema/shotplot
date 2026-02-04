@@ -11,11 +11,10 @@
 class POAGlyphItem : public QGraphicsItem
 {
 public:
-    explicit POAGlyphItem(QGraphicsItem *parent = nullptr);
-    ~POAGlyphItem();
+    explicit POAGlyphItem(QGraphicsItem* pParent = nullptr);
 
     /// Returns the size (diameter) of the glyph in pixels.
-    double size() const { return m_size; }
+    double size() const;
     
     /// Sets the size (diameter) of the glyph in pixels.
     ///
@@ -24,7 +23,7 @@ public:
     void setSize(double size);
 
     /// Returns the color of the glyph lines.
-    QColor color() const { return m_color; }
+    QColor color() const;
     
     /// Sets the color of the glyph lines.
     /// \param color The new color for the X marker.
@@ -42,10 +41,9 @@ public:
     ///
     /// Draws two diagonal lines from corner to corner, forming an X shape.
     /// The lines use round cap style for smoother appearance.
-    void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
+    void paint(QPainter* pPainter, const QStyleOptionGraphicsItem* pOption, QWidget* pWidget) override;
 
 private:
     double m_size = 30.0;                    ///< Size (diameter) of the glyph in pixels.
-    double m_lineWidth = 3.0;                ///< Width of the lines forming the X shape.
     QColor m_color = QColor(255, 0, 255);    ///< Color of the marker (default: magenta).
 };

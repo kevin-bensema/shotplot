@@ -8,16 +8,22 @@
 
 #include <zip.h>
 
-bool DocumentSerializer::save(const ShotGroupDocument &document, const QString &filePath, QString *errorMsg)
+namespace
+{
+    constexpr const char* kImageFilename = "target.png";
+    constexpr const char* kMetadataFilename = "metadata.json";
+}
+
+bool DocumentSerializer::save(const ShotGroupDocument &document, const QString &filePath, QString* pErrorMsg)
 {
     int error = 0;
-    zip_t *archive = zip_open(filePath.toUtf8().constData(), ZIP_CREATE | ZIP_TRUNCATE, &error);
+    zip_t* pArchive = zip_open(filePath.toUtf8().constData(), ZIP_CREATE | ZIP_TRUNCATE, &error);
     
-    if (!archive)
+    if (!pArchive)
     {
-        if (errorMsg)
+        if (pErrorMsg)
         {
-            *errorMsg = QString("Failed to create ZIP archive: error code %1").arg(error);
+            *pErrorMsg = QString("Failed to create ZIP archive: error code %1").arg(error);
         }
         return false;
     }
@@ -34,24 +40,24 @@ bool DocumentSerializer::save(const ShotGroupDocument &document, const QString &
         image.save(&buffer, "PNG");
         buffer.close();
         
-        zip_source_t *imageSource = zip_source_buffer(archive, imageData.constData(), imageData.size(), 0);
-        if (imageSource)
+        zip_source_t* pImageSource = zip_source_buffer(pArchive, imageData.constData(), imageData.size(), 0);
+        if (pImageSource)
         {
-            if (zip_file_add(archive, IMAGE_FILENAME, imageSource, ZIP_FL_OVERWRITE) < 0)
+            if (zip_file_add(pArchive, kImageFilename, pImageSource, ZIP_FL_OVERWRITE) < 0)
             {
-                zip_source_free(imageSource);
-                if (errorMsg)
+                zip_source_free(pImageSource);
+                if (pErrorMsg)
                 {
-                    *errorMsg = QString("Failed to add image to archive: %1").arg(zip_strerror(archive));
+                    *pErrorMsg = QString("Failed to add image to archive: %1").arg(zip_strerror(pArchive));
                 }
                 success = false;
             }
         }
         else
         {
-            if (errorMsg)
+            if (pErrorMsg)
             {
-                *errorMsg = "Failed to create image source";
+                *pErrorMsg = "Failed to create image source";
             }
             success = false;
         }
@@ -64,43 +70,43 @@ bool DocumentSerializer::save(const ShotGroupDocument &document, const QString &
         QJsonDocument jsonDoc(json);
         QByteArray jsonData = jsonDoc.toJson(QJsonDocument::Indented);
         
-        zip_source_t *jsonSource = zip_source_buffer(archive, jsonData.constData(), jsonData.size(), 0);
-        if (jsonSource)
+        zip_source_t* pJsonSource = zip_source_buffer(pArchive, jsonData.constData(), jsonData.size(), 0);
+        if (pJsonSource)
         {
-            if (zip_file_add(archive, METADATA_FILENAME, jsonSource, ZIP_FL_OVERWRITE) < 0)
+            if (zip_file_add(pArchive, kMetadataFilename, pJsonSource, ZIP_FL_OVERWRITE) < 0)
             {
-                zip_source_free(jsonSource);
-                if (errorMsg)
+                zip_source_free(pJsonSource);
+                if (pErrorMsg)
                 {
-                    *errorMsg = QString("Failed to add metadata to archive: %1").arg(zip_strerror(archive));
+                    *pErrorMsg = QString("Failed to add metadata to archive: %1").arg(zip_strerror(pArchive));
                 }
                 success = false;
             }
         }
         else
         {
-            if (errorMsg)
+            if (pErrorMsg)
             {
-                *errorMsg = "Failed to create metadata source";
+                *pErrorMsg = "Failed to create metadata source";
             }
             success = false;
         }
     }
     
-    zip_close(archive);
+    zip_close(pArchive);
     return success;
 }
 
-bool DocumentSerializer::load(ShotGroupDocument &document, const QString &filePath, QString *errorMsg)
+bool DocumentSerializer::load(ShotGroupDocument &document, const QString &filePath, QString* pErrorMsg)
 {
     int error = 0;
-    zip_t *archive = zip_open(filePath.toUtf8().constData(), ZIP_RDONLY, &error);
+    zip_t* pArchive = zip_open(filePath.toUtf8().constData(), ZIP_RDONLY, &error);
     
-    if (!archive)
+    if (!pArchive)
     {
-        if (errorMsg)
+        if (pErrorMsg)
         {
-            *errorMsg = QString("Failed to open ZIP archive: error code %1").arg(error);
+            *pErrorMsg = QString("Failed to open ZIP archive: error code %1").arg(error);
         }
         return false;
     }
@@ -109,14 +115,14 @@ bool DocumentSerializer::load(ShotGroupDocument &document, const QString &filePa
     
     // Load target image
     zip_stat_t imageStat;
-    if (zip_stat(archive, IMAGE_FILENAME, 0, &imageStat) == 0)
+    if (zip_stat(pArchive, kImageFilename, 0, &imageStat) == 0)
     {
-        zip_file_t *imageFile = zip_fopen(archive, IMAGE_FILENAME, 0);
-        if (imageFile)
+        zip_file_t* pImageFile = zip_fopen(pArchive, kImageFilename, 0);
+        if (pImageFile)
         {
             QByteArray imageData(imageStat.size, 0);
-            zip_fread(imageFile, imageData.data(), imageStat.size);
-            zip_fclose(imageFile);
+            zip_fread(pImageFile, imageData.data(), imageStat.size);
+            zip_fclose(pImageFile);
             
             QImage image;
             if (image.loadFromData(imageData, "PNG"))
@@ -125,27 +131,27 @@ bool DocumentSerializer::load(ShotGroupDocument &document, const QString &filePa
             }
             else
             {
-                if (errorMsg)
+                if (pErrorMsg)
                 {
-                    *errorMsg = "Failed to parse image data";
+                    *pErrorMsg = "Failed to parse image data";
                 }
                 success = false;
             }
         }
         else
         {
-            if (errorMsg)
+            if (pErrorMsg)
             {
-                *errorMsg = QString("Failed to open image file: %1").arg(zip_strerror(archive));
+                *pErrorMsg = QString("Failed to open image file: %1").arg(zip_strerror(pArchive));
             }
             success = false;
         }
     }
     else
     {
-        if (errorMsg)
+        if (pErrorMsg)
         {
-            *errorMsg = "Image file not found in archive";
+            *pErrorMsg = "Image file not found in archive";
         }
         success = false;
     }
@@ -154,14 +160,14 @@ bool DocumentSerializer::load(ShotGroupDocument &document, const QString &filePa
     if (success)
     {
         zip_stat_t jsonStat;
-        if (zip_stat(archive, METADATA_FILENAME, 0, &jsonStat) == 0)
+        if (zip_stat(pArchive, kMetadataFilename, 0, &jsonStat) == 0)
         {
-            zip_file_t *jsonFile = zip_fopen(archive, METADATA_FILENAME, 0);
-            if (jsonFile)
+            zip_file_t* pJsonFile = zip_fopen(pArchive, kMetadataFilename, 0);
+            if (pJsonFile)
             {
                 QByteArray jsonData(jsonStat.size, 0);
-                zip_fread(jsonFile, jsonData.data(), jsonStat.size);
-                zip_fclose(jsonFile);
+                zip_fread(pJsonFile, jsonData.data(), jsonStat.size);
+                zip_fclose(pJsonFile);
                 
                 QJsonDocument jsonDoc = QJsonDocument::fromJson(jsonData);
                 if (!jsonDoc.isNull() && jsonDoc.isObject())
@@ -169,41 +175,41 @@ bool DocumentSerializer::load(ShotGroupDocument &document, const QString &filePa
                     QString parseError;
                     if (!document.fromJson(jsonDoc.object(), &parseError))
                     {
-                        if (errorMsg)
+                        if (pErrorMsg)
                         {
-                            *errorMsg = QString("Failed to parse metadata: %1").arg(parseError);
+                            *pErrorMsg = QString("Failed to parse metadata: %1").arg(parseError);
                         }
                         success = false;
                     }
                 }
                 else
                 {
-                    if (errorMsg)
+                    if (pErrorMsg)
                     {
-                        *errorMsg = "Invalid JSON in metadata file";
+                        *pErrorMsg = "Invalid JSON in metadata file";
                     }
                     success = false;
                 }
             }
             else
             {
-                if (errorMsg)
+                if (pErrorMsg)
                 {
-                    *errorMsg = QString("Failed to open metadata file: %1").arg(zip_strerror(archive));
+                    *pErrorMsg = QString("Failed to open metadata file: %1").arg(zip_strerror(pArchive));
                 }
                 success = false;
             }
         }
         else
         {
-            if (errorMsg)
+            if (pErrorMsg)
             {
-                *errorMsg = "Metadata file not found in archive";
+                *pErrorMsg = "Metadata file not found in archive";
             }
             success = false;
         }
     }
     
-    zip_close(archive);
+    zip_close(pArchive);
     return success;
 }

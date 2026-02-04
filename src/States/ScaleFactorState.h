@@ -30,7 +30,7 @@ public:
     /// \param document The shot group document to store the scale factor in
     /// \param view The target view for mouse interaction
     /// \param scene The target scene for visual feedback
-    ScaleFactorState(ShotGroupDocument *document, TargetView *view, TargetScene *scene);
+    ScaleFactorState(ShotGroupDocument* pDocument, TargetView* pView, TargetScene* pScene);
     ~ScaleFactorState();
 
     /// Resets the calibration state and prepares for user interaction
@@ -69,21 +69,21 @@ public:
     /// (in inches), and a unit label. The spinbox accepts values from 0.1
     /// to 100.0 inches with 2 decimal precision.
     /// \param toolbar The toolbar to populate with state-specific controls
-    void populateToolbar(QToolBar *toolbar) override;
+    void populateToolbar(QToolBar* pToolbar) override;
     
     /// Returns the display name for this state: "Scale Factor"
-    QString stateName() const override { return tr("Scale Factor"); }
+    QString stateName() const override;
 
 private:
     void calculateScaleFactor();
     void reset();
 
 private:
-    TargetView *m_view;        ///< The target view widget for interaction
-    TargetScene *m_scene;      ///< The target scene for visual feedback
+    TargetView* m_pView;        ///< The target view widget for interaction
+    TargetScene* m_pScene;      ///< The target scene for visual feedback
     
     QPointF m_firstPoint;      ///< The first clicked point (start of reference line)
     bool m_hasFirstPoint = false;  ///< Whether the first point has been set
     
-    QDoubleSpinBox *m_distanceSpin = nullptr;  ///< Spinbox for entering reference distance in inches
+    QDoubleSpinBox* m_pDistanceSpin = nullptr;  ///< Spinbox for entering reference distance in inches
 };

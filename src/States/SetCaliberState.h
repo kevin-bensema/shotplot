@@ -27,7 +27,7 @@ public:
     /// \param document The shot group document to store the caliber value
     /// \param view The target view (currently unused, reserved for future use)
     /// \param parentWidget Parent widget for the caliber dialog (typically the main window)
-    SetCaliberState(ShotGroupDocument *document, TargetView *view, QWidget *parentWidget);
+    SetCaliberState(ShotGroupDocument* document, TargetView* view, QWidget* parentWidget);
     
     ~SetCaliberState();
 
@@ -67,14 +67,14 @@ public:
     /// diameter from the dialog.
     ///
     /// \param toolbar The toolbar widget to populate
-    void populateToolbar(QToolBar *toolbar) override;
+    void populateToolbar(QToolBar* toolbar) override;
     
     /// @brief Returns the display name of this state
     ///
     /// \return Localized string "Set Caliber"
-    QString stateName() const override { return tr("Set Caliber"); }
+    QString stateName() const override;
 
 private:
-    TargetView *m_view;          ///< The target view (reserved for future use)
-    QWidget *m_parentWidget;     ///< Parent widget for the caliber dialog
+    TargetView* m_pView;          ///< The target view (reserved for future use)
+    QWidget* m_pParentWidget;     ///< Parent widget for the caliber dialog
 };

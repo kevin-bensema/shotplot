@@ -5,9 +5,31 @@
 #include <QJsonArray>
 #include <QJsonDocument>
 
-ShotGroupDocument::ShotGroupDocument(QObject *parent)
+namespace {
+    constexpr double kDefaultTargetDistance = 100.0;
+    constexpr ShotGroupDocument::DistanceUnit kDefaultDistanceUnit = ShotGroupDocument::DistanceUnit::Yards;
+    constexpr bool kDefaultShowFullGroupCircle = true;
+    constexpr bool kDefaultShow80PercentCircle = false;
+    constexpr bool kDefaultShow90PercentCircle = false;
+    constexpr bool kDefaultShowPointOfAim = true;
+    constexpr bool kDefaultPlaqueEnabled = false;
+    constexpr int kDefaultPlaqueX = 50;
+    constexpr int kDefaultPlaqueY = 50;
+    constexpr int kDefaultPlaqueWidth = 300;
+    constexpr int kDefaultPlaqueHeight = 200;
+    const QString kDefaultPlaqueTitle = "Shot Group Statistics";
+}
+
+ShotGroupDocument::ShotGroupDocument(QObject* parent)
     : QObject(parent)
+    , m_targetDistance(kDefaultTargetDistance)
+    , m_distanceUnit(kDefaultDistanceUnit)
     , m_sessionDate(QDate::currentDate())
+    , m_showFullGroupCircle(kDefaultShowFullGroupCircle)
+    , m_show80PercentCircle(kDefaultShow80PercentCircle)
+    , m_show90PercentCircle(kDefaultShow90PercentCircle)
+    , m_showPointOfAim(kDefaultShowPointOfAim)
+    , m_plaqueConfig{kDefaultPlaqueEnabled, kDefaultPlaqueX, kDefaultPlaqueY, kDefaultPlaqueWidth, kDefaultPlaqueHeight, kDefaultPlaqueTitle, QString()}
 {
 }
 
@@ -329,7 +351,7 @@ void ShotGroupDocument::setPlaqueConfig(const PlaqueConfig &config)
 
 // ===== Statistics =====
 
-const Statistics& ShotGroupDocument::statistics() const
+const Statistics &ShotGroupDocument::statistics() const
 {
     return m_statistics;
 }
@@ -395,24 +417,24 @@ bool ShotGroupDocument::canEnableVisualizationState() const
 
 // ===== Serialization =====
 
-bool ShotGroupDocument::saveToFile(const QString &filePath, QString *errorMsg)
+bool ShotGroupDocument::saveToFile(const QString &filePath, QString* pErrorMsg)
 {
     // TODO: Implement using DocumentSerializer with libzip
     Q_UNUSED(filePath)
-    if (errorMsg)
+    if (pErrorMsg)
     {
-        *errorMsg = "Save not yet implemented";
+        *pErrorMsg = "Save not yet implemented";
     }
     return false;
 }
 
-bool ShotGroupDocument::loadFromFile(const QString &filePath, QString *errorMsg)
+bool ShotGroupDocument::loadFromFile(const QString &filePath, QString* pErrorMsg)
 {
     // TODO: Implement using DocumentSerializer with libzip
     Q_UNUSED(filePath)
-    if (errorMsg)
+    if (pErrorMsg)
     {
-        *errorMsg = "Load not yet implemented";
+        *pErrorMsg = "Load not yet implemented";
     }
     return false;
 }
@@ -481,13 +503,13 @@ QJsonObject ShotGroupDocument::toJson() const
     return root;
 }
 
-bool ShotGroupDocument::fromJson(const QJsonObject &json, QString *errorMsg)
+bool ShotGroupDocument::fromJson(const QJsonObject &json, QString* pErrorMsg)
 {
     // Version check
     QString version = json["version"].toString();
     if (version.isEmpty()) 
     {
-        if (errorMsg) *errorMsg = "Missing version field";
+        if (pErrorMsg) *pErrorMsg = "Missing version field";
         return false;
     }
     
@@ -509,7 +531,7 @@ bool ShotGroupDocument::fromJson(const QJsonObject &json, QString *errorMsg)
     
     // Session
     QJsonObject sessionObj = json["session"].toObject();
-    m_targetDistance = sessionObj["distance"].toDouble(100.0);
+    m_targetDistance = sessionObj["distance"].toDouble(kDefaultTargetDistance);
     QString unitStr = sessionObj["distanceUnit"].toString("yard");
     m_distanceUnit = (unitStr == "meter") ? DistanceUnit::Meters : DistanceUnit::Yards;
     m_bulletDiameter = sessionObj["bulletDiameter"].toDouble();
@@ -518,7 +540,7 @@ bool ShotGroupDocument::fromJson(const QJsonObject &json, QString *errorMsg)
     m_impacts.clear();
     QJsonArray shotsArray = json["shots"].toArray();
     int maxId = 0;
-    for (const auto& shotVal : shotsArray) 
+    for (const auto &shotVal : shotsArray) 
     {
         QJsonObject shotObj = shotVal.toObject();
         ShotImpact impact;
@@ -540,9 +562,9 @@ bool ShotGroupDocument::fromJson(const QJsonObject &json, QString *errorMsg)
     
     // Visualization settings
     QJsonObject vizObj = json["visualizationSettings"].toObject();
-    m_showFullGroupCircle = vizObj["showFullGroupCircle"].toBool(true);
-    m_show80PercentCircle = vizObj["show80PercentCircle"].toBool(false);
-    m_show90PercentCircle = vizObj["show90PercentCircle"].toBool(false);
+    m_showFullGroupCircle = vizObj["showFullGroupCircle"].toBool(kDefaultShowFullGroupCircle);
+    m_show80PercentCircle = vizObj["show80PercentCircle"].toBool(kDefaultShow80PercentCircle);
+    m_show90PercentCircle = vizObj["show90PercentCircle"].toBool(kDefaultShow90PercentCircle);
     
     updateStatistics();
     return true;

@@ -22,17 +22,16 @@ public:
     /// \param shotNumber The shot number to display in the center
     /// \param diameter The diameter of the circle in scene coordinates
     /// \param parent Optional parent graphics item
-    explicit ImpactGlyphItem(int shotNumber, double diameter, QGraphicsItem *parent = nullptr);
-    ~ImpactGlyphItem();
+    explicit ImpactGlyphItem(int shotNumber, double diameter, QGraphicsItem* parent = nullptr);
 
-    int shotNumber() const { return m_shotNumber; }
+    int shotNumber() const;
     
     /// @brief Sets the shot number and triggers a repaint
     /// 
     /// \param number The shot number to display
     void setShotNumber(int number);
 
-    double diameter() const { return m_diameter; }
+    double diameter() const;
     
     /// @brief Sets the circle diameter and updates geometry
     /// 
@@ -42,7 +41,7 @@ public:
     /// \param diameter The new diameter in scene coordinates
     void setDiameter(double diameter);
 
-    QColor color() const { return m_color; }
+    QColor color() const;
     
     /// @brief Sets the circle color and triggers a repaint
     /// 
@@ -62,12 +61,10 @@ public:
     /// Draws four arc segments with gaps at cardinal directions
     /// (N, S, E, W) and renders the shot number in the center
     /// with white fill and black outline.
-    void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
+    void paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget) override;
 
 private:
     int m_shotNumber;              ///< Shot number displayed in center
     double m_diameter;             ///< Circle diameter in scene coordinates
     QColor m_color;                ///< Color of the circle outline
-    double m_lineWidth = 2.0;      ///< Width of the circle outline in pixels
-    double m_gapAngle = 15.0;      ///< Angular size of each gap in degrees
 };

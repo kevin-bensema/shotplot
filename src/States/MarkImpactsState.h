@@ -26,8 +26,8 @@ public:
     /// \param view The target view widget
     /// \param scene The graphics scene for rendering impact glyphs
     /// \param undoStack The undo stack for command-based modifications
-    MarkImpactsState(ShotGroupDocument *document, TargetView *view, 
-                     TargetScene *scene, QUndoStack *undoStack);
+    MarkImpactsState(ShotGroupDocument* document, TargetView* view, 
+                     TargetScene* scene, QUndoStack* undoStack);
     ~MarkImpactsState();
 
     /// Initializes the state by recreating impact glyphs from document data
@@ -53,29 +53,21 @@ public:
     
     /// Populates the toolbar with state-specific controls, including a "Clear All" button.
     /// \param toolbar The toolbar widget to populate
-    void populateToolbar(QToolBar *toolbar) override;
+    void populateToolbar(QToolBar* toolbar) override;
     
     /// Returns the display name of this state.
-    QString stateName() const override
-    {
-        return tr("Mark Impacts");
-    }
-
-private slots:
-    /// Clears all impacts from the document using an undo command.
-    void onClearImpacts();
-    
-    /// Updates group circle visualizations based on current impact statistics.
-    void updateGroupCircles();
+    QString stateName() const override;
 
 private:
+    /// Updates group circle visualizations based on current impact statistics.
+    void updateGroupCircles();
     /// Calculates the bullet diameter in pixels based on document scale factor.
     /// Returns a default value if scale factor is not yet set.
     /// \return The bullet diameter in pixels, or 20.0 as fallback
     double bulletDiameterPixels() const;
 
 private:
-    TargetView *m_view;      ///< The target view widget for display
-    TargetScene *m_scene;    ///< The graphics scene for rendering impact glyphs and circles
-    QUndoStack *m_undoStack; ///< The undo stack for command-based modifications
+    TargetView* m_pView;      ///< The target view widget for display
+    TargetScene* m_pScene;    ///< The graphics scene for rendering impact glyphs and circles
+    QUndoStack* m_pUndoStack; ///< The undo stack for command-based modifications
 };

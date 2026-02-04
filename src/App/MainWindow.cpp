@@ -14,6 +14,21 @@
 #include <QActionGroup>
 #include <QStandardPaths>
 
+namespace {
+    constexpr int kDefaultWindowWidth = 1200;
+    constexpr int kDefaultWindowHeight = 800;
+    
+    constexpr const char* kImageExtensionPng = ".png";
+    constexpr const char* kImageExtensionJpg = ".jpg";
+    constexpr const char* kImageExtensionJpeg = ".jpeg";
+    constexpr const char* kSessionExtension = ".spz";
+    
+    constexpr const char* kSettingsDisplayUnits = "display/units";
+    constexpr const char* kSettingsLastImportDir = "directories/lastImport";
+    constexpr const char* kSettingsLastSaveLoadDir = "directories/lastSaveLoad";
+    constexpr const char* kDefaultDisplayUnit = "inches";
+}
+
 #include "Widgets/TargetView.h"
 #include "Widgets/WorkflowToolbar.h"
 #include "Widgets/PerStateToolbar.h"
@@ -28,9 +43,9 @@
 #include "States/MarkImpactsState.h"
 #include "States/VisualizationState.h"
 
-MainWindow::MainWindow(QWidget *parent)
+MainWindow::MainWindow(QWidget* parent)
     : QMainWindow(parent)
-    , m_undoStack(new QUndoStack(this))
+    , m_pUndoStack(new QUndoStack(this))
 {
     setupUi();
     setupMenus();
@@ -47,7 +62,7 @@ MainWindow::MainWindow(QWidget *parent)
     updateMenuState();
     
     // Set reasonable default size
-    resize(1200, 800);
+    resize(kDefaultWindowWidth, kDefaultWindowHeight);
     
     statusBar()->showMessage(tr("No document loaded"));
 }
@@ -57,146 +72,148 @@ MainWindow::~MainWindow() = default;
 void MainWindow::setupUi()
 {
     // Create undo stack actions
-    m_undoAction = m_undoStack->createUndoAction(this, tr("&Undo"));
-    m_undoAction->setShortcut(QKeySequence::Undo);
+    m_pUndoAction = m_pUndoStack->createUndoAction(this, tr("&Undo"));
+    m_pUndoAction->setShortcut(QKeySequence::Undo);
     
-    m_redoAction = m_undoStack->createRedoAction(this, tr("&Redo"));
-    m_redoAction->setShortcut(QKeySequence::Redo);
+    m_pRedoAction = m_pUndoStack->createRedoAction(this, tr("&Redo"));
+    m_pRedoAction->setShortcut(QKeySequence::Redo);
 }
 
 void MainWindow::setupMenus()
 {
     // File menu
-    QMenu *fileMenu = menuBar()->addMenu(tr("&File"));
+    QMenu* pFileMenu = menuBar()->addMenu(tr("&File"));
     
-    QAction *importAction = fileMenu->addAction(tr("&Import..."), this, &MainWindow::onImport);
-    importAction->setShortcut(QKeySequence(Qt::CTRL | Qt::Key_I));
+    QAction* pImportAction = pFileMenu->addAction(tr("&Import..."), this, &MainWindow::onImport);
+    pImportAction->setShortcut(QKeySequence(Qt::CTRL | Qt::Key_I));
     
-    QAction *loadAction = fileMenu->addAction(tr("&Load..."), this, &MainWindow::onLoad);
-    loadAction->setShortcut(QKeySequence::Open);
+    QAction* pLoadAction = pFileMenu->addAction(tr("&Load..."), this, &MainWindow::onLoad);
+    pLoadAction->setShortcut(QKeySequence::Open);
     
-    m_saveAction = fileMenu->addAction(tr("&Save"), this, &MainWindow::onSave);
-    m_saveAction->setShortcut(QKeySequence::Save);
+    m_pSaveAction = pFileMenu->addAction(tr("&Save"), this, &MainWindow::onSave);
+    m_pSaveAction->setShortcut(QKeySequence::Save);
     
-    m_saveAsAction = fileMenu->addAction(tr("Save &As..."), this, &MainWindow::onSaveAs);
-    m_saveAsAction->setShortcut(QKeySequence::SaveAs);
+    m_pSaveAsAction = pFileMenu->addAction(tr("Save &As..."), this, &MainWindow::onSaveAs);
+    m_pSaveAsAction->setShortcut(QKeySequence::SaveAs);
     
-    fileMenu->addSeparator();
+    pFileMenu->addSeparator();
     
-    m_exportAction = fileMenu->addAction(tr("&Export Image..."), this, &MainWindow::onExportImage);
+    m_pExportAction = pFileMenu->addAction(tr("&Export Image..."), this, &MainWindow::onExportImage);
     
-    fileMenu->addSeparator();
+    pFileMenu->addSeparator();
     
-    QAction *quitAction = fileMenu->addAction(tr("&Quit"), this, &QWidget::close);
-    quitAction->setShortcut(QKeySequence::Quit);
+    QAction* pQuitAction = pFileMenu->addAction(tr("&Quit"), this, &QWidget::close);
+    pQuitAction->setShortcut(QKeySequence::Quit);
     
     // Edit menu
-    QMenu *editMenu = menuBar()->addMenu(tr("&Edit"));
+    QMenu* pEditMenu = menuBar()->addMenu(tr("&Edit"));
     
-    editMenu->addAction(m_undoAction);
-    editMenu->addAction(m_redoAction);
+    pEditMenu->addAction(m_pUndoAction);
+    pEditMenu->addAction(m_pRedoAction);
     
-    editMenu->addSeparator();
+    pEditMenu->addSeparator();
     
-    m_metadataAction = editMenu->addAction(tr("&Metadata..."), this, &MainWindow::onEditMetadata);
+    m_pMetadataAction = pEditMenu->addAction(tr("&Metadata..."), this, &MainWindow::onEditMetadata);
     
     // View menu
-    QMenu *viewMenu = menuBar()->addMenu(tr("&View"));
+    QMenu* pViewMenu = menuBar()->addMenu(tr("&View"));
     
-    m_zoomInAction = viewMenu->addAction(tr("Zoom &In"), this, &MainWindow::onZoomIn);
-    m_zoomInAction->setShortcut(QKeySequence::ZoomIn);
+    m_pZoomInAction = pViewMenu->addAction(tr("Zoom &In"), this, &MainWindow::onZoomIn);
+    m_pZoomInAction->setShortcut(QKeySequence::ZoomIn);
     
-    m_zoomOutAction = viewMenu->addAction(tr("Zoom &Out"), this, &MainWindow::onZoomOut);
-    m_zoomOutAction->setShortcut(QKeySequence::ZoomOut);
+    m_pZoomOutAction = pViewMenu->addAction(tr("Zoom &Out"), this, &MainWindow::onZoomOut);
+    m_pZoomOutAction->setShortcut(QKeySequence::ZoomOut);
     
-    m_zoomFitAction = viewMenu->addAction(tr("Zoom &Fit"), this, &MainWindow::onZoomFit);
-    m_zoomFitAction->setShortcut(QKeySequence(Qt::CTRL | Qt::Key_0));
+    m_pZoomFitAction = pViewMenu->addAction(tr("Zoom &Fit"), this, &MainWindow::onZoomFit);
+    m_pZoomFitAction->setShortcut(QKeySequence(Qt::CTRL | Qt::Key_0));
     
-    viewMenu->addSeparator();
+    pViewMenu->addSeparator();
     
     // Display units submenu
-    QMenu *unitsMenu = viewMenu->addMenu(tr("Display &Units"));
-    QActionGroup *unitsGroup = new QActionGroup(this);
-    unitsGroup->setExclusive(true);
+    QMenu* pUnitsMenu = pViewMenu->addMenu(tr("Display &Units"));
+    QActionGroup* pUnitsGroup = new QActionGroup(this);
+    pUnitsGroup->setExclusive(true);
     
-    QAction *inchesAction = unitsMenu->addAction(tr("Inches"));
-    inchesAction->setCheckable(true);
-    inchesAction->setData("inches");
-    unitsGroup->addAction(inchesAction);
+    QAction* pInchesAction = pUnitsMenu->addAction(tr("Inches"));
+    pInchesAction->setCheckable(true);
+    pInchesAction->setData("inches");
+    pUnitsGroup->addAction(pInchesAction);
     
-    QAction *moaAction = unitsMenu->addAction(tr("MOA"));
-    moaAction->setCheckable(true);
-    moaAction->setData("moa");
-    unitsGroup->addAction(moaAction);
+    QAction* pMoaAction = pUnitsMenu->addAction(tr("MOA"));
+    pMoaAction->setCheckable(true);
+    pMoaAction->setData("moa");
+    pUnitsGroup->addAction(pMoaAction);
     
-    QAction *mradAction = unitsMenu->addAction(tr("MRAD"));
-    mradAction->setCheckable(true);
-    mradAction->setData("mrad");
-    unitsGroup->addAction(mradAction);
+    QAction* pMradAction = pUnitsMenu->addAction(tr("MRAD"));
+    pMradAction->setCheckable(true);
+    pMradAction->setData("mrad");
+    pUnitsGroup->addAction(pMradAction);
     
     // Load saved preference
     QSettings settings;
-    QString savedUnit = settings.value("display/units", "inches").toString();
+    QString savedUnit = settings.value(kSettingsDisplayUnits, kDefaultDisplayUnit).toString();
     if (savedUnit == "moa")
     {
-        moaAction->setChecked(true);
+        pMoaAction->setChecked(true);
     }
     else if (savedUnit == "mrad")
     {
-        mradAction->setChecked(true);
+        pMradAction->setChecked(true);
     }
     else
     {
-        inchesAction->setChecked(true);
+        pInchesAction->setChecked(true);
     }
     
-    connect(unitsGroup, &QActionGroup::triggered, this, &MainWindow::onDisplayUnitsChanged);
+    connect(pUnitsGroup, &QActionGroup::triggered, this, &MainWindow::onDisplayUnitsChanged);
 }
 
 void MainWindow::setupToolbars()
 {
     // Workflow toolbar (pipeline visualization)
-    m_workflowToolbar = new WorkflowToolbar(this);
-    addToolBar(Qt::TopToolBarArea, m_workflowToolbar);
+    m_pWorkflowToolbar = new WorkflowToolbar(this);
+    addToolBar(Qt::TopToolBarArea, m_pWorkflowToolbar);
     
     // Force per-state toolbar onto a new row
     addToolBarBreak(Qt::TopToolBarArea);
     
     // Per-state toolbar (state-specific controls)
-    m_perStateToolbar = new PerStateToolbar(this);
-    addToolBar(Qt::TopToolBarArea, m_perStateToolbar);
+    m_pPerStateToolbar = new PerStateToolbar(this);
+    addToolBar(Qt::TopToolBarArea, m_pPerStateToolbar);
 }
 
 void MainWindow::setupCentralWidget()
 {
     // Create the graphics scene and view
-    m_targetScene = new TargetScene(this);
-    m_targetView = new TargetView(this);
-    m_targetView->setScene(m_targetScene);
+    m_pTargetScene = new TargetScene(this);
+    m_pTargetView = new TargetView(this);
+    m_pTargetView->setScene(m_pTargetScene);
     
-    setCentralWidget(m_targetView);
+    setCentralWidget(m_pTargetView);
 }
 
 void MainWindow::setupDockWidgets()
 {
     // Statistics panel (right dock)
-    QDockWidget *statsDock = new QDockWidget(tr("Statistics"), this);
-    statsDock->setFeatures(QDockWidget::DockWidgetMovable | QDockWidget::DockWidgetFloatable);
+    QDockWidget* pStatsDock = new QDockWidget(tr("Statistics"), this);
+    pStatsDock->setFeatures(QDockWidget::DockWidgetMovable | QDockWidget::DockWidgetFloatable);
     
-    m_statisticsPanel = new StatisticsPanel(this);
-    statsDock->setWidget(m_statisticsPanel);
+    m_pStatisticsPanel = new StatisticsPanel(this);
+    pStatsDock->setWidget(m_pStatisticsPanel);
     
-    addDockWidget(Qt::RightDockWidgetArea, statsDock);
+    addDockWidget(Qt::RightDockWidgetArea, pStatsDock);
 }
 
 void MainWindow::setupConnections()
 {
     // Workflow toolbar state selection
-    connect(m_workflowToolbar, &WorkflowToolbar::stateSelected,
-            this, &MainWindow::onWorkflowStateChanged);
+    connect(m_pWorkflowToolbar, &WorkflowToolbar::stateSelected,
+            this, [this](int stateIndex) {
+                setCurrentState(stateIndex);
+            });
 }
 
-void MainWindow::closeEvent(QCloseEvent *event)
+void MainWindow::closeEvent(QCloseEvent* event)
 {
     if (maybeSave())
     {
@@ -208,7 +225,7 @@ void MainWindow::closeEvent(QCloseEvent *event)
     }
 }
 
-void MainWindow::dragEnterEvent(QDragEnterEvent *event)
+void MainWindow::dragEnterEvent(QDragEnterEvent* event)
 {
     if (event->mimeData()->hasUrls())
     {
@@ -216,8 +233,8 @@ void MainWindow::dragEnterEvent(QDragEnterEvent *event)
         if (!urls.isEmpty())
         {
             QString path = urls.first().toLocalFile().toLower();
-            if (path.endsWith(".png") || path.endsWith(".jpg") || 
-                path.endsWith(".jpeg") || path.endsWith(".spz"))
+            if (path.endsWith(kImageExtensionPng) || path.endsWith(kImageExtensionJpg) || 
+                path.endsWith(kImageExtensionJpeg) || path.endsWith(kSessionExtension))
             {
                 event->acceptProposedAction();
                 return;
@@ -227,14 +244,14 @@ void MainWindow::dragEnterEvent(QDragEnterEvent *event)
     event->ignore();
 }
 
-void MainWindow::dropEvent(QDropEvent *event)
+void MainWindow::dropEvent(QDropEvent* event)
 {
     const QList<QUrl> urls = event->mimeData()->urls();
     if (urls.isEmpty()) return;
     
     QString path = urls.first().toLocalFile();
     
-    if (path.toLower().endsWith(".spz"))
+    if (path.toLower().endsWith(kSessionExtension))
     {
         // Load session file
         if (maybeSave())
@@ -268,7 +285,7 @@ void MainWindow::onImport()
     if (!maybeSave()) return;
     
     QSettings settings;
-    QString lastDir = settings.value("directories/lastImport",
+    QString lastDir = settings.value(kSettingsLastImportDir,
         QStandardPaths::writableLocation(QStandardPaths::PicturesLocation)).toString();
     
     QString path = QFileDialog::getOpenFileName(this, tr("Import Target Image"),
@@ -277,7 +294,7 @@ void MainWindow::onImport()
     if (path.isEmpty()) return;
     
     // Save directory preference
-    settings.setValue("directories/lastImport", QFileInfo(path).absolutePath());
+    settings.setValue(kSettingsLastImportDir, QFileInfo(path).absolutePath());
     
     QImage image(path);
     if (image.isNull())
@@ -296,7 +313,7 @@ void MainWindow::onLoad()
     if (!maybeSave()) return;
     
     QSettings settings;
-    QString lastDir = settings.value("directories/lastSaveLoad",
+    QString lastDir = settings.value(kSettingsLastSaveLoadDir,
         QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation)).toString();
     
     QString path = QFileDialog::getOpenFileName(this, tr("Open Session"),
@@ -305,7 +322,7 @@ void MainWindow::onLoad()
     if (path.isEmpty()) return;
     
     // Save directory preference
-    settings.setValue("directories/lastSaveLoad", QFileInfo(path).absolutePath());
+    settings.setValue(kSettingsLastSaveLoadDir, QFileInfo(path).absolutePath());
     
     // TODO: Load document from path using DocumentSerializer
     statusBar()->showMessage(tr("Loaded: %1").arg(path));
@@ -337,7 +354,7 @@ void MainWindow::onSaveAs()
     if (!m_document) return;
     
     QSettings settings;
-    QString lastDir = settings.value("directories/lastSaveLoad",
+    QString lastDir = settings.value(kSettingsLastSaveLoadDir,
         QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation)).toString();
     
     QString path = QFileDialog::getSaveFileName(this, tr("Save Session As"),
@@ -346,13 +363,13 @@ void MainWindow::onSaveAs()
     if (path.isEmpty()) return;
     
     // Ensure .spz extension
-    if (!path.toLower().endsWith(".spz"))
+    if (!path.toLower().endsWith(kSessionExtension))
     {
-        path += ".spz";
+        path += kSessionExtension;
     }
     
     // Save directory preference
-    settings.setValue("directories/lastSaveLoad", QFileInfo(path).absolutePath());
+    settings.setValue(kSettingsLastSaveLoadDir, QFileInfo(path).absolutePath());
     
     QString errorMsg;
     if (!m_document->saveToFile(path, &errorMsg))
@@ -381,51 +398,40 @@ void MainWindow::onEditMetadata()
 
 void MainWindow::onZoomIn()
 {
-    if (m_targetView)
+    if (m_pTargetView)
     {
-        m_targetView->zoomIn();
+        m_pTargetView->zoomIn();
     }
 }
 
 void MainWindow::onZoomOut()
 {
-    if (m_targetView)
+    if (m_pTargetView)
     {
-        m_targetView->zoomOut();
+        m_pTargetView->zoomOut();
     }
 }
 
 void MainWindow::onZoomFit()
 {
-    if (m_targetView)
+    if (m_pTargetView)
     {
-        m_targetView->zoomFit();
+        m_pTargetView->zoomFit();
     }
 }
 
-void MainWindow::onDisplayUnitsChanged(QAction *action)
+void MainWindow::onDisplayUnitsChanged(QAction* action)
 {
     QSettings settings;
-    settings.setValue("display/units", action->data().toString());
+    settings.setValue(kSettingsDisplayUnits, action->data().toString());
     
     // Update statistics panel
-    if (m_statisticsPanel)
+    if (m_pStatisticsPanel)
     {
-        m_statisticsPanel->updateDisplay();
+        m_pStatisticsPanel->updateDisplay();
     }
 }
 
-void MainWindow::onDocumentDirtyChanged(bool dirty)
-{
-    Q_UNUSED(dirty)
-    updateWindowTitle();
-    updateMenuState();
-}
-
-void MainWindow::onWorkflowStateChanged(int stateIndex)
-{
-    setCurrentState(stateIndex);
-}
 
 void MainWindow::updateWindowTitle()
 {
@@ -456,13 +462,13 @@ void MainWindow::updateMenuState()
     bool hasDocument = (m_document != nullptr);
     bool isDirty = hasDocument && m_document->isDirty();
     
-    m_saveAction->setEnabled(isDirty);
-    m_saveAsAction->setEnabled(hasDocument);
-    m_exportAction->setEnabled(hasDocument);
-    m_metadataAction->setEnabled(hasDocument);
-    m_zoomInAction->setEnabled(hasDocument);
-    m_zoomOutAction->setEnabled(hasDocument);
-    m_zoomFitAction->setEnabled(hasDocument);
+    m_pSaveAction->setEnabled(isDirty);
+    m_pSaveAsAction->setEnabled(hasDocument);
+    m_pExportAction->setEnabled(hasDocument);
+    m_pMetadataAction->setEnabled(hasDocument);
+    m_pZoomInAction->setEnabled(hasDocument);
+    m_pZoomOutAction->setEnabled(hasDocument);
+    m_pZoomFitAction->setEnabled(hasDocument);
 }
 
 bool MainWindow::maybeSave()
@@ -508,11 +514,11 @@ void MainWindow::setCurrentState(int stateIndex)
     m_states[m_currentStateIndex]->onEnter();
     
     // Update UI
-    m_workflowToolbar->setCurrentState(stateIndex);
-    m_perStateToolbar->setCurrentState(m_states[stateIndex].get());
+    m_pWorkflowToolbar->setCurrentState(stateIndex);
+    m_pPerStateToolbar->setCurrentState(m_states[stateIndex].get());
     
     // Update target view with current state
-    m_targetView->setWorkflowState(m_states[stateIndex].get());
+    m_pTargetView->setWorkflowState(m_states[stateIndex].get());
 }
 
 void MainWindow::createNewDocument(const QImage &image)
@@ -523,22 +529,25 @@ void MainWindow::createNewDocument(const QImage &image)
     
     // Connect document signals
     connect(m_document.get(), &ShotGroupDocument::dirtyChanged,
-            this, &MainWindow::onDocumentDirtyChanged);
+            this, [this](bool /*dirty*/) {
+                updateWindowTitle();
+                updateMenuState();
+            });
     
     // Set up scene with image
-    m_targetScene->setTargetImage(image);
-    m_targetView->zoomFit();
+    m_pTargetScene->setTargetImage(image);
+    m_pTargetView->zoomFit();
     
     // Create workflow states
     m_states.clear();
-    m_states.push_back(std::make_unique<SetCaliberState>(m_document.get(), m_targetView, this));
-    m_states.push_back(std::make_unique<ScaleFactorState>(m_document.get(), m_targetView, m_targetScene));
-    m_states.push_back(std::make_unique<POAState>(m_document.get(), m_targetView, m_targetScene));
-    m_states.push_back(std::make_unique<MarkImpactsState>(m_document.get(), m_targetView, m_targetScene, m_undoStack));
-    m_states.push_back(std::make_unique<VisualizationState>(m_document.get(), m_targetView, m_targetScene));
+    m_states.push_back(std::make_unique<SetCaliberState>(m_document.get(), m_pTargetView, this));
+    m_states.push_back(std::make_unique<ScaleFactorState>(m_document.get(), m_pTargetView, m_pTargetScene));
+    m_states.push_back(std::make_unique<POAState>(m_document.get(), m_pTargetView, m_pTargetScene));
+    m_states.push_back(std::make_unique<MarkImpactsState>(m_document.get(), m_pTargetView, m_pTargetScene, m_pUndoStack));
+    m_states.push_back(std::make_unique<VisualizationState>(m_document.get(), m_pTargetView, m_pTargetScene));
     
     // Update workflow toolbar
-    m_workflowToolbar->setDocument(m_document.get());
+    m_pWorkflowToolbar->setDocument(m_document.get());
     
     // Start with caliber state
     setCurrentState(0);

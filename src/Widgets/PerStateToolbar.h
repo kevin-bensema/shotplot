@@ -22,7 +22,7 @@ public:
     ///
     /// Initializes the toolbar as non-movable with the title "State Controls".
     /// \param parent The parent widget, or nullptr if the toolbar has no parent.
-    explicit PerStateToolbar(QWidget *parent = nullptr);
+    explicit PerStateToolbar(QWidget* pParent = nullptr);
     
     /// Destructor.
     ~PerStateToolbar();
@@ -34,7 +34,7 @@ public:
     /// controls. The toolbar will be empty if state is nullptr.
     ///
     /// \param state The WorkflowState to display controls for, or nullptr to clear the toolbar.
-    void setCurrentState(WorkflowState *state);
+    void setCurrentState(WorkflowState* pState);
 
 private:
     /// Clears all actions and widgets from the toolbar.
@@ -42,5 +42,5 @@ private:
 
 private:
     /// Pointer to the currently active WorkflowState, or nullptr if no state is set.
-    WorkflowState *m_currentState = nullptr;
+    WorkflowState* m_pCurrentState = nullptr;
 };

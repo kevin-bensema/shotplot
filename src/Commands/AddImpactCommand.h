@@ -28,9 +28,9 @@ public:
     /// \param impact The impact data to add (must have a valid ID).
     /// \param diameterPixels The visual diameter of the impact glyph in pixels.
     /// \param parent Optional parent command for command grouping.
-    AddImpactCommand(ShotGroupDocument *document, TargetScene *scene,
+    AddImpactCommand(ShotGroupDocument* pDocument, TargetScene* pScene,
                      const ShotImpact &impact, double diameterPixels,
-                     QUndoCommand *parent = nullptr);
+                     QUndoCommand* pParent = nullptr);
     ~AddImpactCommand();
 
     /// @brief Removes the impact from both the document and scene.
@@ -46,8 +46,8 @@ public:
     void redo() override;
 
 private:
-    ShotGroupDocument *m_document;  ///< The document model managing shot data
-    TargetScene *m_scene;           ///< The visual scene displaying the target
+    ShotGroupDocument* m_pDocument;  ///< The document model managing shot data
+    TargetScene* m_pScene;           ///< The visual scene displaying the target
     ShotImpact m_impact;             ///< The impact data to add/remove
     double m_diameterPixels;        ///< Visual diameter of the impact glyph in pixels
 };

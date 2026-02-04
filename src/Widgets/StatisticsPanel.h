@@ -1,5 +1,4 @@
-#ifndef STATISTICSPANEL_H
-#define STATISTICSPANEL_H
+#pragma once
 
 #include <QWidget>
 
@@ -29,7 +28,7 @@ class StatisticsPanel : public QWidget
 public:
     /// Constructs a statistics panel widget
     /// \param parent The parent widget
-    explicit StatisticsPanel(QWidget *parent = nullptr);
+    explicit StatisticsPanel(QWidget* parent = nullptr);
     
     ~StatisticsPanel();
 
@@ -40,7 +39,7 @@ public:
     /// the display option checkboxes with the document's current visualization
     /// settings.
     /// \param doc The shot group document to display statistics for (can be nullptr)
-    void setDocument(ShotGroupDocument *doc);
+    void setDocument(ShotGroupDocument* doc);
     
     /// Manually refreshes the statistics display
     ///
@@ -48,21 +47,6 @@ public:
     /// called automatically when the document changes, but can be used to
     /// refresh the display after external changes.
     void updateDisplay();
-
-private slots:
-    /// Handles changes to the "Full Group Circle" checkbox
-    ///
-    /// Updates the document's visualization setting to show or hide
-    /// the full group boundary circle based on the checkbox state.
-    /// \param checked True to show the full group circle, false to hide it
-    void onShowFullGroupChanged(bool checked);
-    
-    /// Handles changes to the "Point of Aim" checkbox
-    ///
-    /// Updates the document's visualization setting to show or hide
-    /// the point of aim marker based on the checkbox state.
-    /// \param checked True to show the point of aim, false to hide it
-    void onShowPOAChanged(bool checked);
 
 private:
     void setupUi();
@@ -74,17 +58,16 @@ private:
     /// Must be set via setDocument() before statistics can be displayed.
     /// The panel automatically updates when this document's impacts change
     /// or when statistics are invalidated.
-    ShotGroupDocument *m_document = nullptr;
+    ShotGroupDocument* m_pDocument = nullptr;
     
-    QLabel *m_shotCountLabel = nullptr;
-    QLabel *m_fullGroupLabel = nullptr;
-    QLabel *m_group80Label = nullptr;
-    QLabel *m_group90Label = nullptr;
-    QLabel *m_meanRadiusLabel = nullptr;
-    QLabel *m_stdDevLabel = nullptr;
+    QLabel* m_pShotCountLabel = nullptr;
+    QLabel* m_pFullGroupLabel = nullptr;
+    QLabel* m_pGroup80Label = nullptr;
+    QLabel* m_pGroup90Label = nullptr;
+    QLabel* m_pMeanRadiusLabel = nullptr;
+    QLabel* m_pStdDevLabel = nullptr;
     
-    QCheckBox *m_showFullGroupCheck = nullptr;
-    QCheckBox *m_showPOACheck = nullptr;
+    QCheckBox* m_pShowFullGroupCheck = nullptr;
+    QCheckBox* m_pShowPOACheck = nullptr;
 };
 
-#endif // STATISTICSPANEL_H

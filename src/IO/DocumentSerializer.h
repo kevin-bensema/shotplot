@@ -9,14 +9,11 @@ class DocumentSerializer
 {
 public:
     /// Save document to .spz file
-    static bool save(const ShotGroupDocument &document, const QString &filePath, QString *errorMsg = nullptr);
+    static bool save(const ShotGroupDocument &document, const QString &filePath, QString* pErrorMsg = nullptr);
     
     /// Load document from .spz file
-    static bool load(ShotGroupDocument &document, const QString &filePath, QString *errorMsg = nullptr);
+    static bool load(ShotGroupDocument &document, const QString &filePath, QString* pErrorMsg = nullptr);
 
 private:
     DocumentSerializer() = delete;
-    
-    static constexpr const char* IMAGE_FILENAME = "target.png";
-    static constexpr const char* METADATA_FILENAME = "metadata.json";
 };

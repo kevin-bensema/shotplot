@@ -33,7 +33,7 @@ public:
     /// Constructs a workflow state with the given document
     /// \param document The shot group document that this state will operate on
     /// \param parent The parent QObject for Qt's object hierarchy
-    explicit WorkflowState(ShotGroupDocument *document, QObject *parent = nullptr);
+    explicit WorkflowState(ShotGroupDocument* pDocument, QObject* pParent = nullptr);
     
     virtual ~WorkflowState();
 
@@ -101,7 +101,7 @@ public:
     /// add all necessary controls. This is called by MainWindow when entering
     /// the state.
     /// \param toolbar The toolbar widget to populate with state-specific controls
-    virtual void populateToolbar(QToolBar *toolbar) = 0;
+    virtual void populateToolbar(QToolBar* pToolbar) = 0;
     
     /// Returns the display name for this state
     ///
@@ -132,5 +132,5 @@ protected:
     /// calibration data, impacts, metadata, and other session information.
     /// This pointer is set during construction and remains valid for the
     /// lifetime of the state object.
-    ShotGroupDocument *m_document;
+    ShotGroupDocument* m_pDocument;
 };

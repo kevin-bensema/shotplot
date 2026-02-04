@@ -13,11 +13,11 @@ PerStateToolbar::~PerStateToolbar() = default;
 void PerStateToolbar::setCurrentState(WorkflowState *state)
 {
     clearToolbar();
-    m_currentState = state;
+    m_pCurrentState = state;
     
-    if (m_currentState)
+    if (m_pCurrentState)
     {
-        m_currentState->populateToolbar(this);
+        m_pCurrentState->populateToolbar(this);
     }
 }
 

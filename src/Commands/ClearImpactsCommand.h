@@ -28,8 +28,8 @@ public:
     /// \param document The document containing the impacts to clear.
     /// \param scene The visual scene displaying impact glyphs.
     /// \param parent Optional parent command for command grouping.
-    ClearImpactsCommand(ShotGroupDocument *document, TargetScene *scene,
-                        QUndoCommand *parent = nullptr);
+    ClearImpactsCommand(ShotGroupDocument* pDocument, TargetScene* pScene,
+                        QUndoCommand* pParent = nullptr);
     
     ~ClearImpactsCommand();
 
@@ -46,8 +46,8 @@ public:
     void redo() override;
 
 private:
-    ShotGroupDocument *m_document;  ///< The document containing impacts to clear.
-    TargetScene *m_scene;           ///< The visual scene displaying impact glyphs.
+    ShotGroupDocument* m_pDocument;  ///< The document containing impacts to clear.
+    TargetScene* m_pScene;           ///< The visual scene displaying impact glyphs.
     QList<ShotImpact> m_savedImpacts; ///< Snapshot of impacts saved for undo restoration.
-    double m_diameterPixels = 20.0;  ///< Impact diameter in pixels, calculated from bullet diameter and scale.
+    double m_diameterPixels;  ///< Impact diameter in pixels, calculated from bullet diameter and scale.
 };

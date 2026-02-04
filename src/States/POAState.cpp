@@ -7,10 +7,10 @@
 #include <QLabel>
 #include <QPushButton>
 
-POAState::POAState(ShotGroupDocument *document, TargetView *view, TargetScene *scene)
-    : WorkflowState(document, view)
-    , m_view(view)
-    , m_scene(scene)
+POAState::POAState(ShotGroupDocument* pDocument, TargetView* pView, TargetScene* pScene)
+    : WorkflowState(pDocument, pView)
+    , m_pView(pView)
+    , m_pScene(pScene)
 {
 }
 
@@ -19,9 +19,9 @@ POAState::~POAState() = default;
 void POAState::onEnter()
 {
     // Show existing POA if any
-    if (m_document->hasPointOfAimSet())
+    if (m_pDocument->hasPointOfAimSet())
     {
-        m_scene->setPOAGlyph(m_document->pointOfAim());
+        m_pScene->setPOAGlyph(m_pDocument->pointOfAim());
     }
 }
 
@@ -30,10 +30,10 @@ void POAState::onExit()
     // POA glyph stays visible
 }
 
-void POAState::handleMouseClick(const QPointF &scenePos)
+void POAState::handleMouseClick(const QPointF& scenePos)
 {
-    m_document->setPointOfAim(scenePos);
-    m_scene->setPOAGlyph(scenePos);
+    m_pDocument->setPointOfAim(scenePos);
+    m_pScene->setPOAGlyph(scenePos);
     
     emit stateCompleted();
     emit requestNextState();
@@ -42,7 +42,7 @@ void POAState::handleMouseClick(const QPointF &scenePos)
 bool POAState::isComplete() const
 {
     // POA is optional, so we consider it complete if scale factor is set
-    return m_document && m_document->hasScaleFactorSet();
+    return m_pDocument && m_pDocument->hasScaleFactorSet();
 }
 
 QCursor POAState::cursor() const
@@ -51,15 +51,20 @@ QCursor POAState::cursor() const
     return QCursor(Qt::CrossCursor);
 }
 
-void POAState::populateToolbar(QToolBar *toolbar)
+QString POAState::stateName() const
 {
-    toolbar->addWidget(new QLabel(tr("Click to mark your intended point of impact")));
+    return tr("Point of Aim");
+}
+
+void POAState::populateToolbar(QToolBar* pToolbar)
+{
+    pToolbar->addWidget(new QLabel(tr("Click to mark your intended point of impact")));
     
     // Skip button
-    QPushButton *skipButton = new QPushButton(tr("Skip"));
-    connect(skipButton, &QPushButton::clicked, this, [this]()
+    QPushButton* pSkipButton = new QPushButton(tr("Skip"));
+    connect(pSkipButton, &QPushButton::clicked, this, [this]()
     {
         emit requestNextState();
     });
-    toolbar->addWidget(skipButton);
+    pToolbar->addWidget(pSkipButton);
 }

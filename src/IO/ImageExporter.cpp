@@ -6,42 +6,42 @@
 #include <QFileInfo>
 
 bool ImageExporter::exportImage(const ShotGroupDocument &document,
-                                TargetScene *scene,
+                                TargetScene* pScene,
                                 const QString &filePath,
                                 const Options &options,
-                                QString *errorMsg)
+                                QString* pErrorMsg)
 {
-    QImage image = renderToImage(document, scene, options);
+    QImage image = renderToImage(document, pScene, options);
     
     if (image.isNull())
     {
-        if (errorMsg)
+        if (pErrorMsg)
         {
-            *errorMsg = "Failed to render image";
+            *pErrorMsg = "Failed to render image";
         }
         return false;
     }
     
     // Determine format from extension
     QString ext = QFileInfo(filePath).suffix().toLower();
-    const char *format = "PNG";
+    const char* pFormat = "PNG";
     int quality = -1;
     
     if (ext == "jpg" || ext == "jpeg")
     {
-        format = "JPEG";
+        pFormat = "JPEG";
         quality = options.quality;
     }
     else if (ext == "bmp")
     {
-        format = "BMP";
+        pFormat = "BMP";
     }
     
-    if (!image.save(filePath, format, quality))
+    if (!image.save(filePath, pFormat, quality))
     {
-        if (errorMsg)
+        if (pErrorMsg)
         {
-            *errorMsg = QString("Failed to save image to %1").arg(filePath);
+            *pErrorMsg = QString("Failed to save image to %1").arg(filePath);
         }
         return false;
     }
@@ -50,12 +50,12 @@ bool ImageExporter::exportImage(const ShotGroupDocument &document,
 }
 
 QImage ImageExporter::renderToImage(const ShotGroupDocument &document,
-                                    TargetScene *scene,
+                                    TargetScene* pScene,
                                     const Options &options)
 {
     Q_UNUSED(options)  // TODO: Use options to filter what's rendered
     
-    if (!scene)
+    if (!pScene)
     {
         return QImage();
     }
@@ -74,7 +74,7 @@ QImage ImageExporter::renderToImage(const ShotGroupDocument &document,
     painter.setRenderHint(QPainter::Antialiasing);
     
     // Render the scene
-    scene->render(&painter);
+    pScene->render(&painter);
     
     painter.end();
     

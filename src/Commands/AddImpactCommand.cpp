@@ -2,12 +2,12 @@
 #include "Core/ShotGroupDocument.h"
 #include "Graphics/TargetScene.h"
 
-AddImpactCommand::AddImpactCommand(ShotGroupDocument *document, TargetScene *scene,
+AddImpactCommand::AddImpactCommand(ShotGroupDocument* pDocument, TargetScene* pScene,
                                    const ShotImpact &impact, double diameterPixels,
-                                   QUndoCommand *parent)
-    : QUndoCommand(parent)
-    , m_document(document)
-    , m_scene(scene)
+                                   QUndoCommand* pParent)
+    : QUndoCommand(pParent)
+    , m_pDocument(pDocument)
+    , m_pScene(pScene)
     , m_impact(impact)
     , m_diameterPixels(diameterPixels)
 {
@@ -19,21 +19,21 @@ AddImpactCommand::~AddImpactCommand() = default;
 void AddImpactCommand::undo()
 {
     // Find and remove the impact
-    const auto &impacts = m_document->impacts();
+    const auto& impacts = m_pDocument->impacts();
     for (int i = 0; i < impacts.size(); ++i)
     {
         if (impacts[i].id == m_impact.id)
         {
-            m_document->removeImpact(i);
+            m_pDocument->removeImpact(i);
             break;
         }
     }
     
-    m_scene->removeImpactGlyph(m_impact.id);
+    m_pScene->removeImpactGlyph(m_impact.id);
 }
 
 void AddImpactCommand::redo()
 {
-    m_document->addImpact(m_impact);
-    m_scene->addImpactGlyph(m_impact.id, m_impact.position(), m_diameterPixels);
+    m_pDocument->addImpact(m_impact);
+    m_pScene->addImpactGlyph(m_impact.id, m_impact.position(), m_diameterPixels);
 }

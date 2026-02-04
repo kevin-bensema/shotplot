@@ -7,12 +7,21 @@
 
 #include <QGraphicsPixmapItem>
 
-TargetScene::TargetScene(QObject *parent)
+namespace
+{
+    constexpr double kTargetImageZValue = -1000.0;
+    constexpr double kImpactGlyphZValue = 100.0;
+    constexpr double kPOAGlyphZValue = 90.0;
+    constexpr double kFullGroupCircleZValue = 50.0;
+    constexpr double k80GroupCircleZValue = 51.0;
+    constexpr double k90GroupCircleZValue = 52.0;
+    constexpr double kScaleLineZValue = 200.0;
+}
+
+TargetScene::TargetScene(QObject* parent)
     : QGraphicsScene(parent)
 {
 }
-
-TargetScene::~TargetScene() = default;
 
 void TargetScene::setTargetImage(const QImage &image)
 {
@@ -23,8 +32,8 @@ void TargetScene::setTargetImage(const QImage &image)
         return;
     }
     
-    m_targetImageItem = addPixmap(QPixmap::fromImage(image));
-    m_targetImageItem->setZValue(-1000);  // Below everything else
+    m_pTargetImageItem = addPixmap(QPixmap::fromImage(image));
+    m_pTargetImageItem->setZValue(kTargetImageZValue);
     
     // Set scene rect to image size
     setSceneRect(image.rect());
@@ -32,220 +41,220 @@ void TargetScene::setTargetImage(const QImage &image)
 
 void TargetScene::clearTargetImage()
 {
-    if (m_targetImageItem)
+    if (m_pTargetImageItem)
     {
-        removeItem(m_targetImageItem);
-        delete m_targetImageItem;
-        m_targetImageItem = nullptr;
+        removeItem(m_pTargetImageItem);
+        delete m_pTargetImageItem;
+        m_pTargetImageItem = nullptr;
     }
 }
 
-void TargetScene::setDocument(ShotGroupDocument *doc)
+void TargetScene::setDocument(ShotGroupDocument* pDoc)
 {
-    m_document = doc;
+    m_pDocument = pDoc;
     
-    if (m_document)
+    if (m_pDocument)
     {
-        connect(m_document, &ShotGroupDocument::impactsChanged,
+        connect(m_pDocument, &ShotGroupDocument::impactsChanged,
                 this, &TargetScene::updateFromDocument);
-        connect(m_document, &ShotGroupDocument::visualizationSettingsChanged,
+        connect(m_pDocument, &ShotGroupDocument::visualizationSettingsChanged,
                 this, &TargetScene::updateFromDocument);
     }
 }
 
-ImpactGlyphItem *TargetScene::addImpactGlyph(int id, const QPointF &position, double diameterPixels)
+ImpactGlyphItem* TargetScene::addImpactGlyph(int id, const QPointF &position, double diameterPixels)
 {
-    auto *glyph = new ImpactGlyphItem(id, diameterPixels);
-    glyph->setPos(position);
-    glyph->setZValue(100);  // Above image, below UI overlays
-    addItem(glyph);
-    m_impactGlyphs[id] = glyph;
-    return glyph;
+    auto* pGlyph = new ImpactGlyphItem(id, diameterPixels);
+    pGlyph->setPos(position);
+    pGlyph->setZValue(kImpactGlyphZValue);
+    addItem(pGlyph);
+    m_impactGlyphs[id] = pGlyph;
+    return pGlyph;
 }
 
 void TargetScene::removeImpactGlyph(int id)
 {
     if (m_impactGlyphs.contains(id))
     {
-        auto *glyph = m_impactGlyphs.take(id);
-        removeItem(glyph);
-        delete glyph;
+        auto* pGlyph = m_impactGlyphs.take(id);
+        removeItem(pGlyph);
+        delete pGlyph;
     }
 }
 
 void TargetScene::clearImpactGlyphs()
 {
-    for (auto *glyph : m_impactGlyphs)
+    for (auto* pGlyph : m_impactGlyphs)
     {
-        removeItem(glyph);
-        delete glyph;
+        removeItem(pGlyph);
+        delete pGlyph;
     }
     m_impactGlyphs.clear();
 }
 
 void TargetScene::updateImpactGlyphSizes(double diameterPixels)
 {
-    for (auto *glyph : m_impactGlyphs)
+    for (auto* pGlyph : m_impactGlyphs)
     {
-        glyph->setDiameter(diameterPixels);
+        pGlyph->setDiameter(diameterPixels);
     }
 }
 
 void TargetScene::setPOAGlyph(const QPointF &position)
 {
-    if (!m_poaGlyph)
+    if (!m_pPoaGlyph)
     {
-        m_poaGlyph = new POAGlyphItem();
-        m_poaGlyph->setZValue(90);
-        addItem(m_poaGlyph);
+        m_pPoaGlyph = new POAGlyphItem();
+        m_pPoaGlyph->setZValue(kPOAGlyphZValue);
+        addItem(m_pPoaGlyph);
     }
-    m_poaGlyph->setPos(position);
-    m_poaGlyph->setVisible(true);
+    m_pPoaGlyph->setPos(position);
+    m_pPoaGlyph->setVisible(true);
 }
 
 void TargetScene::clearPOAGlyph()
 {
-    if (m_poaGlyph)
+    if (m_pPoaGlyph)
     {
-        removeItem(m_poaGlyph);
-        delete m_poaGlyph;
-        m_poaGlyph = nullptr;
+        removeItem(m_pPoaGlyph);
+        delete m_pPoaGlyph;
+        m_pPoaGlyph = nullptr;
     }
 }
 
 void TargetScene::setPOAVisible(bool visible)
 {
-    if (m_poaGlyph)
+    if (m_pPoaGlyph)
     {
-        m_poaGlyph->setVisible(visible);
+        m_pPoaGlyph->setVisible(visible);
     }
 }
 
 void TargetScene::setFullGroupCircle(const QPointF &center, double radius)
 {
-    if (!m_fullGroupCircle)
+    if (!m_pFullGroupCircle)
     {
-        m_fullGroupCircle = new GroupCircleItem(GroupCircleItem::Type::Full);
-        m_fullGroupCircle->setZValue(50);
-        addItem(m_fullGroupCircle);
+        m_pFullGroupCircle = new GroupCircleItem(GroupCircleItem::Type::Full);
+        m_pFullGroupCircle->setZValue(kFullGroupCircleZValue);
+        addItem(m_pFullGroupCircle);
     }
-    m_fullGroupCircle->setCircle(center, radius);
+    m_pFullGroupCircle->setCircle(center, radius);
 }
 
 void TargetScene::set80GroupCircle(const QPointF &center, double radius)
 {
-    if (!m_80GroupCircle)
+    if (!m_p80GroupCircle)
     {
-        m_80GroupCircle = new GroupCircleItem(GroupCircleItem::Type::Percent80);
-        m_80GroupCircle->setZValue(51);
-        addItem(m_80GroupCircle);
+        m_p80GroupCircle = new GroupCircleItem(GroupCircleItem::Type::Percent80);
+        m_p80GroupCircle->setZValue(k80GroupCircleZValue);
+        addItem(m_p80GroupCircle);
     }
-    m_80GroupCircle->setCircle(center, radius);
+    m_p80GroupCircle->setCircle(center, radius);
 }
 
 void TargetScene::set90GroupCircle(const QPointF &center, double radius)
 {
-    if (!m_90GroupCircle)
+    if (!m_p90GroupCircle)
     {
-        m_90GroupCircle = new GroupCircleItem(GroupCircleItem::Type::Percent90);
-        m_90GroupCircle->setZValue(52);
-        addItem(m_90GroupCircle);
+        m_p90GroupCircle = new GroupCircleItem(GroupCircleItem::Type::Percent90);
+        m_p90GroupCircle->setZValue(k90GroupCircleZValue);
+        addItem(m_p90GroupCircle);
     }
-    m_90GroupCircle->setCircle(center, radius);
+    m_p90GroupCircle->setCircle(center, radius);
 }
 
 void TargetScene::clearGroupCircles()
 {
-    if (m_fullGroupCircle)
+    if (m_pFullGroupCircle)
     {
-        removeItem(m_fullGroupCircle);
-        delete m_fullGroupCircle;
-        m_fullGroupCircle = nullptr;
+        removeItem(m_pFullGroupCircle);
+        delete m_pFullGroupCircle;
+        m_pFullGroupCircle = nullptr;
     }
-    if (m_80GroupCircle)
+    if (m_p80GroupCircle)
     {
-        removeItem(m_80GroupCircle);
-        delete m_80GroupCircle;
-        m_80GroupCircle = nullptr;
+        removeItem(m_p80GroupCircle);
+        delete m_p80GroupCircle;
+        m_p80GroupCircle = nullptr;
     }
-    if (m_90GroupCircle)
+    if (m_p90GroupCircle)
     {
-        removeItem(m_90GroupCircle);
-        delete m_90GroupCircle;
-        m_90GroupCircle = nullptr;
+        removeItem(m_p90GroupCircle);
+        delete m_p90GroupCircle;
+        m_p90GroupCircle = nullptr;
     }
 }
 
 void TargetScene::setGroupCirclesVisible(bool full, bool g80, bool g90)
 {
-    if (m_fullGroupCircle)
+    if (m_pFullGroupCircle)
     {
-        m_fullGroupCircle->setVisible(full);
+        m_pFullGroupCircle->setVisible(full);
     }
-    if (m_80GroupCircle)
+    if (m_p80GroupCircle)
     {
-        m_80GroupCircle->setVisible(g80);
+        m_p80GroupCircle->setVisible(g80);
     }
-    if (m_90GroupCircle)
+    if (m_p90GroupCircle)
     {
-        m_90GroupCircle->setVisible(g90);
+        m_p90GroupCircle->setVisible(g90);
     }
 }
 
 void TargetScene::showScaleLine(const QPointF &start, const QPointF &end)
 {
-    if (!m_scaleLine)
+    if (!m_pScaleLine)
     {
-        m_scaleLine = new ScaleLineItem();
-        m_scaleLine->setZValue(200);
-        addItem(m_scaleLine);
+        m_pScaleLine = new ScaleLineItem();
+        m_pScaleLine->setZValue(kScaleLineZValue);
+        addItem(m_pScaleLine);
     }
-    m_scaleLine->setLine(start, end);
-    m_scaleLine->setVisible(true);
+    m_pScaleLine->setLine(start, end);
+    m_pScaleLine->setVisible(true);
 }
 
 void TargetScene::hideScaleLine()
 {
-    if (m_scaleLine)
+    if (m_pScaleLine)
     {
-        m_scaleLine->setVisible(false);
+        m_pScaleLine->setVisible(false);
     }
 }
 
 void TargetScene::setScaleLineStart(const QPointF &start)
 {
-    if (!m_scaleLine)
+    if (!m_pScaleLine)
     {
-        m_scaleLine = new ScaleLineItem();
-        m_scaleLine->setZValue(200);
-        addItem(m_scaleLine);
+        m_pScaleLine = new ScaleLineItem();
+        m_pScaleLine->setZValue(kScaleLineZValue);
+        addItem(m_pScaleLine);
     }
-    m_scaleLine->setLine(start, start);
-    m_scaleLine->setVisible(true);
+    m_pScaleLine->setLine(start, start);
+    m_pScaleLine->setVisible(true);
 }
 
 void TargetScene::updateScaleLineEnd(const QPointF &end)
 {
-    if (m_scaleLine)
+    if (m_pScaleLine)
     {
-        m_scaleLine->setEndPoint(end);
+        m_pScaleLine->setEndPoint(end);
     }
 }
 
 void TargetScene::updateFromDocument()
 {
-    if (!m_document)
+    if (!m_pDocument)
     {
         return;
     }
     
     // Update group circle visibility
     setGroupCirclesVisible(
-        m_document->showFullGroupCircle(),
-        m_document->show80PercentCircle(),
-        m_document->show90PercentCircle()
+        m_pDocument->showFullGroupCircle(),
+        m_pDocument->show80PercentCircle(),
+        m_pDocument->show90PercentCircle()
     );
     
     // Update POA visibility
-    setPOAVisible(m_document->showPointOfAim() && m_document->hasPointOfAimSet());
+    setPOAVisible(m_pDocument->showPointOfAim() && m_pDocument->hasPointOfAimSet());
 }

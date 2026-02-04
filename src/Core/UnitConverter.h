@@ -112,16 +112,4 @@ public:
 
 private:
     UnitConverter() = delete;
-    
-    /// MOA conversion factor: 1 MOA = 1.047 inches at 100 yards
-    ///
-    /// This is the standard definition used in shooting sports. Some approximations
-    /// use 1.0 inch per MOA, but this class uses the exact value.
-    static constexpr double MOA_FACTOR = 1.047;  ///< inches per MOA at 100 yards
-    
-    /// Conversion factor from radians to milliradians
-    static constexpr double MRAD_PER_RADIAN = 1000.0;
-    
-    /// Conversion factor from yards to inches
-    static constexpr double INCHES_PER_YARD = 36.0;
 };

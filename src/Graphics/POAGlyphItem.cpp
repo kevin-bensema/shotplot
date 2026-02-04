@@ -2,12 +2,24 @@
 
 #include <QPainter>
 
-POAGlyphItem::POAGlyphItem(QGraphicsItem *parent)
-    : QGraphicsItem(parent)
+namespace {
+    constexpr double kLineWidth = 3.0;  ///< Width of the lines forming the X shape.
+}
+
+POAGlyphItem::POAGlyphItem(QGraphicsItem* pParent)
+    : QGraphicsItem(pParent)
 {
 }
 
-POAGlyphItem::~POAGlyphItem() = default;
+double POAGlyphItem::size() const
+{
+    return m_size;
+}
+
+QColor POAGlyphItem::color() const
+{
+    return m_color;
+}
 
 void POAGlyphItem::setSize(double size)
 {
@@ -24,26 +36,26 @@ void POAGlyphItem::setColor(const QColor &color)
 
 QRectF POAGlyphItem::boundingRect() const
 {
-    double padding = m_lineWidth + 2;
+    double padding = kLineWidth + 2;
     double halfSize = m_size / 2.0 + padding;
     return QRectF(-halfSize, -halfSize, halfSize * 2, halfSize * 2);
 }
 
-void POAGlyphItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
+void POAGlyphItem::paint(QPainter* pPainter, const QStyleOptionGraphicsItem* pOption, QWidget* pWidget)
 {
-    Q_UNUSED(option)
-    Q_UNUSED(widget)
+    Q_UNUSED(pOption)
+    Q_UNUSED(pWidget)
 
-    painter->setRenderHint(QPainter::Antialiasing);
+    pPainter->setRenderHint(QPainter::Antialiasing);
 
     QPen pen(m_color);
-    pen.setWidthF(m_lineWidth);
+    pen.setWidthF(kLineWidth);
     pen.setCapStyle(Qt::RoundCap);
-    painter->setPen(pen);
+    pPainter->setPen(pen);
 
     double halfSize = m_size / 2.0;
 
     // Draw X shape (two diagonal lines)
-    painter->drawLine(QPointF(-halfSize, -halfSize), QPointF(halfSize, halfSize));
-    painter->drawLine(QPointF(-halfSize, halfSize), QPointF(halfSize, -halfSize));
+    pPainter->drawLine(QPointF(-halfSize, -halfSize), QPointF(halfSize, halfSize));
+    pPainter->drawLine(QPointF(-halfSize, halfSize), QPointF(halfSize, -halfSize));
 }

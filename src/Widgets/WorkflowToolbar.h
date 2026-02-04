@@ -1,5 +1,4 @@
-#ifndef WORKFLOWTOOLBAR_H
-#define WORKFLOWTOOLBAR_H
+#pragma once
 
 #include <QToolBar>
 #include <QList>
@@ -25,7 +24,7 @@ class WorkflowToolbar : public QToolBar
     Q_OBJECT
 
 public:
-    explicit WorkflowToolbar(QWidget *parent = nullptr);
+    explicit WorkflowToolbar(QWidget* parent = nullptr);
     ~WorkflowToolbar();
 
     /// Associates a document with this toolbar and updates button enablement.
@@ -34,7 +33,7 @@ public:
     /// button states when the document changes. If nullptr is passed, all
     /// buttons are disabled.
     /// \param doc The document to associate with this toolbar, or nullptr to clear.
-    void setDocument(ShotGroupDocument *doc);
+    void setDocument(ShotGroupDocument* doc);
     
     /// Sets the currently active workflow state and updates button visual state.
     ///
@@ -64,18 +63,11 @@ signals:
     /// \param index The zero-based index of the selected workflow state.
     void stateSelected(int index);
 
-private slots:
-    void onButtonClicked();
-
 private:
     void setupButtons();
 
 private:
-    ShotGroupDocument *m_document = nullptr;
+    ShotGroupDocument* m_pDocument = nullptr;
     QList<QToolButton*> m_buttons;
     int m_currentState = -1;
-
-    static const QStringList STATE_NAMES;
 };
-
-#endif // WORKFLOWTOOLBAR_H

@@ -1,8 +1,8 @@
 #include "WorkflowState.h"
 
-WorkflowState::WorkflowState(ShotGroupDocument *document, QObject *parent)
-    : QObject(parent)
-    , m_document(document)
+WorkflowState::WorkflowState(ShotGroupDocument* pDocument, QObject* pParent)
+    : QObject(pParent)
+    , m_pDocument(pDocument)
 {
 }
 

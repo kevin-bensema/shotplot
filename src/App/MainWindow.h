@@ -68,14 +68,7 @@ private slots:
     void onZoomFit();
     
     /// Updates display units preference (inches, MOA, or MRAD) and refreshes statistics panel
-    void onDisplayUnitsChanged(QAction *action);
-    
-    // Document state changes
-    /// Updates window title and menu state when document dirty flag changes
-    void onDocumentDirtyChanged(bool dirty);
-    
-    /// Transitions to the specified workflow state when selected from the workflow toolbar
-    void onWorkflowStateChanged(int stateIndex);
+    void onDisplayUnitsChanged(QAction* action);
 
 private:
     /// Initializes undo/redo actions
@@ -113,28 +106,28 @@ private:
     
 private:
     // UI Components
-    TargetView *m_targetView = nullptr;              ///< Graphics view displaying the target scene
-    TargetScene *m_targetScene = nullptr;            ///< Graphics scene containing target image and impact markers
-    WorkflowToolbar *m_workflowToolbar = nullptr;    ///< Toolbar showing workflow pipeline and state selection
-    PerStateToolbar *m_perStateToolbar = nullptr;    ///< Toolbar with state-specific controls
-    StatisticsPanel *m_statisticsPanel = nullptr;    ///< Dock widget displaying shot group statistics
+    TargetView* m_pTargetView = nullptr;              ///< Graphics view displaying the target scene
+    TargetScene* m_pTargetScene = nullptr;            ///< Graphics scene containing target image and impact markers
+    WorkflowToolbar* m_pWorkflowToolbar = nullptr;    ///< Toolbar showing workflow pipeline and state selection
+    PerStateToolbar* m_pPerStateToolbar = nullptr;    ///< Toolbar with state-specific controls
+    StatisticsPanel* m_pStatisticsPanel = nullptr;    ///< Dock widget displaying shot group statistics
     
     // Document
     std::unique_ptr<ShotGroupDocument> m_document;   ///< Current document model (null if no document loaded)
-    QUndoStack *m_undoStack = nullptr;               ///< Undo/redo command stack for document operations
+    QUndoStack* m_pUndoStack = nullptr;               ///< Undo/redo command stack for document operations
     
     // Workflow states
     std::vector<std::unique_ptr<WorkflowState>> m_states;  ///< All workflow states (caliber, scale, POA, impacts, visualization)
     int m_currentStateIndex = -1;                    ///< Index of the currently active workflow state (-1 if none)
     
     // Menu actions (for enable/disable management)
-    QAction *m_saveAction = nullptr;                 ///< Save menu action (enabled when document is dirty)
-    QAction *m_saveAsAction = nullptr;               ///< Save As menu action (enabled when document exists)
-    QAction *m_exportAction = nullptr;               ///< Export Image menu action (enabled when document exists)
-    QAction *m_undoAction = nullptr;                 ///< Undo action from undo stack
-    QAction *m_redoAction = nullptr;                 ///< Redo action from undo stack
-    QAction *m_metadataAction = nullptr;             ///< Edit Metadata menu action (enabled when document exists)
-    QAction *m_zoomInAction = nullptr;               ///< Zoom In menu action (enabled when document exists)
-    QAction *m_zoomOutAction = nullptr;              ///< Zoom Out menu action (enabled when document exists)
-    QAction *m_zoomFitAction = nullptr;              ///< Zoom Fit menu action (enabled when document exists)
+    QAction* m_pSaveAction = nullptr;                 ///< Save menu action (enabled when document is dirty)
+    QAction* m_pSaveAsAction = nullptr;               ///< Save As menu action (enabled when document exists)
+    QAction* m_pExportAction = nullptr;               ///< Export Image menu action (enabled when document exists)
+    QAction* m_pUndoAction = nullptr;                 ///< Undo action from undo stack
+    QAction* m_pRedoAction = nullptr;                 ///< Redo action from undo stack
+    QAction* m_pMetadataAction = nullptr;             ///< Edit Metadata menu action (enabled when document exists)
+    QAction* m_pZoomInAction = nullptr;               ///< Zoom In menu action (enabled when document exists)
+    QAction* m_pZoomOutAction = nullptr;              ///< Zoom Out menu action (enabled when document exists)
+    QAction* m_pZoomFitAction = nullptr;              ///< Zoom Fit menu action (enabled when document exists)
 };

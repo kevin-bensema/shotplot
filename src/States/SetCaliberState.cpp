@@ -6,10 +6,10 @@
 #include <QToolBar>
 #include <QLabel>
 
-SetCaliberState::SetCaliberState(ShotGroupDocument *document, TargetView *view, QWidget *parentWidget)
+SetCaliberState::SetCaliberState(ShotGroupDocument* document, TargetView* view, QWidget* parentWidget)
     : WorkflowState(document, view)
-    , m_view(view)
-    , m_parentWidget(parentWidget)
+    , m_pView(view)
+    , m_pParentWidget(parentWidget)
 {
 }
 
@@ -18,16 +18,16 @@ SetCaliberState::~SetCaliberState() = default;
 void SetCaliberState::onEnter()
 {
     // Show caliber dialog
-    CaliberDialog dialog(m_parentWidget);
+    CaliberDialog dialog(m_pParentWidget);
     
-    if (m_document->hasCaliberSet())
+    if (m_pDocument->hasCaliberSet())
     {
-        dialog.setBulletDiameter(m_document->bulletDiameter());
+        dialog.setBulletDiameter(m_pDocument->bulletDiameter());
     }
     
     if (dialog.exec() == QDialog::Accepted)
     {
-        m_document->setBulletDiameter(dialog.bulletDiameter());
+        m_pDocument->setBulletDiameter(dialog.bulletDiameter());
         emit stateCompleted();
         emit requestNextState();
     }
@@ -46,10 +46,15 @@ void SetCaliberState::handleMouseClick(const QPointF &scenePos)
 
 bool SetCaliberState::isComplete() const
 {
-    return m_document && m_document->hasCaliberSet();
+    return m_pDocument && m_pDocument->hasCaliberSet();
 }
 
-void SetCaliberState::populateToolbar(QToolBar *toolbar)
+void SetCaliberState::populateToolbar(QToolBar* toolbar)
 {
     toolbar->addWidget(new QLabel(tr("Select bullet diameter from the dialog")));
+}
+
+QString SetCaliberState::stateName() const
+{
+    return tr("Set Caliber");
 }

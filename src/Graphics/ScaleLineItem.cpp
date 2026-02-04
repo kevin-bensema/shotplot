@@ -3,8 +3,17 @@
 #include <QPainter>
 #include <cmath>
 
-ScaleLineItem::ScaleLineItem(QGraphicsItem *parent)
+namespace {
+    const QColor kColor(0, 255, 0);           // Bright green color for visibility
+    const double kLineWidth = 3.0;            // Width of the line stroke in pixels
+    const double kEndpointRadius = 5.0;       // Radius of the circular endpoint markers
+}
+
+ScaleLineItem::ScaleLineItem(QGraphicsItem* parent)
     : QGraphicsItem(parent)
+    , m_color(kColor)
+    , m_lineWidth(kLineWidth)
+    , m_endpointRadius(kEndpointRadius)
 {
 }
 
@@ -32,6 +41,16 @@ void ScaleLineItem::setEndPoint(const QPointF &end)
     update();
 }
 
+QPointF ScaleLineItem::startPoint() const
+{
+    return m_start;
+}
+
+QPointF ScaleLineItem::endPoint() const
+{
+    return m_end;
+}
+
 QRectF ScaleLineItem::boundingRect() const
 {
     double padding = m_lineWidth + m_endpointRadius + 2;
@@ -44,7 +63,7 @@ QRectF ScaleLineItem::boundingRect() const
     return QRectF(minX, minY, maxX - minX, maxY - minY);
 }
 
-void ScaleLineItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
+void ScaleLineItem::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget)
 {
     Q_UNUSED(option)
     Q_UNUSED(widget)

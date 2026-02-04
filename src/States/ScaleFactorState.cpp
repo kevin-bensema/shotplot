@@ -8,10 +8,18 @@
 #include <QDoubleSpinBox>
 #include <cmath>
 
-ScaleFactorState::ScaleFactorState(ShotGroupDocument *document, TargetView *view, TargetScene *scene)
-    : WorkflowState(document, view)
-    , m_view(view)
-    , m_scene(scene)
+namespace {
+    constexpr double kMinDistanceInches = 0.1;
+    constexpr double kMaxDistanceInches = 100.0;
+    constexpr double kDefaultDistanceInches = 1.0;
+    constexpr int kDistanceDecimals = 2;
+    constexpr double kDistanceSingleStep = 0.1;
+}
+
+ScaleFactorState::ScaleFactorState(ShotGroupDocument* pDocument, TargetView* pView, TargetScene* pScene)
+    : WorkflowState(pDocument, pView)
+    , m_pView(pView)
+    , m_pScene(pScene)
 {
 }
 
@@ -24,7 +32,7 @@ void ScaleFactorState::onEnter()
 
 void ScaleFactorState::onExit()
 {
-    m_scene->hideScaleLine();
+    m_pScene->hideScaleLine();
     m_hasFirstPoint = false;
 }
 
@@ -35,12 +43,12 @@ void ScaleFactorState::handleMouseClick(const QPointF &scenePos)
         // First click - set start point
         m_firstPoint = scenePos;
         m_hasFirstPoint = true;
-        m_scene->setScaleLineStart(scenePos);
+        m_pScene->setScaleLineStart(scenePos);
     }
     else
     {
         // Second click - calculate scale factor
-        m_scene->showScaleLine(m_firstPoint, scenePos);
+        m_pScene->showScaleLine(m_firstPoint, scenePos);
         
         // Calculate distance in pixels
         double dx = scenePos.x() - m_firstPoint.x();
@@ -48,17 +56,17 @@ void ScaleFactorState::handleMouseClick(const QPointF &scenePos)
         double distancePixels = std::sqrt(dx * dx + dy * dy);
         
         // Get reference distance from toolbar spinbox
-        double distanceInches = m_distanceSpin ? m_distanceSpin->value() : 1.0;
+        double distanceInches = m_pDistanceSpin ? m_pDistanceSpin->value() : kDefaultDistanceInches;
         
         if (distancePixels > 0 && distanceInches > 0)
         {
             double pixelsPerInch = distancePixels / distanceInches;
-            m_document->setPixelsPerInch(pixelsPerInch);
+            m_pDocument->setPixelsPerInch(pixelsPerInch);
         }
         
         // Reset for potential recalibration
         m_hasFirstPoint = false;
-        m_scene->hideScaleLine();
+        m_pScene->hideScaleLine();
         
         emit stateCompleted();
         emit requestNextState();
@@ -69,13 +77,13 @@ void ScaleFactorState::handleMouseMove(const QPointF &scenePos)
 {
     if (m_hasFirstPoint)
     {
-        m_scene->updateScaleLineEnd(scenePos);
+        m_pScene->updateScaleLineEnd(scenePos);
     }
 }
 
 bool ScaleFactorState::isComplete() const
 {
-    return m_document && m_document->hasScaleFactorSet();
+    return m_pDocument && m_pDocument->hasScaleFactorSet();
 }
 
 QCursor ScaleFactorState::cursor() const
@@ -83,22 +91,27 @@ QCursor ScaleFactorState::cursor() const
     return QCursor(Qt::CrossCursor);
 }
 
-void ScaleFactorState::populateToolbar(QToolBar *toolbar)
+void ScaleFactorState::populateToolbar(QToolBar* pToolbar)
 {
-    toolbar->addWidget(new QLabel(tr("Select two points")));
+    pToolbar->addWidget(new QLabel(tr("Select two points")));
     
-    m_distanceSpin = new QDoubleSpinBox();
-    m_distanceSpin->setRange(0.1, 100.0);
-    m_distanceSpin->setValue(1.0);
-    m_distanceSpin->setDecimals(2);
-    m_distanceSpin->setSingleStep(0.1);
-    toolbar->addWidget(m_distanceSpin);
+    m_pDistanceSpin = new QDoubleSpinBox();
+    m_pDistanceSpin->setRange(kMinDistanceInches, kMaxDistanceInches);
+    m_pDistanceSpin->setValue(kDefaultDistanceInches);
+    m_pDistanceSpin->setDecimals(kDistanceDecimals);
+    m_pDistanceSpin->setSingleStep(kDistanceSingleStep);
+    pToolbar->addWidget(m_pDistanceSpin);
     
-    toolbar->addWidget(new QLabel(tr("inches apart")));
+    pToolbar->addWidget(new QLabel(tr("inches apart")));
 }
 
 void ScaleFactorState::reset()
 {
     m_hasFirstPoint = false;
-    m_scene->hideScaleLine();
+    m_pScene->hideScaleLine();
+}
+
+QString ScaleFactorState::stateName() const
+{
+    return tr("Scale Factor");
 }

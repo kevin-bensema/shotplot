@@ -25,7 +25,7 @@ public:
     /// \param document The shot group document containing impacts and calibration data
     /// \param view The target view widget for displaying the visualization
     /// \param scene The graphics scene containing target graphics items
-    VisualizationState(ShotGroupDocument *document, TargetView *view, TargetScene *scene);
+    VisualizationState(ShotGroupDocument* pDocument, TargetView* pView, TargetScene* pScene);
     
     ~VisualizationState();
 
@@ -45,7 +45,7 @@ public:
     /// Future implementation will allow users to click and drag statistics
     /// plaques to position them on the target visualization.
     /// \param scenePos The scene coordinates where the click occurred
-    void handleMouseClick(const QPointF &scenePos) override;
+    void handleMouseClick(const QPointF& scenePos) override;
     
     /// Checks if the visualization state is complete
     ///
@@ -61,17 +61,14 @@ public:
     /// options such as statistics plaque settings, group circle visibility,
     /// and export parameters.
     /// \param toolbar The toolbar to populate with visualization controls
-    void populateToolbar(QToolBar *toolbar) override;
+    void populateToolbar(QToolBar* pToolbar) override;
     
-    QString stateName() const override
-    {
-        return tr("Visualization");
-    }
+    QString stateName() const override;
 
 private:
     /// The target view widget displaying the visualization
-    TargetView *m_view;
+    TargetView* m_pView;
     
     /// The graphics scene containing target graphics items and overlays
-    TargetScene *m_scene;
+    TargetScene* m_pScene;
 };

@@ -11,12 +11,16 @@
 #include <QPushButton>
 #include <QUndoStack>
 
-MarkImpactsState::MarkImpactsState(ShotGroupDocument *document, TargetView *view, 
-                                   TargetScene *scene, QUndoStack *undoStack)
-    : WorkflowState(document, view)
-    , m_view(view)
-    , m_scene(scene)
-    , m_undoStack(undoStack)
+namespace {
+    constexpr double kDefaultBulletDiameterPixels = 20.0;
+}
+
+MarkImpactsState::MarkImpactsState(ShotGroupDocument* pDocument, TargetView* pView, 
+                                   TargetScene* pScene, QUndoStack* pUndoStack)
+    : WorkflowState(pDocument, pView)
+    , m_pView(pView)
+    , m_pScene(pScene)
+    , m_pUndoStack(pUndoStack)
 {
 }
 
@@ -25,16 +29,16 @@ MarkImpactsState::~MarkImpactsState() = default;
 void MarkImpactsState::onEnter()
 {
     // Connect to document changes for updating circles
-    connect(m_document, &ShotGroupDocument::impactsChanged,
+    connect(m_pDocument, &ShotGroupDocument::impactsChanged,
             this, &MarkImpactsState::updateGroupCircles);
     
     // Recreate impact glyphs from document
-    m_scene->clearImpactGlyphs();
+    m_pScene->clearImpactGlyphs();
     double diameter = bulletDiameterPixels();
     
-    for (const auto &impact : m_document->impacts())
+    for (const auto &impact : m_pDocument->impacts())
     {
-        m_scene->addImpactGlyph(impact.id, impact.position(), diameter);
+        m_pScene->addImpactGlyph(impact.id, impact.position(), diameter);
     }
     
     updateGroupCircles();
@@ -42,18 +46,18 @@ void MarkImpactsState::onEnter()
 
 void MarkImpactsState::onExit()
 {
-    disconnect(m_document, &ShotGroupDocument::impactsChanged,
+    disconnect(m_pDocument, &ShotGroupDocument::impactsChanged,
                this, &MarkImpactsState::updateGroupCircles);
 }
 
 void MarkImpactsState::handleMouseClick(const QPointF &scenePos)
 {
     // Create new impact
-    int id = m_document->nextImpactId();
+    int id = m_pDocument->nextImpactId();
     ShotImpact impact(id, scenePos.x(), scenePos.y());
     
     // Use undo command
-    m_undoStack->push(new AddImpactCommand(m_document, m_scene, impact, bulletDiameterPixels()));
+    m_pUndoStack->push(new AddImpactCommand(m_pDocument, m_pScene, impact, bulletDiameterPixels()));
 }
 
 void MarkImpactsState::handleRightClick(const QPointF &scenePos)
@@ -62,7 +66,7 @@ void MarkImpactsState::handleRightClick(const QPointF &scenePos)
     // For now, simple distance-based hit test
     double hitRadius = bulletDiameterPixels() / 2.0;
     
-    const auto impacts = m_document->impacts();
+    const auto impacts = m_pDocument->impacts();
     for (int i = 0; i < impacts.size(); ++i) {
         QPointF impactPos = impacts[i].position();
         double dx = scenePos.x() - impactPos.x();
@@ -72,8 +76,8 @@ void MarkImpactsState::handleRightClick(const QPointF &scenePos)
         if (dist <= hitRadius) {
             // Remove this impact
             // TODO: Use RemoveImpactCommand for undo support
-            m_scene->removeImpactGlyph(impacts[i].id);
-            m_document->removeImpact(i);
+            m_pScene->removeImpactGlyph(impacts[i].id);
+            m_pDocument->removeImpact(i);
             break;
         }
     }
@@ -81,7 +85,7 @@ void MarkImpactsState::handleRightClick(const QPointF &scenePos)
 
 bool MarkImpactsState::isComplete() const
 {
-    return m_document && m_document->impactCount() >= 1;
+    return m_pDocument && m_pDocument->impactCount() >= 1;
 }
 
 QCursor MarkImpactsState::cursor() const
@@ -91,63 +95,65 @@ QCursor MarkImpactsState::cursor() const
     return QCursor(Qt::CrossCursor);
 }
 
-void MarkImpactsState::populateToolbar(QToolBar *toolbar)
+void MarkImpactsState::populateToolbar(QToolBar* pToolbar)
 {
-    toolbar->addWidget(new QLabel(tr("Mark all impacts")));
+    pToolbar->addWidget(new QLabel(tr("Mark all impacts")));
     
-    toolbar->addSeparator();
+    pToolbar->addSeparator();
     
-    QPushButton *clearButton = new QPushButton(tr("Clear All"));
-    connect(clearButton, &QPushButton::clicked, this, &MarkImpactsState::onClearImpacts);
-    toolbar->addWidget(clearButton);
-}
-
-void MarkImpactsState::onClearImpacts()
-{
-    if (m_document->impactCount() > 0)
-    {
-        m_undoStack->push(new ClearImpactsCommand(m_document, m_scene));
-    }
+    QPushButton* pClearButton = new QPushButton(tr("Clear All"));
+    connect(pClearButton, &QPushButton::clicked, [this]() {
+        if (m_pDocument->impactCount() > 0)
+        {
+            m_pUndoStack->push(new ClearImpactsCommand(m_pDocument, m_pScene));
+        }
+    });
+    pToolbar->addWidget(pClearButton);
 }
 
 void MarkImpactsState::updateGroupCircles()
 {
-    if (m_document->impactCount() < 2)
+    if (m_pDocument->impactCount() < 2)
     {
-        m_scene->clearGroupCircles();
+        m_pScene->clearGroupCircles();
         return;
     }
     
-    const Statistics &stats = m_document->statistics();
+    const Statistics &stats = m_pDocument->statistics();
     
     if (stats.fullGroupCircle.isValid())
     {
-        m_scene->setFullGroupCircle(stats.fullGroupCircle.center, stats.fullGroupCircle.radiusPixels);
+        m_pScene->setFullGroupCircle(stats.fullGroupCircle.center, stats.fullGroupCircle.radiusPixels);
     }
     
     if (stats.group80Circle.isValid())
     {
-        m_scene->set80GroupCircle(stats.group80Circle.center, stats.group80Circle.radiusPixels);
+        m_pScene->set80GroupCircle(stats.group80Circle.center, stats.group80Circle.radiusPixels);
     }
     
     if (stats.group90Circle.isValid())
     {
-        m_scene->set90GroupCircle(stats.group90Circle.center, stats.group90Circle.radiusPixels);
+        m_pScene->set90GroupCircle(stats.group90Circle.center, stats.group90Circle.radiusPixels);
     }
     
     // Update visibility based on document settings
-    m_scene->setGroupCirclesVisible(
-        m_document->showFullGroupCircle(),
-        m_document->show80PercentCircle(),
-        m_document->show90PercentCircle()
+    m_pScene->setGroupCirclesVisible(
+        m_pDocument->showFullGroupCircle(),
+        m_pDocument->show80PercentCircle(),
+        m_pDocument->show90PercentCircle()
     );
+}
+
+QString MarkImpactsState::stateName() const
+{
+    return tr("Mark Impacts");
 }
 
 double MarkImpactsState::bulletDiameterPixels() const
 {
-    if (!m_document || !m_document->hasScaleFactorSet())
+    if (!m_pDocument || !m_pDocument->hasScaleFactorSet())
     {
-        return 20.0;  // Default fallback
+        return kDefaultBulletDiameterPixels;
     }
-    return m_document->bulletDiameter() * m_document->pixelsPerInch();
+    return m_pDocument->bulletDiameter() * m_pDocument->pixelsPerInch();
 }

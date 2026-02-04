@@ -26,10 +26,10 @@ class POAState : public WorkflowState
 
 public:
     /// Constructs a POAState with the given document, view, and scene.
-    /// \param document The shot group document to modify
-    /// \param view The target view widget
-    /// \param scene The graphics scene containing target elements
-    POAState(ShotGroupDocument *document, TargetView *view, TargetScene *scene);
+    /// \param pDocument The shot group document to modify
+    /// \param pView The target view widget
+    /// \param pScene The graphics scene containing target elements
+    POAState(ShotGroupDocument* pDocument, TargetView* pView, TargetScene* pScene);
     
     ~POAState();
 
@@ -45,7 +45,7 @@ public:
     /// Sets the Point of Aim at the clicked location, updates the scene glyph,
     /// and automatically transitions to the next state.
     /// \param scenePos The scene coordinates where the user clicked
-    void handleMouseClick(const QPointF &scenePos) override;
+    void handleMouseClick(const QPointF& scenePos) override;
     
     /// Checks if this state is complete.
     /// POA is optional, so completion is determined by whether the scale factor
@@ -60,17 +60,14 @@ public:
     
     /// Populates the per-state toolbar with controls for this state.
     /// Adds instructions and a "Skip" button to allow users to bypass POA marking.
-    /// \param toolbar The toolbar widget to populate
-    void populateToolbar(QToolBar *toolbar) override;
+    /// \param pToolbar The toolbar widget to populate
+    void populateToolbar(QToolBar* pToolbar) override;
     
     /// Returns the display name of this state.
     /// \return "Point of Aim"
-    QString stateName() const override
-    {
-        return tr("Point of Aim");
-    }
+    QString stateName() const override;
 
 private:
-    TargetView *m_view;      ///< The target view widget for interaction
-    TargetScene *m_scene;    ///< The graphics scene for displaying POA glyph
+    TargetView* m_pView;      ///< The target view widget for interaction
+    TargetScene* m_pScene;    ///< The graphics scene for displaying POA glyph
 };

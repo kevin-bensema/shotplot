@@ -18,7 +18,7 @@ class ScaleLineItem : public QGraphicsItem
 public:
     /// Constructs a scale line item
     /// \param parent Optional parent graphics item
-    explicit ScaleLineItem(QGraphicsItem *parent = nullptr);
+    explicit ScaleLineItem(QGraphicsItem* parent = nullptr);
     
     ~ScaleLineItem();
 
@@ -44,17 +44,17 @@ public:
     /// \param end The new ending point
     void setEndPoint(const QPointF &end);
 
-    QPointF startPoint() const { return m_start; }
-    QPointF endPoint() const { return m_end; }
+    QPointF startPoint() const;
+    QPointF endPoint() const;
 
     // QGraphicsItem interface
     QRectF boundingRect() const override;
-    void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
+    void paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget) override;
 
 private:
     QPointF m_start;              ///< Starting point of the line
     QPointF m_end;                ///< Ending point of the line
-    QColor m_color = QColor(0, 255, 0);  ///< Bright green color for visibility
-    double m_lineWidth = 3.0;     ///< Width of the line stroke in pixels
-    double m_endpointRadius = 5.0; ///< Radius of the circular endpoint markers
+    QColor m_color;               ///< Bright green color for visibility
+    double m_lineWidth;           ///< Width of the line stroke in pixels
+    double m_endpointRadius;      ///< Radius of the circular endpoint markers
 };

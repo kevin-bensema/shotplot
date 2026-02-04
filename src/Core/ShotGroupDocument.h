@@ -52,13 +52,13 @@ public:
         QString formatString;      ///< Format string for statistics display
     };
 
-    explicit ShotGroupDocument(QObject* parent = nullptr);
+    explicit ShotGroupDocument(QObject* pParent = nullptr);
     ~ShotGroupDocument();
 
     // ===== Image Data =====
     QImage targetImage() const;
     /// Sets the target image and marks the document as dirty
-    void setTargetImage(const QImage &image);
+    void setTargetImage(const QImage& image);
 
     // ===== Calibration Data =====
     double bulletDiameter() const;
@@ -74,7 +74,7 @@ public:
     // ===== Point of Aim =====
     QPointF pointOfAim() const;
     /// Sets the point of aim and marks it as configured
-    void setPointOfAim(const QPointF &poa);
+    void setPointOfAim(const QPointF& poa);
     /// Clears the point of aim and marks it as unset
     void clearPointOfAim();
     bool hasPointOfAimSet() const;
@@ -87,7 +87,7 @@ public:
     void setDistanceUnit(DistanceUnit unit);
 
     QDate sessionDate() const;
-    void setSessionDate(const QDate &date);
+    void setSessionDate(const QDate& date);
 
     // ===== Impacts =====
     int impactCount() const;
@@ -101,19 +101,19 @@ public:
     /// Removes all impacts and invalidates cached statistics
     void clearImpacts();
     /// Replaces all impacts with the provided list and invalidates cached statistics
-    void replaceImpacts(const QList<ShotImpact> &impacts);
+    void replaceImpacts(const QList<ShotImpact>& impacts);
     /// Returns the next available unique impact ID and increments the counter
     int nextImpactId();
 
     // ===== Metadata =====
     QString firearm() const;
-    void setFirearm(const QString &firearm);
+    void setFirearm(const QString& firearm);
 
     QString ammunition() const;
-    void setAmmunition(const QString &ammo);
+    void setAmmunition(const QString& ammo);
 
     QString notes() const;
-    void setNotes(const QString &notes);
+    void setNotes(const QString& notes);
 
     // ===== Visualization Settings =====
     bool showFullGroupCircle() const;
@@ -129,7 +129,7 @@ public:
     void setShowPointOfAim(bool show);
 
     PlaqueConfig plaqueConfig() const;
-    void setPlaqueConfig(const PlaqueConfig &config);
+    void setPlaqueConfig(const PlaqueConfig& config);
 
     // ===== Statistics =====
     /// @brief Returns the current statistics
@@ -165,14 +165,14 @@ public:
     /// \param errorMsg Optional pointer to receive error message on failure
     /// \return True if save succeeded, false otherwise
     /// \note Currently not implemented (returns false)
-    bool saveToFile(const QString &filePath, QString* pErrorMsg = nullptr);
+    bool saveToFile(const QString& filePath, QString* pErrorMsg = nullptr);
     /// @brief Loads the document from a file
     /// 
     /// \param filePath The source file path
     /// \param errorMsg Optional pointer to receive error message on failure
     /// \return True if load succeeded, false otherwise
     /// \note Currently not implemented (returns false)
-    bool loadFromFile(const QString &filePath, QString* pErrorMsg = nullptr);
+    bool loadFromFile(const QString& filePath, QString* pErrorMsg = nullptr);
 
     /// @brief Serializes the document to a JSON object
     /// 
@@ -191,7 +191,7 @@ public:
     /// \param json The JSON object to load from
     /// \param errorMsg Optional pointer to receive error message on failure
     /// \return True if deserialization succeeded, false otherwise
-    bool fromJson(const QJsonObject &json, QString* pErrorMsg = nullptr);
+    bool fromJson(const QJsonObject& json, QString* pErrorMsg = nullptr);
 
 signals:
     /// Emitted when any document data changes (image, calibration, impacts, metadata)

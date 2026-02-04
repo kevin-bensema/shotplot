@@ -23,18 +23,18 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
 public:
-    explicit MainWindow(QWidget *parent = nullptr);
+    explicit MainWindow(QWidget* pParent = nullptr);
     ~MainWindow();
 
 protected:
     /// Handles window close events, prompting to save unsaved changes if needed
-    void closeEvent(QCloseEvent *event) override;
+    void closeEvent(QCloseEvent* pEvent) override;
     
     /// Handles drag enter events for file import (accepts image files and .spz session files)
-    void dragEnterEvent(QDragEnterEvent *event) override;
+    void dragEnterEvent(QDragEnterEvent* pEvent) override;
     
     /// Handles drop events to import images or load session files
-    void dropEvent(QDropEvent *event) override;
+    void dropEvent(QDropEvent* pEvent) override;
 
 private slots:
     // File menu actions

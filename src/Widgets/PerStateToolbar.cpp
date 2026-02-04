@@ -1,8 +1,8 @@
 #include "PerStateToolbar.h"
-#include "States/WorkflowState.h"
+#include <States/WorkflowState.h>
 
-PerStateToolbar::PerStateToolbar(QWidget *parent)
-    : QToolBar(parent)
+PerStateToolbar::PerStateToolbar(QWidget* pParent)
+    : QToolBar(pParent)
 {
     setWindowTitle(tr("State Controls"));
     setMovable(false);
@@ -10,10 +10,10 @@ PerStateToolbar::PerStateToolbar(QWidget *parent)
 
 PerStateToolbar::~PerStateToolbar() = default;
 
-void PerStateToolbar::setCurrentState(WorkflowState *state)
+void PerStateToolbar::setCurrentState(WorkflowState* pState)
 {
     clearToolbar();
-    m_pCurrentState = state;
+    m_pCurrentState = pState;
     
     if (m_pCurrentState)
     {

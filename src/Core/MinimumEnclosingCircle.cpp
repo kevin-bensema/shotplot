@@ -8,14 +8,14 @@ namespace
     constexpr double kEpsilon = 1e-9;
 }
 
-bool Circle::contains(const QPointF &p, double epsilon) const
+bool Circle::contains(const QPointF& p, double epsilon) const
 {
     double dx = p.x() - center.x();
     double dy = p.y() - center.y();
     return std::sqrt(dx * dx + dy * dy) <= radius + epsilon;
 }
 
-Circle MinimumEnclosingCircle::findSmallestEnclosingCircle(const QList<QPointF> &points)
+Circle MinimumEnclosingCircle::findSmallestEnclosingCircle(const QList<QPointF>& points)
 {
     if (points.isEmpty())
     {
@@ -74,7 +74,7 @@ Circle MinimumEnclosingCircle::findSmallestEnclosingCircle(const QList<QPointF> 
     return bestCircle;
 }
 
-Circle MinimumEnclosingCircle::circleFromTwoPoints(const QPointF &p1, const QPointF &p2)
+Circle MinimumEnclosingCircle::circleFromTwoPoints(const QPointF& p1, const QPointF& p2)
 {
     // Circle with p1-p2 as diameter
     QPointF center((p1.x() + p2.x()) / 2.0, (p1.y() + p2.y()) / 2.0);
@@ -84,7 +84,7 @@ Circle MinimumEnclosingCircle::circleFromTwoPoints(const QPointF &p1, const QPoi
     return Circle(center, radius);
 }
 
-Circle MinimumEnclosingCircle::circleFromThreePoints(const QPointF &p1, const QPointF &p2, const QPointF &p3)
+Circle MinimumEnclosingCircle::circleFromThreePoints(const QPointF& p1, const QPointF& p2, const QPointF& p3)
 {
     // Calculate circumcircle of triangle p1, p2, p3
     // Using the formula for circumcenter
@@ -130,7 +130,7 @@ Circle MinimumEnclosingCircle::circleFromThreePoints(const QPointF &p1, const QP
     return Circle(center, radius);
 }
 
-bool MinimumEnclosingCircle::circleEnclosesAllPoints(const Circle &c, const QList<QPointF> &points)
+bool MinimumEnclosingCircle::circleEnclosesAllPoints(const Circle& c, const QList<QPointF>& points)
 {
     for (const auto& p : points)
     {

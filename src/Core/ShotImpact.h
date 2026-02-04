@@ -27,7 +27,6 @@ struct ShotImpact
     int id = 0;              ///< Unique identifier for this impact (assigned by ShotGroupDocument)
     double x = 0.0;          ///< X coordinate in pixel space (fractional, can be sub-pixel)
     double y = 0.0;          ///< Y coordinate in pixel space (fractional, can be sub-pixel)
-    QString notes;           ///< Optional per-shot notes or annotations
     
     /// Default constructor creates an impact at origin (0, 0) with id 0
     ShotImpact() = default;
@@ -38,8 +37,8 @@ struct ShotImpact
     /// \param x X coordinate in pixel space
     /// \param y Y coordinate in pixel space
     /// \param notes Optional notes string (defaults to empty QString)
-    ShotImpact(int id, double x, double y, const QString &notes = QString())
-        : id(id), x(x), y(y), notes(notes) {}
+    ShotImpact(int id, double x, double y)
+        : id(id), x(x), y(y) {}
     
     /// @brief Returns the position as a QPointF
     /// 
@@ -54,7 +53,7 @@ struct ShotImpact
     /// receiving position data from Qt graphics APIs.
     /// 
     /// \param pos QPointF containing the new (x, y) coordinates
-    void setPosition(const QPointF &pos)
+    void setPosition(const QPointF& pos)
     {
         x = pos.x();
         y = pos.y();

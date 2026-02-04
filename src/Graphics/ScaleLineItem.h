@@ -17,8 +17,8 @@ class ScaleLineItem : public QGraphicsItem
 {
 public:
     /// Constructs a scale line item
-    /// \param parent Optional parent graphics item
-    explicit ScaleLineItem(QGraphicsItem* parent = nullptr);
+    /// \param pParent Optional parent graphics item
+    explicit ScaleLineItem(QGraphicsItem* pParent = nullptr);
     
     ~ScaleLineItem();
 
@@ -28,28 +28,28 @@ public:
     /// prepareGeometryChange() to notify the graphics scene of the change.
     /// \param start The starting point of the line
     /// \param end The ending point of the line
-    void setLine(const QPointF &start, const QPointF &end);
+    void setLine(const QPointF& start, const QPointF& end);
     
     /// Sets the starting point of the line
     ///
     /// Updates the line geometry and triggers a repaint. Calls
     /// prepareGeometryChange() to notify the graphics scene of the change.
     /// \param start The new starting point
-    void setStartPoint(const QPointF &start);
+    void setStartPoint(const QPointF& start);
     
     /// Sets the ending point of the line
     ///
     /// Updates the line geometry and triggers a repaint. Calls
     /// prepareGeometryChange() to notify the graphics scene of the change.
     /// \param end The new ending point
-    void setEndPoint(const QPointF &end);
+    void setEndPoint(const QPointF& end);
 
     QPointF startPoint() const;
     QPointF endPoint() const;
 
     // QGraphicsItem interface
     QRectF boundingRect() const override;
-    void paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget) override;
+    void paint(QPainter* pPainter, const QStyleOptionGraphicsItem* pOption, QWidget* pWidget) override;
 
 private:
     QPointF m_start;              ///< Starting point of the line

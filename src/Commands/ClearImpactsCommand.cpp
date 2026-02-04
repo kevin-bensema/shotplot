@@ -1,6 +1,6 @@
 #include "ClearImpactsCommand.h"
-#include "Core/ShotGroupDocument.h"
-#include "Graphics/TargetScene.h"
+#include <Core/ShotGroupDocument.h>
+#include <Graphics/TargetScene.h>
 
 namespace {
     constexpr double kDefaultDiameterPixels = 20.0;

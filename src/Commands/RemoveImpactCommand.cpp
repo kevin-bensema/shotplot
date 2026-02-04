@@ -1,9 +1,9 @@
 #include "RemoveImpactCommand.h"
-#include "Core/ShotGroupDocument.h"
-#include "Graphics/TargetScene.h"
+#include <Core/ShotGroupDocument.h>
+#include <Graphics/TargetScene.h>
 
 RemoveImpactCommand::RemoveImpactCommand(ShotGroupDocument* pDocument, TargetScene* pScene,
-                                         const ShotImpact &impact, double diameterPixels,
+                                         const ShotImpact& impact, double diameterPixels,
                                          QUndoCommand* pParent)
     : QUndoCommand(pParent)
     , m_pDocument(pDocument)

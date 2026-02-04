@@ -9,8 +9,8 @@ namespace {
     constexpr double kGapAngle = 15.0;      ///< Angular size of each gap in degrees
 }
 
-ImpactGlyphItem::ImpactGlyphItem(int shotNumber, double diameter, QGraphicsItem* parent)
-    : QGraphicsItem(parent)
+ImpactGlyphItem::ImpactGlyphItem(int shotNumber, double diameter, QGraphicsItem* pParent)
+    : QGraphicsItem(pParent)
     , m_shotNumber(shotNumber)
     , m_diameter(diameter)
     , m_color(Qt::red)
@@ -31,7 +31,7 @@ void ImpactGlyphItem::setDiameter(double diameter)
     update();
 }
 
-void ImpactGlyphItem::setColor(const QColor &color)
+void ImpactGlyphItem::setColor(const QColor& color)
 {
     m_color = color;
     update();
@@ -59,12 +59,12 @@ QRectF ImpactGlyphItem::boundingRect() const
     return QRectF(-radius, -radius, radius * 2, radius * 2);
 }
 
-void ImpactGlyphItem::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget)
+void ImpactGlyphItem::paint(QPainter* pPainter, const QStyleOptionGraphicsItem* pOption, QWidget* pWidget)
 {
-    Q_UNUSED(option)
-    Q_UNUSED(widget)
+    Q_UNUSED(pOption)
+    Q_UNUSED(pWidget)
 
-    painter->setRenderHint(QPainter::Antialiasing);
+    pPainter->setRenderHint(QPainter::Antialiasing);
 
     double radius = m_diameter / 2.0;
     
@@ -72,8 +72,8 @@ void ImpactGlyphItem::paint(QPainter* painter, const QStyleOptionGraphicsItem* o
     QPen pen(m_color);
     pen.setWidthF(kLineWidth);
     pen.setCapStyle(Qt::FlatCap);
-    painter->setPen(pen);
-    painter->setBrush(Qt::NoBrush);
+    pPainter->setPen(pen);
+    pPainter->setBrush(Qt::NoBrush);
 
     // Draw segmented circle with gaps at N, S, E, W
     // Qt angles: 0 = 3 o'clock, positive = counter-clockwise
@@ -87,25 +87,25 @@ void ImpactGlyphItem::paint(QPainter* painter, const QStyleOptionGraphicsItem* o
     double halfGap = kGapAngle / 2.0;
     
     // Arc 1: NE quadrant (from ~95 to ~175 degrees) - after N gap, before W gap
-    painter->drawArc(rect, (90 + halfGap) * 16, arcSpan * 16);
+    pPainter->drawArc(rect, (90 + halfGap) * 16, arcSpan * 16);
     
     // Arc 2: NW quadrant (from ~185 to ~265 degrees) - after W gap, before S gap
-    painter->drawArc(rect, (180 + halfGap) * 16, arcSpan * 16);
+    pPainter->drawArc(rect, (180 + halfGap) * 16, arcSpan * 16);
     
     // Arc 3: SW quadrant (from ~275 to ~355 degrees) - after S gap, before E gap
-    painter->drawArc(rect, (270 + halfGap) * 16, arcSpan * 16);
+    pPainter->drawArc(rect, (270 + halfGap) * 16, arcSpan * 16);
     
     // Arc 4: SE quadrant (from ~5 to ~85 degrees) - after E gap, before N gap
-    painter->drawArc(rect, (0 + halfGap) * 16, arcSpan * 16);
+    pPainter->drawArc(rect, (0 + halfGap) * 16, arcSpan * 16);
 
     // Draw shot number in center
     QString text = QString::number(m_shotNumber);
     
-    QFont font = painter->font();
+    QFont font = pPainter->font();
     font.setBold(true);
     double fontSize = qMax(8.0, m_diameter * 0.4);
     font.setPixelSize(static_cast<int>(fontSize));
-    painter->setFont(font);
+    pPainter->setFont(font);
 
     // White text with dark outline for visibility
     QPainterPath textPath;
@@ -121,12 +121,12 @@ void ImpactGlyphItem::paint(QPainter* painter, const QStyleOptionGraphicsItem* o
     // Draw outline
     QPen outlinePen(Qt::black);
     outlinePen.setWidthF(2.0);
-    painter->setPen(outlinePen);
-    painter->setBrush(Qt::NoBrush);
-    painter->drawPath(textPath);
+    pPainter->setPen(outlinePen);
+    pPainter->setBrush(Qt::NoBrush);
+    pPainter->drawPath(textPath);
     
     // Fill with white
-    painter->setPen(Qt::NoPen);
-    painter->setBrush(Qt::white);
-    painter->drawPath(textPath);
+    pPainter->setPen(Qt::NoPen);
+    pPainter->setBrush(Qt::white);
+    pPainter->drawPath(textPath);
 }

@@ -24,10 +24,10 @@ class SetCaliberState : public WorkflowState
 public:
     /// @brief Constructs a new SetCaliberState
     ///
-    /// \param document The shot group document to store the caliber value
-    /// \param view The target view (currently unused, reserved for future use)
-    /// \param parentWidget Parent widget for the caliber dialog (typically the main window)
-    SetCaliberState(ShotGroupDocument* document, TargetView* view, QWidget* parentWidget);
+    /// \param pDocument The shot group document to store the caliber value
+    /// \param pView The target view (currently unused, reserved for future use)
+    /// \param pParentWidget Parent widget for the caliber dialog (typically the main window)
+    SetCaliberState(ShotGroupDocument* pDocument, TargetView* pView, QWidget* pParentWidget);
     
     ~SetCaliberState();
 
@@ -51,7 +51,7 @@ public:
     /// base class interface but performs no action.
     ///
     /// \param scenePos The scene position of the mouse click (unused)
-    void handleMouseClick(const QPointF &scenePos) override;
+    void handleMouseClick(const QPointF& scenePos) override;
     
     /// @brief Checks if this state has been completed
     ///
@@ -66,8 +66,8 @@ public:
     /// Adds an instructional label informing the user to select the bullet
     /// diameter from the dialog.
     ///
-    /// \param toolbar The toolbar widget to populate
-    void populateToolbar(QToolBar* toolbar) override;
+    /// \param pToolbar The toolbar widget to populate
+    void populateToolbar(QToolBar* pToolbar) override;
     
     /// @brief Returns the display name of this state
     ///

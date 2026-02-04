@@ -14,8 +14,8 @@ namespace {
     };
 }
 
-WorkflowToolbar::WorkflowToolbar(QWidget* parent)
-    : QToolBar(parent)
+WorkflowToolbar::WorkflowToolbar(QWidget* pParent)
+    : QToolBar(pParent)
 {
     setWindowTitle(tr("Workflow"));
     setMovable(false);
@@ -53,9 +53,9 @@ void WorkflowToolbar::setupButtons()
     }
 }
 
-void WorkflowToolbar::setDocument(ShotGroupDocument* doc)
+void WorkflowToolbar::setDocument(ShotGroupDocument* pDocument)
 {
-    m_pDocument = doc;
+    m_pDocument = pDocument;
     
     if (m_pDocument)
     {

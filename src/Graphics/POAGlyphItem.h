@@ -27,7 +27,7 @@ public:
     
     /// Sets the color of the glyph lines.
     /// \param color The new color for the X marker.
-    void setColor(const QColor &color);
+    void setColor(const QColor& color);
 
     // QGraphicsItem interface
     

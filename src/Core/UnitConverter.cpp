@@ -100,7 +100,7 @@ QString UnitConverter::unitSuffix(Unit unit)
     return "";
 }
 
-UnitConverter::Unit UnitConverter::unitFromString(const QString &str)
+UnitConverter::Unit UnitConverter::unitFromString(const QString& str)
 {
     QString lower = str.toLower();
     if (lower == "moa")

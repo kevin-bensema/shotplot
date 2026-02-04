@@ -26,8 +26,8 @@ public:
     /// Initializes the dialog with preset caliber options and sets up the UI.
     /// The dialog defaults to .308 caliber (0.308 inches) selection.
     ///
-    /// \param parent Parent widget (typically the main window)
-    explicit CaliberDialog(QWidget* parent = nullptr);
+    /// \param pParent Parent widget (typically the main window)
+    explicit CaliberDialog(QWidget* pParent = nullptr);
     
     ~CaliberDialog();
 

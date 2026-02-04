@@ -34,8 +34,8 @@ public:
     /// mouse tracking enabled, and a dark gray background. The view is
     /// configured to use manual pan/zoom handling rather than Qt's default
     /// drag mode.
-    /// \param parent The parent widget
-    explicit TargetView(QWidget* parent = nullptr);
+    /// \param pParent The parent widget
+    explicit TargetView(QWidget* pParent = nullptr);
 
     /// Sets the current workflow state for event delegation
     ///
@@ -94,15 +94,15 @@ signals:
     /// The position is in scene coordinates (pixel coordinates relative to
     /// the target image).
     /// \param scenePos The current mouse position in scene coordinates
-    void mousePositionChanged(const QPointF &scenePos);
+    void mousePositionChanged(const QPointF& scenePos);
 
 protected:
     /// Handles mouse wheel events for zooming
     ///
     /// Scrolls up zoom in, scrolls down zoom out. The zoom is applied
     /// immediately and respects the configured zoom limits.
-    /// \param event The wheel event containing scroll delta information
-    void wheelEvent(QWheelEvent* event) override;
+    /// \param pEvent The wheel event containing scroll delta information
+    void wheelEvent(QWheelEvent* pEvent) override;
     
     /// Handles mouse button press events
     ///
@@ -111,8 +111,8 @@ protected:
     /// immediately delegated to the current state's handleRightClick().
     /// Left clicks are deferred to mouseReleaseEvent to distinguish clicks
     /// from drag gestures.
-    /// \param event The mouse press event
-    void mousePressEvent(QMouseEvent* event) override;
+    /// \param pEvent The mouse press event
+    void mousePressEvent(QMouseEvent* pEvent) override;
     
     /// Handles mouse movement events
     ///
@@ -121,8 +121,8 @@ protected:
     /// a left-button drag exceeds CLICK_THRESHOLD to initiate panning, and
     /// delegates movement to the current state's handleMouseMove() for
     /// state-specific visual feedback.
-    /// \param event The mouse move event
-    void mouseMoveEvent(QMouseEvent* event) override;
+    /// \param pEvent The mouse move event
+    void mouseMoveEvent(QMouseEvent* pEvent) override;
     
     /// Handles mouse button release events
     ///
@@ -130,8 +130,8 @@ protected:
     /// the movement distance was below CLICK_THRESHOLD to determine if
     /// this was a click (not a drag), and if so, delegates to the current
     /// state's handleMouseClick().
-    /// \param event The mouse release event
-    void mouseReleaseEvent(QMouseEvent* event) override;
+    /// \param pEvent The mouse release event
+    void mouseReleaseEvent(QMouseEvent* pEvent) override;
 
 private:
     /// Updates the cursor based on the current workflow state

@@ -13,7 +13,7 @@ struct Circle
     double radius = 0.0;  ///< Radius of the circle (must be non-negative)
     
     Circle() = default;
-    Circle(const QPointF &c, double r) : center(c), radius(r) {}
+    Circle(const QPointF& c, double r) : center(c), radius(r) {}
     
     /// Check if a point lies within or on the boundary of this circle
     ///
@@ -23,7 +23,7 @@ struct Circle
     /// \param p The point to test
     /// \param epsilon Tolerance for floating-point comparison (default: 1e-9)
     /// \return True if the point is within or on the circle boundary
-    bool contains(const QPointF &p, double epsilon = 1e-9) const;
+    bool contains(const QPointF& p, double epsilon = 1e-9) const;
 };
 
 /// @brief Implements the smallest enclosing circle algorithm
@@ -53,7 +53,7 @@ public:
     ///
     /// \param points List of points to enclose (must not be null)
     /// \return Circle structure containing the center and radius of the MEC
-    static Circle findSmallestEnclosingCircle(const QList<QPointF> &points);
+    static Circle findSmallestEnclosingCircle(const QList<QPointF>& points);
     
     /// Create a circle from two points (diameter endpoints)
     ///
@@ -64,7 +64,7 @@ public:
     /// \param p1 First point on the circle boundary
     /// \param p2 Second point on the circle boundary (diametrically opposite p1)
     /// \return Circle with p1 and p2 as diameter endpoints
-    static Circle circleFromTwoPoints(const QPointF &p1, const QPointF &p2);
+    static Circle circleFromTwoPoints(const QPointF& p1, const QPointF& p2);
     
     /// Create circumcircle from three points
     ///
@@ -77,7 +77,7 @@ public:
     /// \param p2 Second point on the circle boundary
     /// \param p3 Third point on the circle boundary
     /// \return Circle passing through all three points, or two-point circle if collinear
-    static Circle circleFromThreePoints(const QPointF &p1, const QPointF &p2, const QPointF &p3);
+    static Circle circleFromThreePoints(const QPointF& p1, const QPointF& p2, const QPointF& p3);
     
     /// Check if circle encloses all points
     ///
@@ -88,7 +88,7 @@ public:
     /// \param c The circle to test
     /// \param points List of points that must all be enclosed
     /// \return True if all points are contained within the circle, false otherwise
-    static bool circleEnclosesAllPoints(const Circle &c, const QList<QPointF> &points);
+    static bool circleEnclosesAllPoints(const Circle& c, const QList<QPointF>& points);
 
 private:
     MinimumEnclosingCircle() = delete;

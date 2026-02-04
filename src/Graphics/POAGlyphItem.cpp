@@ -28,7 +28,7 @@ void POAGlyphItem::setSize(double size)
     update();
 }
 
-void POAGlyphItem::setColor(const QColor &color)
+void POAGlyphItem::setColor(const QColor& color)
 {
     m_color = color;
     update();

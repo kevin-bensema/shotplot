@@ -36,7 +36,7 @@ public:
     /// \param impacts List of shot impacts to analyze
     /// \return Statistics structure containing all calculated values, with
     ///         valid=false if fewer than 2 impacts provided
-    static Statistics calculate(const QList<ShotImpact> &impacts);
+    static Statistics calculate(const QList<ShotImpact>& impacts);
     
     /// Calculate centroid (geometric center) of points
     ///
@@ -47,7 +47,7 @@ public:
     ///
     /// \param points List of points to analyze
     /// \return Centroid point (average of all coordinates), or (0,0) if empty
-    static QPointF calculateCentroid(const QList<QPointF> &points);
+    static QPointF calculateCentroid(const QList<QPointF>& points);
     
     /// Calculate mean radius from centroid
     ///
@@ -57,7 +57,7 @@ public:
     /// \param points List of points to analyze
     /// \param centroid Reference point for distance calculations
     /// \return Average radial distance in pixels, or 0.0 if points list is empty
-    static double calculateMeanRadius(const QList<QPointF> &points, const QPointF &centroid);
+    static double calculateMeanRadius(const QList<QPointF>& points, const QPointF& centroid);
     
     /// Calculate standard deviation of radial distances
     ///
@@ -69,8 +69,8 @@ public:
     /// \param centroid Reference point for distance calculations
     /// \param meanRadius Pre-calculated mean radius (from calculateMeanRadius)
     /// \return Sample standard deviation in pixels, or 0.0 if fewer than 2 points
-    static double calculateStandardDeviation(const QList<QPointF> &points,
-                                             const QPointF &centroid,
+    static double calculateStandardDeviation(const QList<QPointF>& points,
+                                             const QPointF& centroid,
                                              double meanRadius);
     
     /// Find smallest enclosing circle for all points (100% group)
@@ -82,7 +82,7 @@ public:
     /// \param points List of points to enclose
     /// \return GroupCircle containing center, radius, and indices of all points,
     ///         or invalid circle (radius=0) if points list is empty
-    static GroupCircle findFullGroupCircle(const QList<QPointF> &points);
+    static GroupCircle findFullGroupCircle(const QList<QPointF>& points);
     
     /// Find smallest enclosing circle for 80% of points
     ///
@@ -97,7 +97,7 @@ public:
     /// \param points List of points to analyze (should have at least 3 for meaningful results)
     /// \return GroupCircle containing center, radius, and indices of included points,
     ///         or invalid circle if fewer than 2 points provided
-    static GroupCircle find80PercentGroupCircle(const QList<QPointF> &points);
+    static GroupCircle find80PercentGroupCircle(const QList<QPointF>& points);
     
     /// Find smallest enclosing circle for 90% of points
     ///
@@ -112,7 +112,7 @@ public:
     /// \param points List of points to analyze (should have at least 3 for meaningful results)
     /// \return GroupCircle containing center, radius, and indices of included points,
     ///         or invalid circle if fewer than 2 points provided
-    static GroupCircle find90PercentGroupCircle(const QList<QPointF> &points);
+    static GroupCircle find90PercentGroupCircle(const QList<QPointF>& points);
 
 private:
     // Not instantiable - static methods only
@@ -132,5 +132,5 @@ private:
     /// \param points List of points to analyze
     /// \param percentage Fraction of points to include (e.g., 0.80 for 80%)
     /// \return GroupCircle for the selected subset, or invalid circle if fewer than 2 points
-    static GroupCircle findPercentageGroupCircle(const QList<QPointF> &points, double percentage);
+    static GroupCircle findPercentageGroupCircle(const QList<QPointF>& points, double percentage);
 };

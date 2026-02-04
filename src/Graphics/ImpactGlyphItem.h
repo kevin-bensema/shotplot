@@ -21,8 +21,8 @@ public:
     /// 
     /// \param shotNumber The shot number to display in the center
     /// \param diameter The diameter of the circle in scene coordinates
-    /// \param parent Optional parent graphics item
-    explicit ImpactGlyphItem(int shotNumber, double diameter, QGraphicsItem* parent = nullptr);
+    /// \param pParent Optional parent graphics item
+    explicit ImpactGlyphItem(int shotNumber, double diameter, QGraphicsItem* pParent = nullptr);
 
     int shotNumber() const;
     
@@ -46,7 +46,7 @@ public:
     /// @brief Sets the circle color and triggers a repaint
     /// 
     /// \param color The color for the circle outline
-    void setColor(const QColor &color);
+    void setColor(const QColor& color);
 
     // QGraphicsItem interface
     
@@ -61,7 +61,7 @@ public:
     /// Draws four arc segments with gaps at cardinal directions
     /// (N, S, E, W) and renders the shot number in the center
     /// with white fill and black outline.
-    void paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget) override;
+    void paint(QPainter* pPainter, const QStyleOptionGraphicsItem* pOption, QWidget* pWidget) override;
 
 private:
     int m_shotNumber;              ///< Shot number displayed in center

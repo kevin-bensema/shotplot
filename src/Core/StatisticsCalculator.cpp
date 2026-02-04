@@ -5,11 +5,12 @@
 #include <algorithm>
 #include <numeric>
 
-Statistics StatisticsCalculator::calculate(const QList<ShotImpact> &impacts)
+Statistics StatisticsCalculator::calculate(const QList<ShotImpact>& impacts)
 {
     Statistics stats;
     
-    if (impacts.size() < 2) {
+    if (impacts.size() < 2) 
+    {
         stats.valid = false;
         return stats;
     }
@@ -17,7 +18,8 @@ Statistics StatisticsCalculator::calculate(const QList<ShotImpact> &impacts)
     // Extract positions
     QList<QPointF> points;
     points.reserve(impacts.size());
-    for (const auto &impact : impacts) {
+    for (const auto& impact : impacts) 
+    {
         points.append(impact.position());
     }
     
@@ -33,7 +35,8 @@ Statistics StatisticsCalculator::calculate(const QList<ShotImpact> &impacts)
     // Calculate group circles
     stats.fullGroupCircle = findFullGroupCircle(points);
     
-    if (impacts.size() >= 3) {
+    if (impacts.size() >= 3) 
+    {
         stats.group80Circle = find80PercentGroupCircle(points);
         stats.group90Circle = find90PercentGroupCircle(points);
     }
@@ -42,7 +45,7 @@ Statistics StatisticsCalculator::calculate(const QList<ShotImpact> &impacts)
     return stats;
 }
 
-QPointF StatisticsCalculator::calculateCentroid(const QList<QPointF> &points)
+QPointF StatisticsCalculator::calculateCentroid(const QList<QPointF>& points)
 {
     if (points.isEmpty())
     {
@@ -52,7 +55,7 @@ QPointF StatisticsCalculator::calculateCentroid(const QList<QPointF> &points)
     double sumX = 0.0;
     double sumY = 0.0;
     
-    for (const auto &p : points)
+    for (const auto& p : points)
     {
         sumX += p.x();
         sumY += p.y();
@@ -61,7 +64,7 @@ QPointF StatisticsCalculator::calculateCentroid(const QList<QPointF> &points)
     return QPointF(sumX / points.size(), sumY / points.size());
 }
 
-double StatisticsCalculator::calculateMeanRadius(const QList<QPointF> &points, const QPointF &centroid)
+double StatisticsCalculator::calculateMeanRadius(const QList<QPointF>& points, const QPointF& centroid)
 {
     if (points.isEmpty())
     {
@@ -70,7 +73,7 @@ double StatisticsCalculator::calculateMeanRadius(const QList<QPointF> &points, c
     
     double sumRadius = 0.0;
     
-    for (const auto &p : points)
+    for (const auto& p : points)
     {
         double dx = p.x() - centroid.x();
         double dy = p.y() - centroid.y();
@@ -80,8 +83,8 @@ double StatisticsCalculator::calculateMeanRadius(const QList<QPointF> &points, c
     return sumRadius / points.size();
 }
 
-double StatisticsCalculator::calculateStandardDeviation(const QList<QPointF> &points,
-                                                        const QPointF &centroid,
+double StatisticsCalculator::calculateStandardDeviation(const QList<QPointF>& points,
+                                                        const QPointF& centroid,
                                                         double meanRadius)
 {
     if (points.size() < 2)
@@ -91,7 +94,7 @@ double StatisticsCalculator::calculateStandardDeviation(const QList<QPointF> &po
     
     double sumSquaredDiff = 0.0;
     
-    for (const auto &p : points)
+    for (const auto& p : points)
     {
         double dx = p.x() - centroid.x();
         double dy = p.y() - centroid.y();
@@ -104,7 +107,7 @@ double StatisticsCalculator::calculateStandardDeviation(const QList<QPointF> &po
     return std::sqrt(sumSquaredDiff / (points.size() - 1));
 }
 
-GroupCircle StatisticsCalculator::findFullGroupCircle(const QList<QPointF> &points)
+GroupCircle StatisticsCalculator::findFullGroupCircle(const QList<QPointF>& points)
 {
     if (points.isEmpty())
     {
@@ -123,17 +126,17 @@ GroupCircle StatisticsCalculator::findFullGroupCircle(const QList<QPointF> &poin
     return GroupCircle(circle.center, circle.radius, indices);
 }
 
-GroupCircle StatisticsCalculator::find80PercentGroupCircle(const QList<QPointF> &points)
+GroupCircle StatisticsCalculator::find80PercentGroupCircle(const QList<QPointF>& points)
 {
     return findPercentageGroupCircle(points, 0.80);
 }
 
-GroupCircle StatisticsCalculator::find90PercentGroupCircle(const QList<QPointF> &points)
+GroupCircle StatisticsCalculator::find90PercentGroupCircle(const QList<QPointF>& points)
 {
     return findPercentageGroupCircle(points, 0.90);
 }
 
-GroupCircle StatisticsCalculator::findPercentageGroupCircle(const QList<QPointF> &points, double percentage)
+GroupCircle StatisticsCalculator::findPercentageGroupCircle(const QList<QPointF>& points, double percentage)
 {
     if (points.size() < 2)
     {
@@ -167,7 +170,7 @@ GroupCircle StatisticsCalculator::findPercentageGroupCircle(const QList<QPointF>
     
     // Sort by distance
     std::sort(distances.begin(), distances.end(),
-              [](const QPair<int, double> &a, const QPair<int, double> &b)
+              [](const QPair<int, double>& a, const QPair<int, double>& b)
               {
                   return a.second < b.second;
               });

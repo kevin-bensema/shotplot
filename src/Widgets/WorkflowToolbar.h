@@ -24,7 +24,7 @@ class WorkflowToolbar : public QToolBar
     Q_OBJECT
 
 public:
-    explicit WorkflowToolbar(QWidget* parent = nullptr);
+    explicit WorkflowToolbar(QWidget* pParent = nullptr);
     ~WorkflowToolbar();
 
     /// Associates a document with this toolbar and updates button enablement.
@@ -32,8 +32,8 @@ public:
     /// Connects to the document's dataChanged signal to automatically update
     /// button states when the document changes. If nullptr is passed, all
     /// buttons are disabled.
-    /// \param doc The document to associate with this toolbar, or nullptr to clear.
-    void setDocument(ShotGroupDocument* doc);
+    /// \param pDocument The document to associate with this toolbar, or nullptr to clear.
+    void setDocument(ShotGroupDocument* pDocument);
     
     /// Sets the currently active workflow state and updates button visual state.
     ///

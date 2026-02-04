@@ -9,8 +9,8 @@ namespace {
     const double kEndpointRadius = 5.0;       // Radius of the circular endpoint markers
 }
 
-ScaleLineItem::ScaleLineItem(QGraphicsItem* parent)
-    : QGraphicsItem(parent)
+ScaleLineItem::ScaleLineItem(QGraphicsItem* pParent)
+    : QGraphicsItem(pParent)
     , m_color(kColor)
     , m_lineWidth(kLineWidth)
     , m_endpointRadius(kEndpointRadius)
@@ -19,7 +19,7 @@ ScaleLineItem::ScaleLineItem(QGraphicsItem* parent)
 
 ScaleLineItem::~ScaleLineItem() = default;
 
-void ScaleLineItem::setLine(const QPointF &start, const QPointF &end)
+void ScaleLineItem::setLine(const QPointF& start, const QPointF& end)
 {
     prepareGeometryChange();
     m_start = start;
@@ -27,14 +27,14 @@ void ScaleLineItem::setLine(const QPointF &start, const QPointF &end)
     update();
 }
 
-void ScaleLineItem::setStartPoint(const QPointF &start)
+void ScaleLineItem::setStartPoint(const QPointF& start)
 {
     prepareGeometryChange();
     m_start = start;
     update();
 }
 
-void ScaleLineItem::setEndPoint(const QPointF &end)
+void ScaleLineItem::setEndPoint(const QPointF& end)
 {
     prepareGeometryChange();
     m_end = end;
@@ -63,23 +63,23 @@ QRectF ScaleLineItem::boundingRect() const
     return QRectF(minX, minY, maxX - minX, maxY - minY);
 }
 
-void ScaleLineItem::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget)
+void ScaleLineItem::paint(QPainter* pPainter, const QStyleOptionGraphicsItem* pOption, QWidget* pWidget)
 {
-    Q_UNUSED(option)
-    Q_UNUSED(widget)
+    Q_UNUSED(pOption)
+    Q_UNUSED(pWidget)
 
-    painter->setRenderHint(QPainter::Antialiasing);
+    pPainter->setRenderHint(QPainter::Antialiasing);
 
     QPen pen(m_color);
     pen.setWidthF(m_lineWidth);
     pen.setCapStyle(Qt::RoundCap);
-    painter->setPen(pen);
+    pPainter->setPen(pen);
 
     // Draw line
-    painter->drawLine(m_start, m_end);
+    pPainter->drawLine(m_start, m_end);
 
     // Draw endpoints as filled circles
-    painter->setBrush(m_color);
-    painter->drawEllipse(m_start, m_endpointRadius, m_endpointRadius);
-    painter->drawEllipse(m_end, m_endpointRadius, m_endpointRadius);
+    pPainter->setBrush(m_color);
+    pPainter->drawEllipse(m_start, m_endpointRadius, m_endpointRadius);
+    pPainter->drawEllipse(m_end, m_endpointRadius, m_endpointRadius);
 }

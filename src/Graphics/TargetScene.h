@@ -32,7 +32,7 @@ class TargetScene : public QGraphicsScene
     Q_OBJECT
 
 public:
-    explicit TargetScene(QObject* parent = nullptr);
+    explicit TargetScene(QObject* pParent = nullptr);
 
     // Image management
     /// @brief Sets the target image as the background of the scene
@@ -43,7 +43,7 @@ public:
     /// all overlay elements.
     /// 
     /// \param image The target image to display. If null, no image is set.
-    void setTargetImage(const QImage &image);
+    void setTargetImage(const QImage& image);
     
     /// @brief Removes the target image from the scene
     /// 
@@ -57,8 +57,8 @@ public:
     /// impactsChanged and visualizationSettingsChanged signals to
     /// automatically update the display when document data changes.
     /// 
-    /// \param doc The document to connect to. Can be nullptr to disconnect.
-    void setDocument(ShotGroupDocument* doc);
+    /// \param pDocument The document to connect to. Can be nullptr to disconnect.
+    void setDocument(ShotGroupDocument* pDocument);
 
     // Impact glyphs
     /// @brief Adds a new impact glyph marker to the scene
@@ -96,7 +96,7 @@ public:
     /// as an X-shaped marker at z-value 90.
     /// 
     /// \param position Scene coordinates for the point of aim
-    void setPOAGlyph(const QPointF &position);
+    void setPOAGlyph(const QPointF& position);
     
     /// @brief Removes the POA glyph from the scene
     void clearPOAGlyph();
@@ -114,7 +114,7 @@ public:
     /// 
     /// \param center Center point of the circle in scene coordinates
     /// \param radius Radius of the circle in scene coordinates
-    void setFullGroupCircle(const QPointF &center, double radius);
+    void setFullGroupCircle(const QPointF& center, double radius);
     
     /// @brief Sets the 80% group circle
     /// 
@@ -123,7 +123,7 @@ public:
     /// 
     /// \param center Center point of the circle in scene coordinates
     /// \param radius Radius of the circle in scene coordinates
-    void set80GroupCircle(const QPointF &center, double radius);
+    void set80GroupCircle(const QPointF& center, double radius);
     
     /// @brief Sets the 90% group circle
     /// 
@@ -132,7 +132,7 @@ public:
     /// 
     /// \param center Center point of the circle in scene coordinates
     /// \param radius Radius of the circle in scene coordinates
-    void set90GroupCircle(const QPointF &center, double radius);
+    void set90GroupCircle(const QPointF& center, double radius);
     
     /// @brief Removes all group circles from the scene
     void clearGroupCircles();
@@ -153,7 +153,7 @@ public:
     /// 
     /// \param start Starting point of the line in scene coordinates
     /// \param end Ending point of the line in scene coordinates
-    void showScaleLine(const QPointF &start, const QPointF &end);
+    void showScaleLine(const QPointF& start, const QPointF& end);
     
     /// @brief Hides the scale line without removing it
     /// 
@@ -167,7 +167,7 @@ public:
     /// an interactive calibration where the user drags to set the end point.
     /// 
     /// \param start Starting point of the line in scene coordinates
-    void setScaleLineStart(const QPointF &start);
+    void setScaleLineStart(const QPointF& start);
     
     /// @brief Updates only the end point of an existing scale line
     /// 
@@ -175,7 +175,7 @@ public:
     /// interactive calibration when the user is dragging to set the end point.
     /// 
     /// \param end New ending point of the line in scene coordinates
-    void updateScaleLineEnd(const QPointF &end);
+    void updateScaleLineEnd(const QPointF& end);
 
 private:
     /// @brief Updates scene visualization based on document settings

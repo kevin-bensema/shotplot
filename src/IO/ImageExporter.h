@@ -46,10 +46,10 @@ public:
     /// \param errorMsg Optional pointer to receive error message on failure
     /// \return True if export succeeded, false otherwise
     /// \note Returns false if scene is null, target image is invalid, or file save fails
-    static bool exportImage(const ShotGroupDocument &document,
+    static bool exportImage(const ShotGroupDocument& document,
                            TargetScene* pScene,
-                           const QString &filePath,
-                           const Options &options = Options(),
+                           const QString& filePath,
+                           const Options& options = Options(),
                            QString* pErrorMsg = nullptr);
     
     /// Renders the annotated scene to a QImage
@@ -62,9 +62,9 @@ public:
     /// \param scene The graphics scene to render (must not be null)
     /// \param options Export options (currently not fully implemented)
     /// \return Rendered QImage, or null QImage if scene is null or target image is invalid
-    static QImage renderToImage(const ShotGroupDocument &document,
+    static QImage renderToImage(const ShotGroupDocument& document,
                                 TargetScene* pScene,
-                                const Options &options = Options());
+                                const Options& options = Options());
 
 private:
     ImageExporter() = delete;

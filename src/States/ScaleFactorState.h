@@ -47,7 +47,7 @@ public:
     /// distance. The scale factor is stored in the document and the state
     /// signals completion.
     /// \param scenePos The mouse click position in scene coordinates
-    void handleMouseClick(const QPointF &scenePos) override;
+    void handleMouseClick(const QPointF& scenePos) override;
     
     /// Updates the visual scale line preview during mouse movement
     ///
@@ -55,7 +55,7 @@ public:
     /// scale line to follow the mouse cursor, providing real-time visual
     /// feedback of the calibration distance.
     /// \param scenePos The current mouse position in scene coordinates
-    void handleMouseMove(const QPointF &scenePos) override;
+    void handleMouseMove(const QPointF& scenePos) override;
     
     /// Returns true if the document has a valid scale factor set
     bool isComplete() const override;

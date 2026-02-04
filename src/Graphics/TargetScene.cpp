@@ -3,7 +3,7 @@
 #include "POAGlyphItem.h"
 #include "GroupCircleItem.h"
 #include "ScaleLineItem.h"
-#include "Core/ShotGroupDocument.h"
+#include <Core/ShotGroupDocument.h>
 
 #include <QGraphicsPixmapItem>
 
@@ -18,12 +18,12 @@ namespace
     constexpr double kScaleLineZValue = 200.0;
 }
 
-TargetScene::TargetScene(QObject* parent)
-    : QGraphicsScene(parent)
+TargetScene::TargetScene(QObject* pParent)
+    : QGraphicsScene(pParent)
 {
 }
 
-void TargetScene::setTargetImage(const QImage &image)
+void TargetScene::setTargetImage(const QImage& image)
 {
     clearTargetImage();
     
@@ -49,9 +49,9 @@ void TargetScene::clearTargetImage()
     }
 }
 
-void TargetScene::setDocument(ShotGroupDocument* pDoc)
+void TargetScene::setDocument(ShotGroupDocument* pDocument)
 {
-    m_pDocument = pDoc;
+    m_pDocument = pDocument;
     
     if (m_pDocument)
     {
@@ -62,7 +62,7 @@ void TargetScene::setDocument(ShotGroupDocument* pDoc)
     }
 }
 
-ImpactGlyphItem* TargetScene::addImpactGlyph(int id, const QPointF &position, double diameterPixels)
+ImpactGlyphItem* TargetScene::addImpactGlyph(int id, const QPointF& position, double diameterPixels)
 {
     auto* pGlyph = new ImpactGlyphItem(id, diameterPixels);
     pGlyph->setPos(position);
@@ -100,7 +100,7 @@ void TargetScene::updateImpactGlyphSizes(double diameterPixels)
     }
 }
 
-void TargetScene::setPOAGlyph(const QPointF &position)
+void TargetScene::setPOAGlyph(const QPointF& position)
 {
     if (!m_pPoaGlyph)
     {
@@ -130,7 +130,7 @@ void TargetScene::setPOAVisible(bool visible)
     }
 }
 
-void TargetScene::setFullGroupCircle(const QPointF &center, double radius)
+void TargetScene::setFullGroupCircle(const QPointF& center, double radius)
 {
     if (!m_pFullGroupCircle)
     {
@@ -141,7 +141,7 @@ void TargetScene::setFullGroupCircle(const QPointF &center, double radius)
     m_pFullGroupCircle->setCircle(center, radius);
 }
 
-void TargetScene::set80GroupCircle(const QPointF &center, double radius)
+void TargetScene::set80GroupCircle(const QPointF& center, double radius)
 {
     if (!m_p80GroupCircle)
     {
@@ -152,7 +152,7 @@ void TargetScene::set80GroupCircle(const QPointF &center, double radius)
     m_p80GroupCircle->setCircle(center, radius);
 }
 
-void TargetScene::set90GroupCircle(const QPointF &center, double radius)
+void TargetScene::set90GroupCircle(const QPointF& center, double radius)
 {
     if (!m_p90GroupCircle)
     {
@@ -201,7 +201,7 @@ void TargetScene::setGroupCirclesVisible(bool full, bool g80, bool g90)
     }
 }
 
-void TargetScene::showScaleLine(const QPointF &start, const QPointF &end)
+void TargetScene::showScaleLine(const QPointF& start, const QPointF& end)
 {
     if (!m_pScaleLine)
     {
@@ -221,7 +221,7 @@ void TargetScene::hideScaleLine()
     }
 }
 
-void TargetScene::setScaleLineStart(const QPointF &start)
+void TargetScene::setScaleLineStart(const QPointF& start)
 {
     if (!m_pScaleLine)
     {
@@ -233,7 +233,7 @@ void TargetScene::setScaleLineStart(const QPointF &start)
     m_pScaleLine->setVisible(true);
 }
 
-void TargetScene::updateScaleLineEnd(const QPointF &end)
+void TargetScene::updateScaleLineEnd(const QPointF& end)
 {
     if (m_pScaleLine)
     {

@@ -2,7 +2,7 @@
 
 #include <QUndoCommand>
 #include <QList>
-#include "Core/ShotImpact.h"
+#include <Core/ShotImpact.h>
 
 class ShotGroupDocument;
 class TargetScene;

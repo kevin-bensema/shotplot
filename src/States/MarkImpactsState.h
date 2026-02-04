@@ -22,12 +22,12 @@ class MarkImpactsState : public WorkflowState
 
 public:
     /// Constructs a new MarkImpactsState
-    /// \param document The document containing impact data
-    /// \param view The target view widget
-    /// \param scene The graphics scene for rendering impact glyphs
-    /// \param undoStack The undo stack for command-based modifications
-    MarkImpactsState(ShotGroupDocument* document, TargetView* view, 
-                     TargetScene* scene, QUndoStack* undoStack);
+    /// \param pDocument The document containing impact data
+    /// \param pView The target view widget
+    /// \param pScene The graphics scene for rendering impact glyphs
+    /// \param pUndoStack The undo stack for command-based modifications
+    MarkImpactsState(ShotGroupDocument* pDocument, TargetView* pView, 
+                     TargetScene* pScene, QUndoStack* pUndoStack);
     ~MarkImpactsState();
 
     /// Initializes the state by recreating impact glyphs from document data
@@ -39,11 +39,11 @@ public:
     
     /// Adds a new impact at the specified scene position.
     /// \param scenePos The position in scene coordinates where the impact occurred
-    void handleMouseClick(const QPointF &scenePos) override;
+    void handleMouseClick(const QPointF& scenePos) override;
     
     /// Removes the impact nearest to the specified scene position if within hit radius.
     /// \param scenePos The position in scene coordinates to check for impact removal
-    void handleRightClick(const QPointF &scenePos) override;
+    void handleRightClick(const QPointF& scenePos) override;
     
     /// Returns true if at least one impact has been marked.
     bool isComplete() const override;
@@ -52,8 +52,8 @@ public:
     QCursor cursor() const override;
     
     /// Populates the toolbar with state-specific controls, including a "Clear All" button.
-    /// \param toolbar The toolbar widget to populate
-    void populateToolbar(QToolBar* toolbar) override;
+    /// \param pToolbar The toolbar widget to populate
+    void populateToolbar(QToolBar* pToolbar) override;
     
     /// Returns the display name of this state.
     QString stateName() const override;

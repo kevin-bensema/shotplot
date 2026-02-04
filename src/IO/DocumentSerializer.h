@@ -9,10 +9,10 @@ class DocumentSerializer
 {
 public:
     /// Save document to .spz file
-    static bool save(const ShotGroupDocument &document, const QString &filePath, QString* pErrorMsg = nullptr);
+    static bool save(const ShotGroupDocument& document, const QString& filePath, QString* pErrorMsg = nullptr);
     
     /// Load document from .spz file
-    static bool load(ShotGroupDocument &document, const QString &filePath, QString* pErrorMsg = nullptr);
+    static bool load(ShotGroupDocument& document, const QString& filePath, QString* pErrorMsg = nullptr);
 
 private:
     DocumentSerializer() = delete;

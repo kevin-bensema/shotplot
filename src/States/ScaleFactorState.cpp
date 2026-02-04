@@ -1,7 +1,7 @@
 #include "ScaleFactorState.h"
-#include "Core/ShotGroupDocument.h"
-#include "Widgets/TargetView.h"
-#include "Graphics/TargetScene.h"
+#include <Core/ShotGroupDocument.h>
+#include <Widgets/TargetView.h>
+#include <Graphics/TargetScene.h>
 
 #include <QToolBar>
 #include <QLabel>
@@ -36,7 +36,7 @@ void ScaleFactorState::onExit()
     m_hasFirstPoint = false;
 }
 
-void ScaleFactorState::handleMouseClick(const QPointF &scenePos)
+void ScaleFactorState::handleMouseClick(const QPointF& scenePos)
 {
     if (!m_hasFirstPoint)
     {
@@ -73,7 +73,7 @@ void ScaleFactorState::handleMouseClick(const QPointF &scenePos)
     }
 }
 
-void ScaleFactorState::handleMouseMove(const QPointF &scenePos)
+void ScaleFactorState::handleMouseMove(const QPointF& scenePos)
 {
     if (m_hasFirstPoint)
     {

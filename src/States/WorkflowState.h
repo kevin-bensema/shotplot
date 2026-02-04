@@ -58,7 +58,7 @@ public:
     /// impacts, or triggering state transitions. The position is in scene
     /// coordinates (pixel coordinates relative to the target image).
     /// \param scenePos The mouse click position in scene coordinates
-    virtual void handleMouseClick(const QPointF &scenePos) = 0;
+    virtual void handleMouseClick(const QPointF& scenePos) = 0;
     
     /// Handles right mouse button clicks at the specified scene position
     ///
@@ -66,7 +66,7 @@ public:
     /// provide right-click functionality such as removing impacts or canceling
     /// operations. The position is in scene coordinates.
     /// \param scenePos The mouse click position in scene coordinates
-    virtual void handleRightClick(const QPointF &scenePos);
+    virtual void handleRightClick(const QPointF& scenePos);
     
     /// Handles mouse movement at the specified scene position
     ///
@@ -74,7 +74,7 @@ public:
     /// provide real-time visual feedback such as preview lines or cursor
     /// updates during mouse movement. The position is in scene coordinates.
     /// \param scenePos The current mouse position in scene coordinates
-    virtual void handleMouseMove(const QPointF &scenePos);
+    virtual void handleMouseMove(const QPointF& scenePos);
     
     /// Checks whether this state has been completed and can transition
     ///

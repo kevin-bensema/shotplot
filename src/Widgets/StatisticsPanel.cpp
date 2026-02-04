@@ -1,6 +1,6 @@
 #include "StatisticsPanel.h"
-#include "Core/ShotGroupDocument.h"
-#include "Core/UnitConverter.h"
+#include <Core/ShotGroupDocument.h>
+#include <Core/UnitConverter.h>
 
 #include <QVBoxLayout>
 #include <QLabel>
@@ -18,8 +18,8 @@ namespace
     constexpr int kMinImpactCountForStatistics = 2;
 }
 
-StatisticsPanel::StatisticsPanel(QWidget* parent)
-    : QWidget(parent)
+StatisticsPanel::StatisticsPanel(QWidget* pParent)
+    : QWidget(pParent)
 {
     setupUi();
 }
@@ -89,9 +89,9 @@ void StatisticsPanel::setupUi()
     pLayout->addStretch();
 }
 
-void StatisticsPanel::setDocument(ShotGroupDocument* doc)
+void StatisticsPanel::setDocument(ShotGroupDocument* pDocument)
 {
-    m_pDocument = doc;
+    m_pDocument = pDocument;
     
     if (m_pDocument)
     {

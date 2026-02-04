@@ -100,7 +100,7 @@ public:
     /// Returns Unit::Inches as the default if the string doesn't match.
     /// \param str The string to parse (e.g., from settings or user input)
     /// \return The corresponding Unit value, or Unit::Inches if unrecognized
-    static Unit unitFromString(const QString &str);
+    static Unit unitFromString(const QString& str);
     
     /// Converts a Unit enum value to its string representation
     ///

@@ -29,22 +29,22 @@ namespace {
     constexpr const char* kDefaultDisplayUnit = "inches";
 }
 
-#include "Widgets/TargetView.h"
-#include "Widgets/WorkflowToolbar.h"
-#include "Widgets/PerStateToolbar.h"
-#include "Widgets/StatisticsPanel.h"
-#include "Graphics/TargetScene.h"
-#include "Core/ShotGroupDocument.h"
+#include <Widgets/TargetView.h>
+#include <Widgets/WorkflowToolbar.h>
+#include <Widgets/PerStateToolbar.h>
+#include <Widgets/StatisticsPanel.h>
+#include <Graphics/TargetScene.h>
+#include <Core/ShotGroupDocument.h>
 
-#include "States/WorkflowState.h"
-#include "States/SetCaliberState.h"
-#include "States/ScaleFactorState.h"
-#include "States/POAState.h"
-#include "States/MarkImpactsState.h"
-#include "States/VisualizationState.h"
+#include <States/WorkflowState.h>
+#include <States/SetCaliberState.h>
+#include <States/ScaleFactorState.h>
+#include <States/POAState.h>
+#include <States/MarkImpactsState.h>
+#include <States/VisualizationState.h>
 
-MainWindow::MainWindow(QWidget* parent)
-    : QMainWindow(parent)
+MainWindow::MainWindow(QWidget* pParent)
+    : QMainWindow(pParent)
     , m_pUndoStack(new QUndoStack(this))
 {
     setupUi();

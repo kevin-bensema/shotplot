@@ -1,7 +1,7 @@
 #include "VisualizationState.h"
-#include "Core/ShotGroupDocument.h"
-#include "Widgets/TargetView.h"
-#include "Graphics/TargetScene.h"
+#include <Core/ShotGroupDocument.h>
+#include <Widgets/TargetView.h>
+#include <Graphics/TargetScene.h>
 
 #include <QToolBar>
 #include <QLabel>

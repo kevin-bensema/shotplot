@@ -1,5 +1,5 @@
 #include "DocumentSerializer.h"
-#include "Core/ShotGroupDocument.h"
+#include <Core/ShotGroupDocument.h>
 
 #include <QJsonDocument>
 #include <QJsonObject>
@@ -14,7 +14,7 @@ namespace
     constexpr const char* kMetadataFilename = "metadata.json";
 }
 
-bool DocumentSerializer::save(const ShotGroupDocument &document, const QString &filePath, QString* pErrorMsg)
+bool DocumentSerializer::save(const ShotGroupDocument& document, const QString& filePath, QString* pErrorMsg)
 {
     int error = 0;
     zip_t* pArchive = zip_open(filePath.toUtf8().constData(), ZIP_CREATE | ZIP_TRUNCATE, &error);
@@ -97,7 +97,7 @@ bool DocumentSerializer::save(const ShotGroupDocument &document, const QString &
     return success;
 }
 
-bool DocumentSerializer::load(ShotGroupDocument &document, const QString &filePath, QString* pErrorMsg)
+bool DocumentSerializer::load(ShotGroupDocument& document, const QString& filePath, QString* pErrorMsg)
 {
     int error = 0;
     zip_t* pArchive = zip_open(filePath.toUtf8().constData(), ZIP_RDONLY, &error);

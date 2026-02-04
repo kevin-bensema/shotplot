@@ -1,14 +1,14 @@
 #include "ImageExporter.h"
-#include "Core/ShotGroupDocument.h"
-#include "Graphics/TargetScene.h"
+#include <Core/ShotGroupDocument.h>
+#include <Graphics/TargetScene.h>
 
 #include <QPainter>
 #include <QFileInfo>
 
-bool ImageExporter::exportImage(const ShotGroupDocument &document,
+bool ImageExporter::exportImage(const ShotGroupDocument& document,
                                 TargetScene* pScene,
-                                const QString &filePath,
-                                const Options &options,
+                                const QString& filePath,
+                                const Options& options,
                                 QString* pErrorMsg)
 {
     QImage image = renderToImage(document, pScene, options);
@@ -49,9 +49,9 @@ bool ImageExporter::exportImage(const ShotGroupDocument &document,
     return true;
 }
 
-QImage ImageExporter::renderToImage(const ShotGroupDocument &document,
+QImage ImageExporter::renderToImage(const ShotGroupDocument& document,
                                     TargetScene* pScene,
-                                    const Options &options)
+                                    const Options& options)
 {
     Q_UNUSED(options)  // TODO: Use options to filter what's rendered
     

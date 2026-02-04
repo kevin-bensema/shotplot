@@ -27,8 +27,8 @@ class StatisticsPanel : public QWidget
 
 public:
     /// Constructs a statistics panel widget
-    /// \param parent The parent widget
-    explicit StatisticsPanel(QWidget* parent = nullptr);
+    /// \param pParent The parent widget
+    explicit StatisticsPanel(QWidget* pParent = nullptr);
     
     ~StatisticsPanel();
 
@@ -38,8 +38,8 @@ public:
     /// when impacts change or statistics are invalidated. Also synchronizes
     /// the display option checkboxes with the document's current visualization
     /// settings.
-    /// \param doc The shot group document to display statistics for (can be nullptr)
-    void setDocument(ShotGroupDocument* doc);
+    /// \param pDocument The shot group document to display statistics for (can be nullptr)
+    void setDocument(ShotGroupDocument* pDocument);
     
     /// Manually refreshes the statistics display
     ///

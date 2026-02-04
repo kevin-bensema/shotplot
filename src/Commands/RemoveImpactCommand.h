@@ -1,7 +1,7 @@
 #pragma once
 
 #include <QUndoCommand>
-#include "Core/ShotImpact.h"
+#include <Core/ShotImpact.h>
 
 class ShotGroupDocument;
 class TargetScene;
@@ -28,7 +28,7 @@ public:
     ///                       required to restore the glyph during undo.
     /// @param parent Optional parent command for command grouping.
     RemoveImpactCommand(ShotGroupDocument* pDocument, TargetScene* pScene,
-                        const ShotImpact &impact, double diameterPixels,
+                        const ShotImpact& impact, double diameterPixels,
                         QUndoCommand* pParent = nullptr);
     
     ~RemoveImpactCommand();

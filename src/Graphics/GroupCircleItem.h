@@ -25,8 +25,8 @@ public:
 
     /// Constructs a group circle item with the specified type
     /// \param type The circle type (determines color)
-    /// \param parent Optional parent graphics item
-    explicit GroupCircleItem(Type type, QGraphicsItem* parent = nullptr);
+    /// \param pParent Optional parent graphics item
+    explicit GroupCircleItem(Type type, QGraphicsItem* pParent = nullptr);
 
     /// Returns the circle type
     Type circleType() const;
@@ -48,7 +48,7 @@ public:
 
     // QGraphicsItem interface
     QRectF boundingRect() const override;
-    void paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget) override;
+    void paint(QPainter* pPainter, const QStyleOptionGraphicsItem* pOption, QWidget* pWidget) override;
 
 private:
     Type m_type;

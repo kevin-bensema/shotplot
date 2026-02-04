@@ -1,6 +1,6 @@
 #include "AddImpactCommand.h"
-#include "Core/ShotGroupDocument.h"
-#include "Graphics/TargetScene.h"
+#include <Core/ShotGroupDocument.h>
+#include <Graphics/TargetScene.h>
 
 AddImpactCommand::AddImpactCommand(ShotGroupDocument* pDocument, TargetScene* pScene,
                                    const ShotImpact &impact, double diameterPixels,

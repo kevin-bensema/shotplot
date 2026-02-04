@@ -42,7 +42,7 @@ struct GroupCircle
     /// \param radius The radius of the circle in pixels (must be non-negative)
     /// \param indices Optional list of shot indices enclosed by this circle.
     ///                If empty, the circle represents all shots in the group.
-    GroupCircle(const QPointF &center, double radius, const QList<int> &indices = {})
+    GroupCircle(const QPointF& center, double radius, const QList<int>& indices = {})
         : center(center), radiusPixels(radius), shotIndices(indices) {}
     
     /// Check if this group circle is valid

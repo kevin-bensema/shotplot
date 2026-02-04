@@ -8,13 +8,13 @@ WorkflowState::WorkflowState(ShotGroupDocument* pDocument, QObject* pParent)
 
 WorkflowState::~WorkflowState() = default;
 
-void WorkflowState::handleRightClick(const QPointF &scenePos)
+void WorkflowState::handleRightClick(const QPointF& scenePos)
 {
     Q_UNUSED(scenePos)
     // Default: do nothing
 }
 
-void WorkflowState::handleMouseMove(const QPointF &scenePos)
+void WorkflowState::handleMouseMove(const QPointF& scenePos)
 {
     Q_UNUSED(scenePos)
     // Default: do nothing

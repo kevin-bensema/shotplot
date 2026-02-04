@@ -20,8 +20,8 @@ namespace {
     const QString kDefaultPlaqueTitle = "Shot Group Statistics";
 }
 
-ShotGroupDocument::ShotGroupDocument(QObject* parent)
-    : QObject(parent)
+ShotGroupDocument::ShotGroupDocument(QObject* pParent)
+    : QObject(pParent)
     , m_targetDistance(kDefaultTargetDistance)
     , m_distanceUnit(kDefaultDistanceUnit)
     , m_sessionDate(QDate::currentDate())
@@ -42,7 +42,7 @@ QImage ShotGroupDocument::targetImage() const
     return m_targetImage;
 }
 
-void ShotGroupDocument::setTargetImage(const QImage &image)
+void ShotGroupDocument::setTargetImage(const QImage& image)
 {
     m_targetImage = image;
     setDirty(true);
@@ -99,7 +99,7 @@ QPointF ShotGroupDocument::pointOfAim() const
     return m_pointOfAim;
 }
 
-void ShotGroupDocument::setPointOfAim(const QPointF &poa)
+void ShotGroupDocument::setPointOfAim(const QPointF& poa)
 {
     m_pointOfAim = poa;
     m_hasPointOfAim = true;
@@ -155,7 +155,7 @@ QDate ShotGroupDocument::sessionDate() const
     return m_sessionDate;
 }
 
-void ShotGroupDocument::setSessionDate(const QDate &date)
+void ShotGroupDocument::setSessionDate(const QDate& date)
 {
     if (m_sessionDate != date) 
     {
@@ -215,7 +215,7 @@ void ShotGroupDocument::clearImpacts()
     }
 }
 
-void ShotGroupDocument::replaceImpacts(const QList<ShotImpact> &impacts)
+void ShotGroupDocument::replaceImpacts(const QList<ShotImpact>& impacts)
 {
     m_impacts = impacts;
     updateStatistics();
@@ -235,7 +235,7 @@ QString ShotGroupDocument::firearm() const
     return m_firearm;
 }
 
-void ShotGroupDocument::setFirearm(const QString &firearm)
+void ShotGroupDocument::setFirearm(const QString& firearm)
 {
     if (m_firearm != firearm)
     {
@@ -250,7 +250,7 @@ QString ShotGroupDocument::ammunition() const
     return m_ammunition;
 }
 
-void ShotGroupDocument::setAmmunition(const QString &ammo)
+void ShotGroupDocument::setAmmunition(const QString& ammo)
 {
     if (m_ammunition != ammo)
     {
@@ -265,7 +265,7 @@ QString ShotGroupDocument::notes() const
     return m_notes;
 }
 
-void ShotGroupDocument::setNotes(const QString &notes)
+void ShotGroupDocument::setNotes(const QString& notes)
 {
     if (m_notes != notes)
     {
@@ -342,7 +342,7 @@ ShotGroupDocument::PlaqueConfig ShotGroupDocument::plaqueConfig() const
     return m_plaqueConfig;
 }
 
-void ShotGroupDocument::setPlaqueConfig(const PlaqueConfig &config)
+void ShotGroupDocument::setPlaqueConfig(const PlaqueConfig& config)
 {
     m_plaqueConfig = config;
     setDirty(true);
@@ -417,7 +417,7 @@ bool ShotGroupDocument::canEnableVisualizationState() const
 
 // ===== Serialization =====
 
-bool ShotGroupDocument::saveToFile(const QString &filePath, QString* pErrorMsg)
+bool ShotGroupDocument::saveToFile(const QString& filePath, QString* pErrorMsg)
 {
     // TODO: Implement using DocumentSerializer with libzip
     Q_UNUSED(filePath)
@@ -428,7 +428,7 @@ bool ShotGroupDocument::saveToFile(const QString &filePath, QString* pErrorMsg)
     return false;
 }
 
-bool ShotGroupDocument::loadFromFile(const QString &filePath, QString* pErrorMsg)
+bool ShotGroupDocument::loadFromFile(const QString& filePath, QString* pErrorMsg)
 {
     // TODO: Implement using DocumentSerializer with libzip
     Q_UNUSED(filePath)
@@ -480,7 +480,6 @@ QJsonObject ShotGroupDocument::toJson() const
         shotObj["id"] = impact.id;
         shotObj["x"] = impact.x;
         shotObj["y"] = impact.y;
-        shotObj["notes"] = impact.notes;
         shotsArray.append(shotObj);
     }
     root["shots"] = shotsArray;
@@ -503,7 +502,7 @@ QJsonObject ShotGroupDocument::toJson() const
     return root;
 }
 
-bool ShotGroupDocument::fromJson(const QJsonObject &json, QString* pErrorMsg)
+bool ShotGroupDocument::fromJson(const QJsonObject& json, QString* pErrorMsg)
 {
     // Version check
     QString version = json["version"].toString();
@@ -540,14 +539,13 @@ bool ShotGroupDocument::fromJson(const QJsonObject &json, QString* pErrorMsg)
     m_impacts.clear();
     QJsonArray shotsArray = json["shots"].toArray();
     int maxId = 0;
-    for (const auto &shotVal : shotsArray) 
+    for (const auto& shotVal : shotsArray) 
     {
         QJsonObject shotObj = shotVal.toObject();
         ShotImpact impact;
         impact.id = shotObj["id"].toInt();
         impact.x = shotObj["x"].toDouble();
         impact.y = shotObj["y"].toDouble();
-        impact.notes = shotObj["notes"].toString();
         m_impacts.append(impact);
         maxId = qMax(maxId, impact.id);
     }

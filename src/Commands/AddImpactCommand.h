@@ -1,7 +1,7 @@
 #pragma once
 
 #include <QUndoCommand>
-#include "Core/ShotImpact.h"
+#include <Core/ShotImpact.h>
 
 class ShotGroupDocument;
 class TargetScene;

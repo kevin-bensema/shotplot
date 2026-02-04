@@ -26,8 +26,8 @@ namespace {
     };
 }
 
-CaliberDialog::CaliberDialog(QWidget* parent)
-    : QDialog(parent)
+CaliberDialog::CaliberDialog(QWidget* pParent)
+    : QDialog(pParent)
 {
     setWindowTitle(tr("Set Bullet Diameter"));
     setupUi();
@@ -95,7 +95,7 @@ void CaliberDialog::setupUi()
 
 void CaliberDialog::populatePresets()
 {
-    for (const auto &preset : kPresets)
+    for (const auto& preset : kPresets)
     {
         m_pPresetCombo->addItem(preset.first, preset.second);
     }

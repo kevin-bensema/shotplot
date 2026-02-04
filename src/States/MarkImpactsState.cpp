@@ -1,10 +1,10 @@
 #include "MarkImpactsState.h"
-#include "Core/ShotGroupDocument.h"
-#include "Core/ShotImpact.h"
-#include "Widgets/TargetView.h"
-#include "Graphics/TargetScene.h"
-#include "Commands/AddImpactCommand.h"
-#include "Commands/ClearImpactsCommand.h"
+#include <Core/ShotGroupDocument.h>
+#include <Core/ShotImpact.h>
+#include <Widgets/TargetView.h>
+#include <Graphics/TargetScene.h>
+#include <Commands/AddImpactCommand.h>
+#include <Commands/ClearImpactsCommand.h>
 
 #include <QToolBar>
 #include <QLabel>
@@ -36,7 +36,7 @@ void MarkImpactsState::onEnter()
     m_pScene->clearImpactGlyphs();
     double diameter = bulletDiameterPixels();
     
-    for (const auto &impact : m_pDocument->impacts())
+    for (const auto& impact : m_pDocument->impacts())
     {
         m_pScene->addImpactGlyph(impact.id, impact.position(), diameter);
     }
@@ -50,7 +50,7 @@ void MarkImpactsState::onExit()
                this, &MarkImpactsState::updateGroupCircles);
 }
 
-void MarkImpactsState::handleMouseClick(const QPointF &scenePos)
+void MarkImpactsState::handleMouseClick(const QPointF& scenePos)
 {
     // Create new impact
     int id = m_pDocument->nextImpactId();
@@ -60,7 +60,7 @@ void MarkImpactsState::handleMouseClick(const QPointF &scenePos)
     m_pUndoStack->push(new AddImpactCommand(m_pDocument, m_pScene, impact, bulletDiameterPixels()));
 }
 
-void MarkImpactsState::handleRightClick(const QPointF &scenePos)
+void MarkImpactsState::handleRightClick(const QPointF& scenePos)
 {
     // Find and remove impact at this position
     // For now, simple distance-based hit test

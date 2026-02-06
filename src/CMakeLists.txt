@@ -77,6 +77,7 @@ target_include_directories(ShotPlot PRIVATE
 
 # Link libraries
 target_link_libraries(ShotPlot PRIVATE
+    QX
     Qt6::Core
     Qt6::Widgets
     Qt6::Gui

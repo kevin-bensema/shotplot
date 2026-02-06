@@ -19,6 +19,9 @@ find_package(Qt6 REQUIRED COMPONENTS Core Widgets Gui)
 find_package(PkgConfig REQUIRED)
 pkg_check_modules(LIBZIP REQUIRED libzip)
 
+# Add QX shared library (must come before src so the target is available)
+add_subdirectory(src/QX)
+
 # Add source directory
 add_subdirectory(src)
 

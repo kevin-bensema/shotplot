@@ -1,0 +1,53 @@
+include(GenerateExportHeader)
+
+# QX library version (independent of the parent project)
+set(QX_VERSION 0.1.0)
+set(QX_SOVERSION 0)
+
+# Collect sources
+set(QX_SOURCES
+    Src/QService.cpp
+    Src/QServiceLocator.cpp
+    Src/Services.cpp
+)
+
+set(QX_HEADERS
+    Inc/QX/QService.h
+    Inc/QX/Services.h
+)
+
+set(QX_INTERNAL_HEADERS
+    Src/QServiceLocator.h
+)
+
+# Shared library target
+add_library(QX SHARED
+    ${QX_SOURCES}
+    ${QX_HEADERS}
+    ${QX_INTERNAL_HEADERS}
+)
+
+# Generate export header into Inc/QX/Export.h
+generate_export_header(QX
+    EXPORT_FILE_NAME ${CMAKE_CURRENT_SOURCE_DIR}/Inc/QX/Export.h
+)
+
+# Include directories
+target_include_directories(QX
+    PUBLIC
+        ${CMAKE_CURRENT_SOURCE_DIR}/Inc
+    PRIVATE
+        ${CMAKE_CURRENT_SOURCE_DIR}/Src
+)
+
+# Link Qt6::Core
+target_link_libraries(QX
+    PUBLIC
+        Qt6::Core
+)
+
+# Library versioning
+set_target_properties(QX PROPERTIES
+    VERSION ${QX_VERSION}
+    SOVERSION ${QX_SOVERSION}
+)

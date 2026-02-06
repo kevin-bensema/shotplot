@@ -17,7 +17,8 @@ class WorkflowState;
 /// Manages the application's UI, document lifecycle, workflow state transitions,
 /// and user interactions. Coordinates between the document model, graphics scene/view,
 /// toolbars, and workflow states. Handles file operations (import, load, save, export),
-/// menu actions, zoom controls, and drag-and-drop file import.
+/// menu actions, and zoom controls. Drag-and-drop file import is handled via event
+/// filter on the TargetView's viewport.
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
@@ -30,11 +31,8 @@ protected:
     /// Handles window close events, prompting to save unsaved changes if needed
     void closeEvent(QCloseEvent* pEvent) override;
     
-    /// Handles drag enter events for file import (accepts image files and .spz session files)
-    void dragEnterEvent(QDragEnterEvent* pEvent) override;
-    
-    /// Handles drop events to import images or load session files
-    void dropEvent(QDropEvent* pEvent) override;
+    /// Event filter to intercept drag-and-drop events on TargetView's viewport
+    bool eventFilter(QObject* pObject, QEvent* pEvent) override;
 
 private slots:
     // File menu actions

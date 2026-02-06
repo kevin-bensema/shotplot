@@ -8,6 +8,7 @@
 #include <QMessageBox>
 #include <QCloseEvent>
 #include <QDragEnterEvent>
+#include <QDragMoveEvent>
 #include <QDropEvent>
 #include <QMimeData>
 #include <QSettings>
@@ -53,9 +54,6 @@ MainWindow::MainWindow(QWidget* pParent)
     setupCentralWidget();
     setupDockWidgets();
     setupConnections();
-    
-    // Enable drag and drop
-    setAcceptDrops(true);
     
     // Initial state
     updateWindowTitle();
@@ -189,6 +187,10 @@ void MainWindow::setupCentralWidget()
     m_pTargetView = new TargetView(this);
     m_pTargetView->setTargetScene(m_pTargetScene);
     
+    // Enable drag and drop on TargetView's viewport (QGraphicsView uses a viewport widget)
+    m_pTargetView->viewport()->setAcceptDrops(true);
+    m_pTargetView->viewport()->installEventFilter(this);
+    
     setCentralWidget(m_pTargetView);
 }
 
@@ -225,58 +227,93 @@ void MainWindow::closeEvent(QCloseEvent* event)
     }
 }
 
-void MainWindow::dragEnterEvent(QDragEnterEvent* event)
+bool MainWindow::eventFilter(QObject* pObject, QEvent* pEvent)
 {
-    if (event->mimeData()->hasUrls())
+    // Intercept drag-and-drop events on TargetView's viewport
+    if (m_pTargetView && pObject == m_pTargetView->viewport())
     {
-        const QList<QUrl> urls = event->mimeData()->urls();
-        if (!urls.isEmpty())
+        if (pEvent->type() == QEvent::DragEnter)
         {
-            QString path = urls.first().toLocalFile().toLower();
-            if (path.endsWith(kImageExtensionPng) || path.endsWith(kImageExtensionJpg) || 
-                path.endsWith(kImageExtensionJpeg) || path.endsWith(kSessionExtension))
+            QDragEnterEvent* pDragEvent = static_cast<QDragEnterEvent*>(pEvent);
+            if (pDragEvent->mimeData()->hasUrls())
             {
-                event->acceptProposedAction();
-                return;
+                const QList<QUrl> urls = pDragEvent->mimeData()->urls();
+                if (!urls.isEmpty())
+                {
+                    QString path = urls.first().toLocalFile().toLower();
+                    if (path.endsWith(kImageExtensionPng) || path.endsWith(kImageExtensionJpg) || 
+                        path.endsWith(kImageExtensionJpeg) || path.endsWith(kSessionExtension))
+                    {
+                        pDragEvent->acceptProposedAction();
+                        return true;  // Event handled
+                    }
+                }
+            }
+            pDragEvent->ignore();
+            return true;  // Event handled
+        }
+        else if (pEvent->type() == QEvent::DragMove)
+        {
+            QDragMoveEvent* pDragEvent = static_cast<QDragMoveEvent*>(pEvent);
+            if (pDragEvent->mimeData()->hasUrls())
+            {
+                const QList<QUrl> urls = pDragEvent->mimeData()->urls();
+                if (!urls.isEmpty())
+                {
+                    QString path = urls.first().toLocalFile().toLower();
+                    if (path.endsWith(kImageExtensionPng) || path.endsWith(kImageExtensionJpg) || 
+                        path.endsWith(kImageExtensionJpeg) || path.endsWith(kSessionExtension))
+                    {
+                        pDragEvent->acceptProposedAction();
+                        return true;  // Event handled
+                    }
+                }
+            }
+            pDragEvent->ignore();
+            return true;  // Event handled
+        }
+        else if (pEvent->type() == QEvent::Drop)
+        {
+            QDropEvent* pDropEvent = static_cast<QDropEvent*>(pEvent);
+            const QList<QUrl> urls = pDropEvent->mimeData()->urls();
+            if (!urls.isEmpty())
+            {
+                QString path = urls.first().toLocalFile();
+                
+                if (path.toLower().endsWith(kSessionExtension))
+                {
+                    // Load session file
+                    if (maybeSave())
+                    {
+                        loadDocumentFromFile(path);
+                    }
+                }
+                else
+                {
+                    // Import image file
+                    if (maybeSave())
+                    {
+                        QImage image(path);
+                        if (!image.isNull())
+                        {
+                            createNewDocument(image);
+                            statusBar()->showMessage(tr("Imported: %1").arg(path));
+                        }
+                        else
+                        {
+                            QMessageBox::warning(this, tr("Import Error"),
+                                tr("Could not load image: %1").arg(path));
+                        }
+                    }
+                }
+                pDropEvent->acceptProposedAction();
+                return true;  // Event handled
             }
         }
     }
-    event->ignore();
-}
-
-void MainWindow::dropEvent(QDropEvent* event)
-{
-    const QList<QUrl> urls = event->mimeData()->urls();
-    if (urls.isEmpty()) return;
     
-    QString path = urls.first().toLocalFile();
-    
-    if (path.toLower().endsWith(kSessionExtension))
-    {
-        // Load session file
-        if (maybeSave())
-        {
-            loadDocumentFromFile(path);
-        }
-    }
-    else
-    {
-        // Import image file
-        if (maybeSave())
-        {
-            QImage image(path);
-            if (!image.isNull())
-            {
-                createNewDocument(image);
-                statusBar()->showMessage(tr("Imported: %1").arg(path));
-            }
-            else
-            {
-                QMessageBox::warning(this, tr("Import Error"),
-                    tr("Could not load image: %1").arg(path));
-            }
-        }
-    }
+    // Pass event to base class
+    return QMainWindow::eventFilter(pObject, pEvent);
 }
 
 void MainWindow::onImport()

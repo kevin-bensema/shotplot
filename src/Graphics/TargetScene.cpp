@@ -35,8 +35,10 @@ void TargetScene::setTargetImage(const QImage& image)
     m_pTargetImageItem = addPixmap(QPixmap::fromImage(image));
     m_pTargetImageItem->setZValue(kTargetImageZValue);
     
-    // Set scene rect to image size
-    setSceneRect(image.rect());
+    // Set scene rect to image size with padding based on longest edge
+    const int longestEdge = std::max(image.width(), image.height());
+    const QRectF imageRect = image.rect();
+    setSceneRect(imageRect.adjusted(-longestEdge, -longestEdge, longestEdge, longestEdge));
 }
 
 void TargetScene::clearTargetImage()

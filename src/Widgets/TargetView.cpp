@@ -1,6 +1,7 @@
 #include "TargetView.h"
 #include <States/WorkflowState.h>
 
+#include <QGraphicsPixmapItem>
 #include <QWheelEvent>
 #include <QMouseEvent>
 #include <QScrollBar>
@@ -82,7 +83,25 @@ void TargetView::zoomFit()
     QRectF sceneRect = scene()->sceneRect();
     if (!sceneRect.isEmpty())
     {
-        fitInView(sceneRect, Qt::KeepAspectRatio);
+        // Find the target image item to get its rect
+        QRectF imageRect;
+        for (auto* item : scene()->items())
+        {
+            if (auto* pixmapItem = qgraphicsitem_cast<QGraphicsPixmapItem*>(item))
+            {
+                imageRect = pixmapItem->sceneBoundingRect();
+                break;
+            }
+        }
+
+        if (!imageRect.isEmpty())
+        {
+            fitInView(imageRect, Qt::KeepAspectRatio);
+        }
+        else
+        {
+            fitInView(sceneRect, Qt::KeepAspectRatio);
+        }
         
         // Calculate actual zoom factor
         QTransform t = transform();

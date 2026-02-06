@@ -3,7 +3,6 @@
 #include "WorkflowState.h"
 
 class TargetView;
-class TargetScene;
 
 /**
  * @brief State for marking the Point of Aim
@@ -25,11 +24,10 @@ class POAState : public WorkflowState
     Q_OBJECT
 
 public:
-    /// Constructs a POAState with the given document, view, and scene.
+    /// Constructs a POAState with the given document and view.
     /// \param pDocument The shot group document to modify
-    /// \param pView The target view widget
-    /// \param pScene The graphics scene containing target elements
-    POAState(ShotGroupDocument* pDocument, TargetView* pView, TargetScene* pScene);
+    /// \param pView The target view widget (provides access to the target scene)
+    POAState(ShotGroupDocument* pDocument, TargetView* pView);
     
     ~POAState();
 
@@ -68,6 +66,5 @@ public:
     QString stateName() const override;
 
 private:
-    TargetView* m_pView;      ///< The target view widget for interaction
-    TargetScene* m_pScene;    ///< The graphics scene for displaying POA glyph
+    TargetView* m_pView;      ///< The target view widget (provides access to the target scene)
 };

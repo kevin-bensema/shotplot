@@ -3,7 +3,6 @@
 #include "WorkflowState.h"
 
 class TargetView;
-class TargetScene;
 class QUndoStack;
 
 /// @brief Main working state for marking shot impacts on the target
@@ -23,11 +22,10 @@ class MarkImpactsState : public WorkflowState
 public:
     /// Constructs a new MarkImpactsState
     /// \param pDocument The document containing impact data
-    /// \param pView The target view widget
-    /// \param pScene The graphics scene for rendering impact glyphs
+    /// \param pView The target view widget (provides access to the target scene)
     /// \param pUndoStack The undo stack for command-based modifications
     MarkImpactsState(ShotGroupDocument* pDocument, TargetView* pView, 
-                     TargetScene* pScene, QUndoStack* pUndoStack);
+                     QUndoStack* pUndoStack);
     ~MarkImpactsState();
 
     /// Initializes the state by recreating impact glyphs from document data
@@ -67,7 +65,6 @@ private:
     double bulletDiameterPixels() const;
 
 private:
-    TargetView* m_pView;      ///< The target view widget for display
-    TargetScene* m_pScene;    ///< The graphics scene for rendering impact glyphs and circles
+    TargetView* m_pView;      ///< The target view widget (provides access to the target scene)
     QUndoStack* m_pUndoStack; ///< The undo stack for command-based modifications
 };

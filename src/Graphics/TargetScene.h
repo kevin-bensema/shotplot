@@ -49,6 +49,15 @@ public:
     /// 
     /// Deletes the image item and resets the internal pointer.
     void clearTargetImage();
+    
+    /// @brief Returns the target image pixmap item
+    /// 
+    /// Provides typed access to the background target image item, avoiding
+    /// the need to search through scene items. Returns nullptr if no image
+    /// has been set.
+    /// 
+    /// \return The target image pixmap item, or nullptr if no image is set
+    QGraphicsPixmapItem* targetImageItem() const;
 
     // Document connection
     /// @brief Connects the scene to a document for automatic updates

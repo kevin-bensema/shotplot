@@ -187,7 +187,7 @@ void MainWindow::setupCentralWidget()
     // Create the graphics scene and view
     m_pTargetScene = new TargetScene(this);
     m_pTargetView = new TargetView(this);
-    m_pTargetView->setScene(m_pTargetScene);
+    m_pTargetView->setTargetScene(m_pTargetScene);
     
     setCentralWidget(m_pTargetView);
 }
@@ -539,10 +539,10 @@ void MainWindow::createNewDocument(const QImage &image)
     // Create workflow states
     m_states.clear();
     m_states.push_back(std::make_unique<SetCaliberState>(m_document.get(), m_pTargetView, this));
-    m_states.push_back(std::make_unique<ScaleFactorState>(m_document.get(), m_pTargetView, m_pTargetScene));
-    m_states.push_back(std::make_unique<POAState>(m_document.get(), m_pTargetView, m_pTargetScene));
-    m_states.push_back(std::make_unique<MarkImpactsState>(m_document.get(), m_pTargetView, m_pTargetScene, m_pUndoStack));
-    m_states.push_back(std::make_unique<VisualizationState>(m_document.get(), m_pTargetView, m_pTargetScene));
+    m_states.push_back(std::make_unique<ScaleFactorState>(m_document.get(), m_pTargetView));
+    m_states.push_back(std::make_unique<POAState>(m_document.get(), m_pTargetView));
+    m_states.push_back(std::make_unique<MarkImpactsState>(m_document.get(), m_pTargetView, m_pUndoStack));
+    m_states.push_back(std::make_unique<VisualizationState>(m_document.get(), m_pTargetView));
     
     // Update workflow toolbar
     m_pWorkflowToolbar->setDocument(m_document.get());
@@ -586,10 +586,10 @@ void MainWindow::loadDocumentFromFile(const QString &filePath)
     // Create workflow states
     m_states.clear();
     m_states.push_back(std::make_unique<SetCaliberState>(m_document.get(), m_pTargetView, this));
-    m_states.push_back(std::make_unique<ScaleFactorState>(m_document.get(), m_pTargetView, m_pTargetScene));
-    m_states.push_back(std::make_unique<POAState>(m_document.get(), m_pTargetView, m_pTargetScene));
-    m_states.push_back(std::make_unique<MarkImpactsState>(m_document.get(), m_pTargetView, m_pTargetScene, m_pUndoStack));
-    m_states.push_back(std::make_unique<VisualizationState>(m_document.get(), m_pTargetView, m_pTargetScene));
+    m_states.push_back(std::make_unique<ScaleFactorState>(m_document.get(), m_pTargetView));
+    m_states.push_back(std::make_unique<POAState>(m_document.get(), m_pTargetView));
+    m_states.push_back(std::make_unique<MarkImpactsState>(m_document.get(), m_pTargetView, m_pUndoStack));
+    m_states.push_back(std::make_unique<VisualizationState>(m_document.get(), m_pTargetView));
     
     // Update workflow toolbar
     m_pWorkflowToolbar->setDocument(m_document.get());

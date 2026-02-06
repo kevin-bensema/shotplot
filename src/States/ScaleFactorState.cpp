@@ -16,10 +16,9 @@ namespace {
     constexpr double kDistanceSingleStep = 0.1;
 }
 
-ScaleFactorState::ScaleFactorState(ShotGroupDocument* pDocument, TargetView* pView, TargetScene* pScene)
+ScaleFactorState::ScaleFactorState(ShotGroupDocument* pDocument, TargetView* pView)
     : WorkflowState(pDocument, pView)
     , m_pView(pView)
-    , m_pScene(pScene)
 {
 }
 
@@ -32,7 +31,7 @@ void ScaleFactorState::onEnter()
 
 void ScaleFactorState::onExit()
 {
-    m_pScene->hideScaleLine();
+    m_pView->targetScene()->hideScaleLine();
     m_hasFirstPoint = false;
 }
 
@@ -43,12 +42,12 @@ void ScaleFactorState::handleMouseClick(const QPointF& scenePos)
         // First click - set start point
         m_firstPoint = scenePos;
         m_hasFirstPoint = true;
-        m_pScene->setScaleLineStart(scenePos);
+        m_pView->targetScene()->setScaleLineStart(scenePos);
     }
     else
     {
         // Second click - calculate scale factor
-        m_pScene->showScaleLine(m_firstPoint, scenePos);
+        m_pView->targetScene()->showScaleLine(m_firstPoint, scenePos);
         
         // Calculate distance in pixels
         double dx = scenePos.x() - m_firstPoint.x();
@@ -66,7 +65,7 @@ void ScaleFactorState::handleMouseClick(const QPointF& scenePos)
         
         // Reset for potential recalibration
         m_hasFirstPoint = false;
-        m_pScene->hideScaleLine();
+        m_pView->targetScene()->hideScaleLine();
         
         emit stateCompleted();
         emit requestNextState();
@@ -77,7 +76,7 @@ void ScaleFactorState::handleMouseMove(const QPointF& scenePos)
 {
     if (m_hasFirstPoint)
     {
-        m_pScene->updateScaleLineEnd(scenePos);
+        m_pView->targetScene()->updateScaleLineEnd(scenePos);
     }
 }
 
@@ -108,7 +107,7 @@ void ScaleFactorState::populateToolbar(QToolBar* pToolbar)
 void ScaleFactorState::reset()
 {
     m_hasFirstPoint = false;
-    m_pScene->hideScaleLine();
+    m_pView->targetScene()->hideScaleLine();
 }
 
 QString ScaleFactorState::stateName() const

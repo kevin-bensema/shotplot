@@ -51,6 +51,11 @@ void TargetScene::clearTargetImage()
     }
 }
 
+QGraphicsPixmapItem* TargetScene::targetImageItem() const
+{
+    return m_pTargetImageItem;
+}
+
 void TargetScene::setDocument(ShotGroupDocument* pDocument)
 {
     m_pDocument = pDocument;

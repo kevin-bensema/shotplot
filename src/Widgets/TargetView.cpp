@@ -1,4 +1,5 @@
 #include "TargetView.h"
+#include <Graphics/TargetScene.h>
 #include <States/WorkflowState.h>
 
 #include <QGraphicsPixmapItem>
@@ -40,6 +41,17 @@ TargetView::TargetView(QWidget* pParent)
     setDragMode(QGraphicsView::NoDrag);
 }
 
+void TargetView::setTargetScene(TargetScene* pScene)
+{
+    m_pTargetScene = pScene;
+    setScene(pScene);
+}
+
+TargetScene* TargetView::targetScene() const
+{
+    return m_pTargetScene;
+}
+
 void TargetView::setWorkflowState(WorkflowState* pState)
 {
     m_pCurrentState = pState;
@@ -73,25 +85,21 @@ void TargetView::zoomOut()
 
 void TargetView::zoomFit()
 {
-    if (!scene()) return;
+    if (!m_pTargetScene) return;
     
     // Reset transform
     resetTransform();
     m_zoomFactor = 1.0;
     
     // Fit scene in view
-    QRectF sceneRect = scene()->sceneRect();
+    QRectF sceneRect = m_pTargetScene->sceneRect();
     if (!sceneRect.isEmpty())
     {
-        // Find the target image item to get its rect
+        // Use the typed accessor to get the target image rect directly
         QRectF imageRect;
-        for (auto* item : scene()->items())
+        if (auto* pImageItem = m_pTargetScene->targetImageItem())
         {
-            if (auto* pixmapItem = qgraphicsitem_cast<QGraphicsPixmapItem*>(item))
-            {
-                imageRect = pixmapItem->sceneBoundingRect();
-                break;
-            }
+            imageRect = pImageItem->sceneBoundingRect();
         }
 
         if (!imageRect.isEmpty())

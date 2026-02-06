@@ -3,7 +3,6 @@
 #include "WorkflowState.h"
 
 class TargetView;
-class TargetScene;
 class QDoubleSpinBox;
 
 /// @brief State for interactive scale calibration
@@ -27,10 +26,9 @@ class ScaleFactorState : public WorkflowState
 
 public:
     /// Constructs a scale factor calibration state
-    /// \param document The shot group document to store the scale factor in
-    /// \param view The target view for mouse interaction
-    /// \param scene The target scene for visual feedback
-    ScaleFactorState(ShotGroupDocument* pDocument, TargetView* pView, TargetScene* pScene);
+    /// \param pDocument The shot group document to store the scale factor in
+    /// \param pView The target view (provides access to the target scene for visual feedback)
+    ScaleFactorState(ShotGroupDocument* pDocument, TargetView* pView);
     ~ScaleFactorState();
 
     /// Resets the calibration state and prepares for user interaction
@@ -79,8 +77,7 @@ private:
     void reset();
 
 private:
-    TargetView* m_pView;        ///< The target view widget for interaction
-    TargetScene* m_pScene;      ///< The target scene for visual feedback
+    TargetView* m_pView;        ///< The target view widget (provides access to the target scene)
     
     QPointF m_firstPoint;      ///< The first clicked point (start of reference line)
     bool m_hasFirstPoint = false;  ///< Whether the first point has been set

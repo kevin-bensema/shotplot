@@ -1,15 +1,13 @@
 #include "VisualizationState.h"
 #include <Core/ShotGroupDocument.h>
 #include <Widgets/TargetView.h>
-#include <Graphics/TargetScene.h>
 
 #include <QToolBar>
 #include <QLabel>
 
-VisualizationState::VisualizationState(ShotGroupDocument* pDocument, TargetView* pView, TargetScene* pScene)
+VisualizationState::VisualizationState(ShotGroupDocument* pDocument, TargetView* pView)
     : WorkflowState(pDocument, pView)
     , m_pView(pView)
-    , m_pScene(pScene)
 {
 }
 

@@ -7,10 +7,9 @@
 #include <QLabel>
 #include <QPushButton>
 
-POAState::POAState(ShotGroupDocument* pDocument, TargetView* pView, TargetScene* pScene)
+POAState::POAState(ShotGroupDocument* pDocument, TargetView* pView)
     : WorkflowState(pDocument, pView)
     , m_pView(pView)
-    , m_pScene(pScene)
 {
 }
 
@@ -21,7 +20,7 @@ void POAState::onEnter()
     // Show existing POA if any
     if (m_pDocument->hasPointOfAimSet())
     {
-        m_pScene->setPOAGlyph(m_pDocument->pointOfAim());
+        m_pView->targetScene()->setPOAGlyph(m_pDocument->pointOfAim());
     }
 }
 
@@ -33,7 +32,7 @@ void POAState::onExit()
 void POAState::handleMouseClick(const QPointF& scenePos)
 {
     m_pDocument->setPointOfAim(scenePos);
-    m_pScene->setPOAGlyph(scenePos);
+    m_pView->targetScene()->setPOAGlyph(scenePos);
     
     emit stateCompleted();
     emit requestNextState();

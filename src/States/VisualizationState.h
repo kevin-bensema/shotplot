@@ -3,7 +3,6 @@
 #include "WorkflowState.h"
 
 class TargetView;
-class TargetScene;
 
 /// @brief State for configuring visualization and export
 ///
@@ -20,12 +19,11 @@ class VisualizationState : public WorkflowState
     Q_OBJECT
 
 public:
-    /// Constructs a VisualizationState with the given document, view, and scene
+    /// Constructs a VisualizationState with the given document and view
     ///
-    /// \param document The shot group document containing impacts and calibration data
-    /// \param view The target view widget for displaying the visualization
-    /// \param scene The graphics scene containing target graphics items
-    VisualizationState(ShotGroupDocument* pDocument, TargetView* pView, TargetScene* pScene);
+    /// \param pDocument The shot group document containing impacts and calibration data
+    /// \param pView The target view widget (provides access to the target scene)
+    VisualizationState(ShotGroupDocument* pDocument, TargetView* pView);
     
     ~VisualizationState();
 
@@ -66,9 +64,6 @@ public:
     QString stateName() const override;
 
 private:
-    /// The target view widget displaying the visualization
+    /// The target view widget (provides access to the target scene)
     TargetView* m_pView;
-    
-    /// The graphics scene containing target graphics items and overlays
-    TargetScene* m_pScene;
 };

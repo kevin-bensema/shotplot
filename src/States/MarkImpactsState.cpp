@@ -16,10 +16,9 @@ namespace {
 }
 
 MarkImpactsState::MarkImpactsState(ShotGroupDocument* pDocument, TargetView* pView, 
-                                   TargetScene* pScene, QUndoStack* pUndoStack)
+                                   QUndoStack* pUndoStack)
     : WorkflowState(pDocument, pView)
     , m_pView(pView)
-    , m_pScene(pScene)
     , m_pUndoStack(pUndoStack)
 {
 }
@@ -33,12 +32,13 @@ void MarkImpactsState::onEnter()
             this, &MarkImpactsState::updateGroupCircles);
     
     // Recreate impact glyphs from document
-    m_pScene->clearImpactGlyphs();
+    auto* pScene = m_pView->targetScene();
+    pScene->clearImpactGlyphs();
     double diameter = bulletDiameterPixels();
     
     for (const auto& impact : m_pDocument->impacts())
     {
-        m_pScene->addImpactGlyph(impact.id, impact.position(), diameter);
+        pScene->addImpactGlyph(impact.id, impact.position(), diameter);
     }
     
     updateGroupCircles();
@@ -57,7 +57,7 @@ void MarkImpactsState::handleMouseClick(const QPointF& scenePos)
     ShotImpact impact(id, scenePos.x(), scenePos.y());
     
     // Use undo command
-    m_pUndoStack->push(new AddImpactCommand(m_pDocument, m_pScene, impact, bulletDiameterPixels()));
+    m_pUndoStack->push(new AddImpactCommand(m_pDocument, m_pView->targetScene(), impact, bulletDiameterPixels()));
 }
 
 void MarkImpactsState::handleRightClick(const QPointF& scenePos)
@@ -76,7 +76,7 @@ void MarkImpactsState::handleRightClick(const QPointF& scenePos)
         if (dist <= hitRadius) {
             // Remove this impact
             // TODO: Use RemoveImpactCommand for undo support
-            m_pScene->removeImpactGlyph(impacts[i].id);
+            m_pView->targetScene()->removeImpactGlyph(impacts[i].id);
             m_pDocument->removeImpact(i);
             break;
         }
@@ -105,7 +105,7 @@ void MarkImpactsState::populateToolbar(QToolBar* pToolbar)
     connect(pClearButton, &QPushButton::clicked, [this]() {
         if (m_pDocument->impactCount() > 0)
         {
-            m_pUndoStack->push(new ClearImpactsCommand(m_pDocument, m_pScene));
+            m_pUndoStack->push(new ClearImpactsCommand(m_pDocument, m_pView->targetScene()));
         }
     });
     pToolbar->addWidget(pClearButton);
@@ -113,9 +113,11 @@ void MarkImpactsState::populateToolbar(QToolBar* pToolbar)
 
 void MarkImpactsState::updateGroupCircles()
 {
+    auto* pScene = m_pView->targetScene();
+    
     if (m_pDocument->impactCount() < 2)
     {
-        m_pScene->clearGroupCircles();
+        pScene->clearGroupCircles();
         return;
     }
     
@@ -123,21 +125,21 @@ void MarkImpactsState::updateGroupCircles()
     
     if (stats.fullGroupCircle.isValid())
     {
-        m_pScene->setFullGroupCircle(stats.fullGroupCircle.center, stats.fullGroupCircle.radiusPixels);
+        pScene->setFullGroupCircle(stats.fullGroupCircle.center, stats.fullGroupCircle.radiusPixels);
     }
     
     if (stats.group80Circle.isValid())
     {
-        m_pScene->set80GroupCircle(stats.group80Circle.center, stats.group80Circle.radiusPixels);
+        pScene->set80GroupCircle(stats.group80Circle.center, stats.group80Circle.radiusPixels);
     }
     
     if (stats.group90Circle.isValid())
     {
-        m_pScene->set90GroupCircle(stats.group90Circle.center, stats.group90Circle.radiusPixels);
+        pScene->set90GroupCircle(stats.group90Circle.center, stats.group90Circle.radiusPixels);
     }
     
     // Update visibility based on document settings
-    m_pScene->setGroupCirclesVisible(
+    pScene->setGroupCirclesVisible(
         m_pDocument->showFullGroupCircle(),
         m_pDocument->show80PercentCircle(),
         m_pDocument->show90PercentCircle()

@@ -4,6 +4,7 @@
 #include <QPointF>
 
 class WorkflowState;
+class TargetScene;
 
 /// @brief Custom QGraphicsView for target image display and interaction
 ///
@@ -36,6 +37,19 @@ public:
     /// drag mode.
     /// \param pParent The parent widget
     explicit TargetView(QWidget* pParent = nullptr);
+
+    /// Sets the target scene for this view
+    ///
+    /// Stores a typed TargetScene pointer and calls the inherited
+    /// QGraphicsView::setScene() to connect the view to the scene.
+    /// This provides typed access to TargetScene's API without needing
+    /// to search through scene items or downcast.
+    /// \param pScene The target scene to display, or nullptr to disconnect
+    void setTargetScene(TargetScene* pScene);
+    
+    /// Returns the typed target scene
+    /// \return The target scene, or nullptr if none is set
+    TargetScene* targetScene() const;
 
     /// Sets the current workflow state for event delegation
     ///
@@ -148,6 +162,9 @@ private:
     /// for state-specific behavior. The cursor is synchronized with the state's
     /// preferred cursor.
     WorkflowState* m_pCurrentState = nullptr;
+    
+    /// The typed target scene for direct access to scene items
+    TargetScene* m_pTargetScene = nullptr;
     
     // Pan/zoom state
     

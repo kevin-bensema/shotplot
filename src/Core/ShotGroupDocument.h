@@ -138,7 +138,7 @@ public:
     /// The returned reference remains valid until the document is destroyed.
     /// 
     /// \return Reference to the Statistics object
-    const Statistics &statistics() const;
+    const Statistics& statistics() const;
 
     // ===== File Management =====
     QString filePath() const;

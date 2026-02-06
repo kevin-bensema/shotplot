@@ -584,6 +584,9 @@ void MainWindow::createNewDocument(const QImage &image)
     // Update workflow toolbar
     m_pWorkflowToolbar->setDocument(m_document.get());
     
+    // Update statistics panel
+    m_pStatisticsPanel->setDocument(m_document.get());
+    
     // Start with caliber state
     setCurrentState(0);
     
@@ -630,6 +633,9 @@ void MainWindow::loadDocumentFromFile(const QString &filePath)
     
     // Update workflow toolbar
     m_pWorkflowToolbar->setDocument(m_document.get());
+    
+    // Update statistics panel
+    m_pStatisticsPanel->setDocument(m_document.get());
     
     // Determine starting state based on loaded data
     int startState = 0;

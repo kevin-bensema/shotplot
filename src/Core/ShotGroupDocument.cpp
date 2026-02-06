@@ -3,6 +3,7 @@
 
 #include <IO/DocumentSerializer.h>
 
+#include <QDebug>
 #include <QJsonObject>
 #include <QJsonArray>
 #include <QJsonDocument>
@@ -33,6 +34,9 @@ ShotGroupDocument::ShotGroupDocument(QObject* pParent)
     , m_showPointOfAim(kDefaultShowPointOfAim)
     , m_plaqueConfig{kDefaultPlaqueEnabled, kDefaultPlaqueX, kDefaultPlaqueY, kDefaultPlaqueWidth, kDefaultPlaqueHeight, kDefaultPlaqueTitle, QString()}
 {
+    auto updateStats = [this]() { updateStatistics(); };
+    connect(this, &ShotGroupDocument::dataChanged, this, updateStats);
+    connect(this, &ShotGroupDocument::impactsChanged, this, updateStats);
 }
 
 ShotGroupDocument::~ShotGroupDocument() = default;
@@ -83,7 +87,6 @@ void ShotGroupDocument::setPixelsPerInch(double ppi)
     if (m_pixelsPerInch != ppi)
     {
         m_pixelsPerInch = ppi;
-        updateStatistics();
         setDirty(true);
         emit dataChanged();
     }
@@ -190,7 +193,6 @@ ShotImpact ShotGroupDocument::impactAt(int index) const
 void ShotGroupDocument::addImpact(const ShotImpact &impact)
 {
     m_impacts.append(impact);
-    updateStatistics();
     setDirty(true);
     emit impactsChanged();
 }
@@ -200,7 +202,6 @@ void ShotGroupDocument::removeImpact(int index)
     if (index >= 0 && index < m_impacts.size())
     {
         m_impacts.removeAt(index);
-        updateStatistics();
         setDirty(true);
         emit impactsChanged();
     }
@@ -211,7 +212,6 @@ void ShotGroupDocument::clearImpacts()
     if (!m_impacts.isEmpty())
     {
         m_impacts.clear();
-        updateStatistics();
         setDirty(true);
         emit impactsChanged();
     }
@@ -220,7 +220,6 @@ void ShotGroupDocument::clearImpacts()
 void ShotGroupDocument::replaceImpacts(const QList<ShotImpact>& impacts)
 {
     m_impacts = impacts;
-    updateStatistics();
     setDirty(true);
     emit impactsChanged();
 }

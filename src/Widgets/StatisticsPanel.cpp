@@ -91,11 +91,20 @@ void StatisticsPanel::setupUi()
 
 void StatisticsPanel::setDocument(ShotGroupDocument* pDocument)
 {
+    if (m_pDocument)
+    {
+        m_pDocument->disconnect(this);
+    }
+
     m_pDocument = pDocument;
     
     if (m_pDocument)
     {
         connect(m_pDocument, &ShotGroupDocument::statisticsChanged,
+                this, &StatisticsPanel::updateStatistics);
+        connect(m_pDocument, &ShotGroupDocument::dataChanged,
+                this, &StatisticsPanel::updateStatistics);
+        connect(m_pDocument, &ShotGroupDocument::impactsChanged,
                 this, &StatisticsPanel::updateStatistics);
         
         // Sync checkboxes with document
@@ -123,7 +132,6 @@ void StatisticsPanel::updateStatistics()
         m_pStdDevLabel->setText(tr("Std Dev: --"));
         return;
     }
-    
     m_pShotCountLabel->setText(tr("Shots: %1").arg(m_pDocument->impactCount()));
     
     if (m_pDocument->impactCount() < kMinImpactCountForStatistics || !m_pDocument->hasScaleFactorSet())

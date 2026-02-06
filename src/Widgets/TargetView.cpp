@@ -162,7 +162,7 @@ void TargetView::mousePressEvent(QMouseEvent* pEvent)
     }
     
     // Left button - let state handle it on release (to distinguish click from drag)
-    pEvent->accept();
+    QGraphicsView::mousePressEvent(pEvent);
 }
 
 void TargetView::mouseMoveEvent(QMouseEvent* pEvent)
@@ -202,7 +202,7 @@ void TargetView::mouseMoveEvent(QMouseEvent* pEvent)
         m_pCurrentState->handleMouseMove(scenePos);
     }
     
-    pEvent->accept();
+    QGraphicsView::mouseMoveEvent(pEvent);
 }
 
 void TargetView::mouseReleaseEvent(QMouseEvent* pEvent)
@@ -229,7 +229,7 @@ void TargetView::mouseReleaseEvent(QMouseEvent* pEvent)
         }
     }
     
-    pEvent->accept();
+    QGraphicsView::mouseReleaseEvent(pEvent);
 }
 
 void TargetView::updateCursor()

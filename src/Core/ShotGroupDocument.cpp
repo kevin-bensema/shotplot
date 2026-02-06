@@ -1,6 +1,8 @@
 #include "ShotGroupDocument.h"
 #include "StatisticsCalculator.h"
 
+#include <IO/DocumentSerializer.h>
+
 #include <QJsonObject>
 #include <QJsonArray>
 #include <QJsonDocument>
@@ -419,24 +421,12 @@ bool ShotGroupDocument::canEnableVisualizationState() const
 
 bool ShotGroupDocument::saveToFile(const QString& filePath, QString* pErrorMsg)
 {
-    // TODO: Implement using DocumentSerializer with libzip
-    Q_UNUSED(filePath)
-    if (pErrorMsg)
-    {
-        *pErrorMsg = "Save not yet implemented";
-    }
-    return false;
+    return DocumentSerializer::save(*this, filePath, pErrorMsg);
 }
 
 bool ShotGroupDocument::loadFromFile(const QString& filePath, QString* pErrorMsg)
 {
-    // TODO: Implement using DocumentSerializer with libzip
-    Q_UNUSED(filePath)
-    if (pErrorMsg)
-    {
-        *pErrorMsg = "Load not yet implemented";
-    }
-    return false;
+    return DocumentSerializer::load(*this, filePath, pErrorMsg);
 }
 
 QJsonObject ShotGroupDocument::toJson() const

@@ -104,6 +104,9 @@ private:
     /// Creates a new document from an imported image and initializes workflow states
     void createNewDocument(const QImage &image);
     
+    /// Loads a document from a .spz file path, initializes UI and determines starting workflow state
+    void loadDocumentFromFile(const QString &filePath);
+    
 private:
     // UI Components
     TargetView* m_pTargetView = nullptr;              ///< Graphics view displaying the target scene

@@ -30,11 +30,16 @@ bool DocumentSerializer::save(const ShotGroupDocument& document, const QString& 
     
     bool success = true;
     
+    // Declare data buffers at function scope so they remain valid until zip_close.
+    // zip_source_buffer with freep=0 does not copy the data, so the backing
+    // memory must outlive the archive.
+    QByteArray imageData;
+    QByteArray jsonData;
+    
     // Save target image as PNG
     QImage image = document.targetImage();
     if (!image.isNull())
     {
-        QByteArray imageData;
         QBuffer buffer(&imageData);
         buffer.open(QIODevice::WriteOnly);
         image.save(&buffer, "PNG");
@@ -68,7 +73,7 @@ bool DocumentSerializer::save(const ShotGroupDocument& document, const QString& 
     {
         QJsonObject json = document.toJson();
         QJsonDocument jsonDoc(json);
-        QByteArray jsonData = jsonDoc.toJson(QJsonDocument::Indented);
+        jsonData = jsonDoc.toJson(QJsonDocument::Indented);
         
         zip_source_t* pJsonSource = zip_source_buffer(pArchive, jsonData.constData(), jsonData.size(), 0);
         if (pJsonSource)

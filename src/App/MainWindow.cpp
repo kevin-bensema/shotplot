@@ -256,8 +256,7 @@ void MainWindow::dropEvent(QDropEvent* event)
         // Load session file
         if (maybeSave())
         {
-            // TODO: Load document from path
-            statusBar()->showMessage(tr("Loaded: %1").arg(path));
+            loadDocumentFromFile(path);
         }
     }
     else
@@ -324,8 +323,7 @@ void MainWindow::onLoad()
     // Save directory preference
     settings.setValue(kSettingsLastSaveLoadDir, QFileInfo(path).absolutePath());
     
-    // TODO: Load document from path using DocumentSerializer
-    statusBar()->showMessage(tr("Loaded: %1").arg(path));
+    loadDocumentFromFile(path);
 }
 
 void MainWindow::onSave()
@@ -557,4 +555,60 @@ void MainWindow::createNewDocument(const QImage &image)
     
     updateWindowTitle();
     updateMenuState();
+}
+
+void MainWindow::loadDocumentFromFile(const QString &filePath)
+{
+    // Create and load document
+    auto document = std::make_unique<ShotGroupDocument>();
+    QString errorMsg;
+    if (!document->loadFromFile(filePath, &errorMsg))
+    {
+        QMessageBox::warning(this, tr("Load Error"), errorMsg);
+        return;
+    }
+    
+    // Take ownership
+    m_document = std::move(document);
+    m_document->setFilePath(filePath);
+    
+    // Connect document signals
+    connect(m_document.get(), &ShotGroupDocument::dirtyChanged,
+            this, [this](bool /*dirty*/) {
+                updateWindowTitle();
+                updateMenuState();
+            });
+    
+    // Set up scene with loaded image
+    m_pTargetScene->setTargetImage(m_document->targetImage());
+    m_pTargetView->zoomFit();
+    
+    // Create workflow states
+    m_states.clear();
+    m_states.push_back(std::make_unique<SetCaliberState>(m_document.get(), m_pTargetView, this));
+    m_states.push_back(std::make_unique<ScaleFactorState>(m_document.get(), m_pTargetView, m_pTargetScene));
+    m_states.push_back(std::make_unique<POAState>(m_document.get(), m_pTargetView, m_pTargetScene));
+    m_states.push_back(std::make_unique<MarkImpactsState>(m_document.get(), m_pTargetView, m_pTargetScene, m_pUndoStack));
+    m_states.push_back(std::make_unique<VisualizationState>(m_document.get(), m_pTargetView, m_pTargetScene));
+    
+    // Update workflow toolbar
+    m_pWorkflowToolbar->setDocument(m_document.get());
+    
+    // Determine starting state based on loaded data
+    int startState = 0;
+    if (m_document->canEnableVisualizationState())
+        startState = 3; // MarkImpacts - let user continue adding shots
+    else if (m_document->canEnablePointOfAimState())
+        startState = 2; // POA
+    else if (m_document->canEnableScaleFactorState())
+        startState = 1; // ScaleFactor
+    
+    setCurrentState(startState);
+    
+    // Document was just loaded - not dirty
+    m_document->setDirty(false);
+    
+    updateWindowTitle();
+    updateMenuState();
+    statusBar()->showMessage(tr("Loaded: %1").arg(filePath));
 }

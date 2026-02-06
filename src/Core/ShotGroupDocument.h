@@ -164,14 +164,12 @@ public:
     /// \param filePath The destination file path
     /// \param errorMsg Optional pointer to receive error message on failure
     /// \return True if save succeeded, false otherwise
-    /// \note Currently not implemented (returns false)
     bool saveToFile(const QString& filePath, QString* pErrorMsg = nullptr);
     /// @brief Loads the document from a file
     /// 
     /// \param filePath The source file path
     /// \param errorMsg Optional pointer to receive error message on failure
     /// \return True if load succeeded, false otherwise
-    /// \note Currently not implemented (returns false)
     bool loadFromFile(const QString& filePath, QString* pErrorMsg = nullptr);
 
     /// @brief Serializes the document to a JSON object

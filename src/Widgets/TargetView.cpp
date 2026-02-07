@@ -8,6 +8,8 @@
 #include <QWheelEvent>
 #include <QMouseEvent>
 #include <QScrollBar>
+#include <QPainter>
+#include <QCursor>
 #include <cmath>
 
 namespace {
@@ -46,7 +48,7 @@ TargetView::TargetView(QWidget* pParent)
     auto& graphicsService = qx::GetService<GraphicsSettingsService>();
     connect(&graphicsService, &GraphicsSettingsService::settingsChanged, this, [this]() {
         updateBackgroundColor();
-        update();
+        viewport()->update();
     });
 }
 
@@ -64,7 +66,12 @@ TargetScene* TargetView::targetScene() const
 void TargetView::setWorkflowState(WorkflowState* pState)
 {
     m_pCurrentState = pState;
+    
+    // Update current mouse position to avoid drawing at (0,0) initially
+    m_currentMousePos = mapFromGlobal(QCursor::pos());
+    
     updateCursor();
+    viewport()->update(); // Trigger viewport repaint to show custom cursor immediately
 }
 
 WorkflowState* TargetView::workflowState() const
@@ -184,6 +191,8 @@ void TargetView::mousePressEvent(QMouseEvent* pEvent)
 
 void TargetView::mouseMoveEvent(QMouseEvent* pEvent)
 {
+    m_currentMousePos = pEvent->pos();
+
     // Emit position for status bar
     QPointF scenePos = mapToScene(pEvent->pos());
     emit mousePositionChanged(scenePos);
@@ -196,6 +205,7 @@ void TargetView::mouseMoveEvent(QMouseEvent* pEvent)
         verticalScrollBar()->setValue(verticalScrollBar()->value() - delta.y());
         m_lastMousePos = pEvent->pos();
         pEvent->accept();
+        viewport()->update(); // Trigger viewport repaint for custom cursor
         return;
     }
     
@@ -220,6 +230,7 @@ void TargetView::mouseMoveEvent(QMouseEvent* pEvent)
     }
     
     QGraphicsView::mouseMoveEvent(pEvent);
+    viewport()->update(); // Trigger viewport repaint for custom cursor
 }
 
 void TargetView::mouseReleaseEvent(QMouseEvent* pEvent)
@@ -267,3 +278,32 @@ void TargetView::updateBackgroundColor()
     const QColor backgroundColor = graphicsService.color(GraphicsSettingsService::ColorRole::Background);
     setBackgroundBrush(QBrush(backgroundColor));
 }
+
+void TargetView::paintEvent(QPaintEvent* pEvent)
+{
+    // Draw the scene first
+    QGraphicsView::paintEvent(pEvent);
+
+    // Let state draw custom cursor on top if needed
+    if (m_mouseInView && !m_isPanning && m_pCurrentState)
+    {
+        QPainter painter(viewport());
+        painter.setRenderHint(QPainter::Antialiasing);
+        m_pCurrentState->drawCursor(&painter, m_currentMousePos, m_zoomFactor);
+    }
+}
+
+void TargetView::enterEvent(QEnterEvent* pEvent)
+{
+    m_mouseInView = true;
+    QGraphicsView::enterEvent(pEvent);
+    viewport()->update();
+}
+
+void TargetView::leaveEvent(QEvent* pEvent)
+{
+    m_mouseInView = false;
+    QGraphicsView::leaveEvent(pEvent);
+    viewport()->update();
+}
+

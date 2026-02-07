@@ -65,6 +65,12 @@ public:
     /// \return "Point of Aim"
     QString stateName() const override;
 
+    /// Draws a segmented circle cursor at the mouse position.
+    /// \param pPainter The painter to use for drawing on the viewport
+    /// \param viewportPos The current mouse position in viewport coordinates
+    /// \param zoomFactor The current zoom factor of the view
+    void drawCursor(QPainter* pPainter, const QPointF& viewportPos, double zoomFactor) override;
+
 private:
     TargetView* m_pView;      ///< The target view widget (provides access to the target scene)
 };

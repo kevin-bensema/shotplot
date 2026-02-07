@@ -5,6 +5,7 @@
 #include <QPointF>
 
 class QToolBar;
+class QPainter;
 class ShotGroupDocument;
 class TargetView;
 class TargetScene;
@@ -109,6 +110,17 @@ public:
     /// Should return a localized, user-friendly name.
     /// \return The state's display name (e.g., "Scale Factor", "Mark Impacts")
     virtual QString stateName() const = 0;
+
+    /// Draws a custom cursor glyph if this state requires one
+    ///
+    /// Called by TargetView during paintEvent to allow the state to draw a custom
+    /// cursor overlay on the viewport. The default implementation does nothing.
+    /// States that need custom cursors (e.g., segmented circles for impact marking)
+    /// should override this method.
+    /// \param pPainter The painter to use for drawing on the viewport
+    /// \param viewportPos The current mouse position in viewport coordinates
+    /// \param zoomFactor The current zoom factor of the view (1.0 = 100%)
+    virtual void drawCursor(QPainter* pPainter, const QPointF& viewportPos, double zoomFactor);
 
 signals:
     /// Emitted when the state has completed its required actions

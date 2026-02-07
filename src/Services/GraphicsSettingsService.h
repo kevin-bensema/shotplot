@@ -26,7 +26,9 @@ public:
         FullGroupCircle,    ///< Full group circle
         Percent90Circle,    ///< 90% group circle
         Percent80Circle,    ///< 80% group circle
-        Background          ///< Background color
+        Background,         ///< Background color
+        ImpactCursor,       ///< Cursor for impact marking
+        PointOfAimCursor    ///< Cursor for point of aim marking
     };
 
     /// Opacity roles for group circle fills (0-100 scale)

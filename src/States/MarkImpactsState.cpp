@@ -5,10 +5,13 @@
 #include <Graphics/TargetScene.h>
 #include <Commands/AddImpactCommand.h>
 #include <Commands/ClearImpactsCommand.h>
+#include <Services/GraphicsSettingsService.h>
+#include <QX/Services.h>
 
 #include <QToolBar>
 #include <QLabel>
 #include <QPushButton>
+#include <QPainter>
 #include <QUndoStack>
 
 namespace {
@@ -90,8 +93,6 @@ bool MarkImpactsState::isComplete() const
 
 QCursor MarkImpactsState::cursor() const
 {
-    // Segmented circle cursor - for now use crosshair
-    // TODO: Create custom cursor scaled to bullet diameter
     return QCursor(Qt::CrossCursor);
 }
 
@@ -149,6 +150,43 @@ void MarkImpactsState::updateGroupCircles()
 QString MarkImpactsState::stateName() const
 {
     return tr("Mark Impacts");
+}
+
+void MarkImpactsState::drawCursor(QPainter* pPainter, const QPointF& viewportPos, double zoomFactor)
+{
+    if (!m_pDocument || !m_pDocument->hasScaleFactorSet()) return;
+
+    // Calculate diameter in pixels
+    double diameterInch = m_pDocument->bulletDiameter();
+    double ppi = m_pDocument->pixelsPerInch();
+    double diameterPixels = diameterInch * ppi * zoomFactor;
+
+    // Get color from settings
+    auto& graphicsService = qx::GetService<GraphicsSettingsService>();
+    QColor color = graphicsService.color(GraphicsSettingsService::ColorRole::ImpactCursor);
+
+    // Draw segmented circle
+    double radius = diameterPixels / 2.0;
+    constexpr double kLineWidth = 2.0;
+    constexpr double kGapAngle = 15.0;
+
+    QPen pen(color);
+    pen.setWidthF(kLineWidth);
+    pen.setCapStyle(Qt::FlatCap);
+    pPainter->setPen(pen);
+    pPainter->setBrush(Qt::NoBrush);
+
+    QRectF rect(viewportPos.x() - radius, viewportPos.y() - radius, 
+                diameterPixels, diameterPixels);
+
+    double arcSpan = 90.0 - kGapAngle;
+    double halfGap = kGapAngle / 2.0;
+
+    // Draw the 4 arcs
+    pPainter->drawArc(rect, (90 + halfGap) * 16, arcSpan * 16);
+    pPainter->drawArc(rect, (180 + halfGap) * 16, arcSpan * 16);
+    pPainter->drawArc(rect, (270 + halfGap) * 16, arcSpan * 16);
+    pPainter->drawArc(rect, (0 + halfGap) * 16, arcSpan * 16);
 }
 
 double MarkImpactsState::bulletDiameterPixels() const

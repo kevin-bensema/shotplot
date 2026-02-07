@@ -2,10 +2,13 @@
 #include <Core/ShotGroupDocument.h>
 #include <Widgets/TargetView.h>
 #include <Graphics/TargetScene.h>
+#include <Services/GraphicsSettingsService.h>
+#include <QX/Services.h>
 
 #include <QToolBar>
 #include <QLabel>
 #include <QPushButton>
+#include <QPainter>
 
 POAState::POAState(ShotGroupDocument* pDocument, TargetView* pView)
     : WorkflowState(pDocument, pView)
@@ -46,13 +49,49 @@ bool POAState::isComplete() const
 
 QCursor POAState::cursor() const
 {
-    // X-shaped cursor (we'll use a built-in for now)
     return QCursor(Qt::CrossCursor);
 }
 
 QString POAState::stateName() const
 {
     return tr("Point of Aim");
+}
+
+void POAState::drawCursor(QPainter* pPainter, const QPointF& viewportPos, double zoomFactor)
+{
+    if (!m_pDocument || !m_pDocument->hasScaleFactorSet()) return;
+
+    // Calculate diameter in pixels
+    double diameterInch = m_pDocument->bulletDiameter();
+    double ppi = m_pDocument->pixelsPerInch();
+    double diameterPixels = diameterInch * ppi * zoomFactor;
+
+    // Get color from settings
+    auto& graphicsService = qx::GetService<GraphicsSettingsService>();
+    QColor color = graphicsService.color(GraphicsSettingsService::ColorRole::PointOfAimCursor);
+
+    // Draw segmented circle
+    double radius = diameterPixels / 2.0;
+    constexpr double kLineWidth = 2.0;
+    constexpr double kGapAngle = 15.0;
+
+    QPen pen(color);
+    pen.setWidthF(kLineWidth);
+    pen.setCapStyle(Qt::FlatCap);
+    pPainter->setPen(pen);
+    pPainter->setBrush(Qt::NoBrush);
+
+    QRectF rect(viewportPos.x() - radius, viewportPos.y() - radius, 
+                diameterPixels, diameterPixels);
+
+    double arcSpan = 90.0 - kGapAngle;
+    double halfGap = kGapAngle / 2.0;
+
+    // Draw the 4 arcs
+    pPainter->drawArc(rect, (90 + halfGap) * 16, arcSpan * 16);
+    pPainter->drawArc(rect, (180 + halfGap) * 16, arcSpan * 16);
+    pPainter->drawArc(rect, (270 + halfGap) * 16, arcSpan * 16);
+    pPainter->drawArc(rect, (0 + halfGap) * 16, arcSpan * 16);
 }
 
 void POAState::populateToolbar(QToolBar* pToolbar)

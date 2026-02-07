@@ -24,3 +24,11 @@ QCursor WorkflowState::cursor() const
 {
     return QCursor(Qt::ArrowCursor);
 }
+
+void WorkflowState::drawCursor(QPainter* pPainter, const QPointF& viewportPos, double zoomFactor)
+{
+    Q_UNUSED(pPainter)
+    Q_UNUSED(viewportPos)
+    Q_UNUSED(zoomFactor)
+    // Default: do nothing
+}

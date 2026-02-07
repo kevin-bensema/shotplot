@@ -56,6 +56,12 @@ public:
     /// Returns the display name of this state.
     QString stateName() const override;
 
+    /// Draws a segmented circle cursor at the mouse position.
+    /// \param pPainter The painter to use for drawing on the viewport
+    /// \param viewportPos The current mouse position in viewport coordinates
+    /// \param zoomFactor The current zoom factor of the view
+    void drawCursor(QPainter* pPainter, const QPointF& viewportPos, double zoomFactor) override;
+
 private:
     /// Updates group circle visualizations based on current impact statistics.
     void updateGroupCircles();

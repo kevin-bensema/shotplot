@@ -11,6 +11,8 @@ namespace
     const QString kColorPercent90CircleKey = QStringLiteral("Graphics.Colors.Percent90Circle");
     const QString kColorPercent80CircleKey = QStringLiteral("Graphics.Colors.Percent80Circle");
     const QString kColorBackgroundKey = QStringLiteral("Graphics.Colors.Background");
+    const QString kColorImpactCursorKey = QStringLiteral("Graphics.Colors.ImpactCursor");
+    const QString kColorPointOfAimCursorKey = QStringLiteral("Graphics.Colors.PointOfAimCursor");
     
     const QString kOpacityFullGroupCircleKey = QStringLiteral("Graphics.Opacities.FullGroupCircle");
     const QString kOpacityPercent90CircleKey = QStringLiteral("Graphics.Opacities.Percent90Circle");
@@ -24,6 +26,8 @@ namespace
     const QColor kDefaultPercent90CircleColor(255, 153, 51);        // Orange
     const QColor kDefaultPercent80CircleColor(0, 204, 102);         // Green
     const QColor kDefaultBackgroundColor(30, 30, 30);               // Almost black
+    const QColor kDefaultImpactCursorColor(255, 155, 10);           // Reddish-orange
+    const QColor kDefaultPointOfAimCursorColor(32, 178, 170);       // Light Sea Green
 
     // Default opacity values (0-100 scale)
     constexpr int kDefaultFullGroupCircleOpacity = 16;              // 40/255 ≈ 16%
@@ -48,6 +52,10 @@ namespace
                 return kColorPercent80CircleKey;
             case GraphicsSettingsService::ColorRole::Background:
                 return kColorBackgroundKey;
+            case GraphicsSettingsService::ColorRole::ImpactCursor:
+                return kColorImpactCursorKey;
+            case GraphicsSettingsService::ColorRole::PointOfAimCursor:
+                return kColorPointOfAimCursorKey;
         }
         return QString();
     }
@@ -84,6 +92,10 @@ namespace
                 return kDefaultPercent80CircleColor;
             case GraphicsSettingsService::ColorRole::Background:
                 return kDefaultBackgroundColor;
+            case GraphicsSettingsService::ColorRole::ImpactCursor:
+                return kDefaultImpactCursorColor;
+            case GraphicsSettingsService::ColorRole::PointOfAimCursor:
+                return kDefaultPointOfAimCursorColor;
         }
         return QColor();
     }
@@ -152,6 +164,8 @@ void GraphicsSettingsService::restoreDefaults()
     m_colors[ColorRole::Percent90Circle] = kDefaultPercent90CircleColor;
     m_colors[ColorRole::Percent80Circle] = kDefaultPercent80CircleColor;
     m_colors[ColorRole::Background] = kDefaultBackgroundColor;
+    m_colors[ColorRole::ImpactCursor] = kDefaultImpactCursorColor;
+    m_colors[ColorRole::PointOfAimCursor] = kDefaultPointOfAimCursorColor;
 
     // Restore all opacities
     m_opacities[OpacityRole::FullGroupCircle] = kDefaultFullGroupCircleOpacity;
@@ -191,6 +205,10 @@ void GraphicsSettingsService::loadFromSettings()
         kColorPercent80CircleKey, kDefaultPercent80CircleColor).value<QColor>();
     m_colors[ColorRole::Background] = settings.value(
         kColorBackgroundKey, kDefaultBackgroundColor).value<QColor>();
+    m_colors[ColorRole::ImpactCursor] = settings.value(
+        kColorImpactCursorKey, kDefaultImpactCursorColor).value<QColor>();
+    m_colors[ColorRole::PointOfAimCursor] = settings.value(
+        kColorPointOfAimCursorKey, kDefaultPointOfAimCursorColor).value<QColor>();
 
     // Load opacities with defaults
     m_opacities[OpacityRole::FullGroupCircle] = settings.value(

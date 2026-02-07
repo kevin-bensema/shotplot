@@ -147,6 +147,15 @@ protected:
     /// \param pEvent The mouse release event
     void mouseReleaseEvent(QMouseEvent* pEvent) override;
 
+    /// Overrides paintEvent to draw the custom cursor glyph if needed
+    void paintEvent(QPaintEvent* pEvent) override;
+
+    /// Overrides enterEvent to track when the mouse enters the view
+    void enterEvent(QEnterEvent* pEvent) override;
+
+    /// Overrides leaveEvent to track when the mouse leaves the view
+    void leaveEvent(QEvent* pEvent) override;
+
 private:
     /// Updates the cursor based on the current workflow state
     ///
@@ -183,7 +192,13 @@ private:
     /// a left drag exceeds CLICK_THRESHOLD. When true, mouse movement pans
     /// the view instead of being delegated to the workflow state.
     bool m_isPanning = false;
-    
+
+    /// Whether the mouse is currently over the view
+    bool m_mouseInView = false;
+
+    /// Current mouse position in viewport coordinates
+    QPoint m_currentMousePos;
+
     /// Current zoom factor (1.0 = 100%, 2.0 = 200%, etc.)
     ///
     /// Tracks the cumulative zoom level for zoom limit enforcement and

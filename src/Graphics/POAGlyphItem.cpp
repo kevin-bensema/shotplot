@@ -1,4 +1,6 @@
 #include "POAGlyphItem.h"
+#include <Services/GraphicsSettingsService.h>
+#include <QX/Services.h>
 
 #include <QPainter>
 
@@ -8,6 +10,7 @@ namespace {
 
 POAGlyphItem::POAGlyphItem(QGraphicsItem* pParent)
     : QGraphicsItem(pParent)
+    , m_service(qx::GetService<GraphicsSettingsService>())
 {
 }
 
@@ -18,7 +21,7 @@ double POAGlyphItem::size() const
 
 QColor POAGlyphItem::color() const
 {
-    return m_color;
+    return m_service.color(GraphicsSettingsService::ColorRole::PointOfAim);
 }
 
 void POAGlyphItem::setSize(double size)
@@ -30,8 +33,8 @@ void POAGlyphItem::setSize(double size)
 
 void POAGlyphItem::setColor(const QColor& color)
 {
-    m_color = color;
-    update();
+    // Deprecated - color now managed by GraphicsSettingsService
+    Q_UNUSED(color)
 }
 
 QRectF POAGlyphItem::boundingRect() const
@@ -48,7 +51,9 @@ void POAGlyphItem::paint(QPainter* pPainter, const QStyleOptionGraphicsItem* pOp
 
     pPainter->setRenderHint(QPainter::Antialiasing);
 
-    QPen pen(m_color);
+    const QColor color = m_service.color(GraphicsSettingsService::ColorRole::PointOfAim);
+
+    QPen pen(color);
     pen.setWidthF(kLineWidth);
     pen.setCapStyle(Qt::RoundCap);
     pPainter->setPen(pen);

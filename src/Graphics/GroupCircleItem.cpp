@@ -1,31 +1,48 @@
 #include "GroupCircleItem.h"
+#include <Services/GraphicsSettingsService.h>
+#include <QX/Services.h>
 
 #include <QPainter>
 
 namespace
 {
     constexpr double kLineWidth = 2.0;
-    constexpr int kFillOpacity = 40;  // 0-255
     constexpr double kCrossSize = 5.0;
+
+    GraphicsSettingsService::ColorRole typeToColorRole(GroupCircleItem::Type type)
+    {
+        switch (type)
+        {
+            case GroupCircleItem::Type::Full:
+                return GraphicsSettingsService::ColorRole::FullGroupCircle;
+            case GroupCircleItem::Type::Percent80:
+                return GraphicsSettingsService::ColorRole::Percent80Circle;
+            case GroupCircleItem::Type::Percent90:
+                return GraphicsSettingsService::ColorRole::Percent90Circle;
+        }
+        return GraphicsSettingsService::ColorRole::FullGroupCircle;
+    }
+
+    GraphicsSettingsService::OpacityRole typeToOpacityRole(GroupCircleItem::Type type)
+    {
+        switch (type)
+        {
+            case GroupCircleItem::Type::Full:
+                return GraphicsSettingsService::OpacityRole::FullGroupCircle;
+            case GroupCircleItem::Type::Percent80:
+                return GraphicsSettingsService::OpacityRole::Percent80Circle;
+            case GroupCircleItem::Type::Percent90:
+                return GraphicsSettingsService::OpacityRole::Percent90Circle;
+        }
+        return GraphicsSettingsService::OpacityRole::FullGroupCircle;
+    }
 }
 
 GroupCircleItem::GroupCircleItem(Type type, QGraphicsItem* pParent)
     : QGraphicsItem(pParent)
     , m_type(type)
+    , m_service(qx::GetService<GraphicsSettingsService>())
 {
-    // Set color based on type
-    switch (m_type)
-    {
-        case Type::Full:
-            m_color = QColor(0, 102, 204);  // Blue
-            break;
-        case Type::Percent80:
-            m_color = QColor(0, 204, 102);  // Green
-            break;
-        case Type::Percent90:
-            m_color = QColor(255, 153, 51); // Orange
-            break;
-    }
 }
 
 GroupCircleItem::Type GroupCircleItem::circleType() const
@@ -71,13 +88,17 @@ void GroupCircleItem::paint(QPainter* pPainter, const QStyleOptionGraphicsItem* 
 
     pPainter->setRenderHint(QPainter::Antialiasing);
 
-    // Fill with semi-transparent color
-    QColor fillColor = m_color;
-    fillColor.setAlpha(kFillOpacity);
+    // Get color and opacity from service
+    const QColor color = m_service.color(typeToColorRole(m_type));
+    const int opacity = m_service.opacity(typeToOpacityRole(m_type));
+
+    // Fill with semi-transparent color (convert opacity from 0-100 to 0-255)
+    QColor fillColor = color;
+    fillColor.setAlpha(opacity * 255 / 100);
     pPainter->setBrush(fillColor);
 
     // Outline
-    QPen pen(m_color);
+    QPen pen(color);
     pen.setWidthF(kLineWidth);
     pPainter->setPen(pen);
 

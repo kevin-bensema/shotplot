@@ -25,6 +25,11 @@ set(WIDGETS_SOURCES
     Widgets/TargetView.cpp
     Widgets/StatisticsPanel.cpp
     Widgets/CaliberDialog.cpp
+    Widgets/GraphicsSettingsDialog.cpp
+)
+
+set(SERVICES_SOURCES
+    Services/GraphicsSettingsService.cpp
 )
 
 set(GRAPHICS_SOURCES
@@ -53,6 +58,7 @@ set(SHOTPLOT_SOURCES
     ${CORE_SOURCES}
     ${STATES_SOURCES}
     ${WIDGETS_SOURCES}
+    ${SERVICES_SOURCES}
     ${GRAPHICS_SOURCES}
     ${IO_SOURCES}
     ${COMMANDS_SOURCES}

@@ -34,6 +34,7 @@ namespace {
 #include <Widgets/WorkflowToolbar.h>
 #include <Widgets/PerStateToolbar.h>
 #include <Widgets/StatisticsPanel.h>
+#include <Widgets/GraphicsSettingsDialog.h>
 #include <Graphics/TargetScene.h>
 #include <Core/ShotGroupDocument.h>
 
@@ -164,6 +165,10 @@ void MainWindow::setupMenus()
     }
     
     connect(pUnitsGroup, &QActionGroup::triggered, this, &MainWindow::onDisplayUnitsChanged);
+    
+    pViewMenu->addSeparator();
+    
+    QAction* pGraphicsSettingsAction = pViewMenu->addAction(tr("&Graphics Settings..."), this, &MainWindow::onGraphicsSettings);
 }
 
 void MainWindow::setupToolbars()
@@ -465,6 +470,20 @@ void MainWindow::onDisplayUnitsChanged(QAction* action)
     {
         m_pStatisticsPanel->updateDisplay();
     }
+}
+
+void MainWindow::onGraphicsSettings()
+{
+    // Create dialog on first access (lazy initialization)
+    if (!m_pGraphicsSettingsDialog)
+    {
+        m_pGraphicsSettingsDialog = new GraphicsSettingsDialog(this);
+    }
+    
+    // Show non-modal dialog
+    m_pGraphicsSettingsDialog->show();
+    m_pGraphicsSettingsDialog->raise();
+    m_pGraphicsSettingsDialog->activateWindow();
 }
 
 

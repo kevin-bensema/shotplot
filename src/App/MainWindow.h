@@ -11,6 +11,7 @@ class PerStateToolbar;
 class StatisticsPanel;
 class ShotGroupDocument;
 class WorkflowState;
+class GraphicsSettingsDialog;
 
 /// @brief Main application window for ShotPlot
 /// 
@@ -67,6 +68,9 @@ private slots:
     
     /// Updates display units preference (inches, MOA, or MRAD) and refreshes statistics panel
     void onDisplayUnitsChanged(QAction* action);
+    
+    /// Opens the graphics settings dialog (non-modal)
+    void onGraphicsSettings();
 
 private:
     /// Initializes undo/redo actions
@@ -112,6 +116,7 @@ private:
     WorkflowToolbar* m_pWorkflowToolbar = nullptr;    ///< Toolbar showing workflow pipeline and state selection
     PerStateToolbar* m_pPerStateToolbar = nullptr;    ///< Toolbar with state-specific controls
     StatisticsPanel* m_pStatisticsPanel = nullptr;    ///< Dock widget displaying shot group statistics
+    GraphicsSettingsDialog* m_pGraphicsSettingsDialog = nullptr;  ///< Non-modal graphics settings dialog
     
     // Document
     std::unique_ptr<ShotGroupDocument> m_document;   ///< Current document model (null if no document loaded)

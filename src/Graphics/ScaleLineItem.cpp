@@ -1,17 +1,18 @@
 #include "ScaleLineItem.h"
+#include <Services/GraphicsSettingsService.h>
+#include <QX/Services.h>
 
 #include <QPainter>
 #include <cmath>
 
 namespace {
-    const QColor kColor(0, 255, 0);           // Bright green color for visibility
     const double kLineWidth = 3.0;            // Width of the line stroke in pixels
     const double kEndpointRadius = 5.0;       // Radius of the circular endpoint markers
 }
 
 ScaleLineItem::ScaleLineItem(QGraphicsItem* pParent)
     : QGraphicsItem(pParent)
-    , m_color(kColor)
+    , m_service(qx::GetService<GraphicsSettingsService>())
     , m_lineWidth(kLineWidth)
     , m_endpointRadius(kEndpointRadius)
 {
@@ -70,7 +71,9 @@ void ScaleLineItem::paint(QPainter* pPainter, const QStyleOptionGraphicsItem* pO
 
     pPainter->setRenderHint(QPainter::Antialiasing);
 
-    QPen pen(m_color);
+    const QColor color = m_service.color(GraphicsSettingsService::ColorRole::CalibrationLine);
+
+    QPen pen(color);
     pen.setWidthF(m_lineWidth);
     pen.setCapStyle(Qt::RoundCap);
     pPainter->setPen(pen);
@@ -79,7 +82,7 @@ void ScaleLineItem::paint(QPainter* pPainter, const QStyleOptionGraphicsItem* pO
     pPainter->drawLine(m_start, m_end);
 
     // Draw endpoints as filled circles
-    pPainter->setBrush(m_color);
+    pPainter->setBrush(color);
     pPainter->drawEllipse(m_start, m_endpointRadius, m_endpointRadius);
     pPainter->drawEllipse(m_end, m_endpointRadius, m_endpointRadius);
 }

@@ -3,6 +3,8 @@
 #include <QGraphicsItem>
 #include <QColor>
 
+class GraphicsSettingsService;
+
 /// @brief Segmented circle glyph for shot impact markers
 /// 
 /// Renders a circle with gaps at N, S, E, W cardinal directions,
@@ -41,11 +43,13 @@ public:
     /// \param diameter The new diameter in scene coordinates
     void setDiameter(double diameter);
 
+    /// @brief Returns the circle color from the graphics settings service
     QColor color() const;
     
-    /// @brief Sets the circle color and triggers a repaint
+    /// @brief Sets the circle color (deprecated - color now managed by GraphicsSettingsService)
     /// 
     /// \param color The color for the circle outline
+    /// \deprecated This method is kept for backward compatibility but has no effect.
     void setColor(const QColor& color);
 
     // QGraphicsItem interface
@@ -64,7 +68,7 @@ public:
     void paint(QPainter* pPainter, const QStyleOptionGraphicsItem* pOption, QWidget* pWidget) override;
 
 private:
-    int m_shotNumber;              ///< Shot number displayed in center
-    double m_diameter;             ///< Circle diameter in scene coordinates
-    QColor m_color;                ///< Color of the circle outline
+    int m_shotNumber;                        ///< Shot number displayed in center
+    double m_diameter;                       ///< Circle diameter in scene coordinates
+    GraphicsSettingsService& m_service;      ///< Service for graphics settings
 };

@@ -1,4 +1,6 @@
 #include "ImpactGlyphItem.h"
+#include <Services/GraphicsSettingsService.h>
+#include <QX/Services.h>
 
 #include <QPainter>
 #include <QFont>
@@ -13,7 +15,7 @@ ImpactGlyphItem::ImpactGlyphItem(int shotNumber, double diameter, QGraphicsItem*
     : QGraphicsItem(pParent)
     , m_shotNumber(shotNumber)
     , m_diameter(diameter)
-    , m_color(Qt::red)
+    , m_service(qx::GetService<GraphicsSettingsService>())
 {
     setFlag(QGraphicsItem::ItemIsSelectable);
 }
@@ -33,8 +35,8 @@ void ImpactGlyphItem::setDiameter(double diameter)
 
 void ImpactGlyphItem::setColor(const QColor& color)
 {
-    m_color = color;
-    update();
+    // Deprecated - color now managed by GraphicsSettingsService
+    Q_UNUSED(color)
 }
 
 int ImpactGlyphItem::shotNumber() const
@@ -49,7 +51,7 @@ double ImpactGlyphItem::diameter() const
 
 QColor ImpactGlyphItem::color() const
 {
-    return m_color;
+    return m_service.color(GraphicsSettingsService::ColorRole::Impact);
 }
 
 QRectF ImpactGlyphItem::boundingRect() const
@@ -68,8 +70,10 @@ void ImpactGlyphItem::paint(QPainter* pPainter, const QStyleOptionGraphicsItem* 
 
     double radius = m_diameter / 2.0;
     
+    const QColor color = m_service.color(GraphicsSettingsService::ColorRole::Impact);
+    
     // Set up pen for the segmented circle
-    QPen pen(m_color);
+    QPen pen(color);
     pen.setWidthF(kLineWidth);
     pen.setCapStyle(Qt::FlatCap);
     pPainter->setPen(pen);

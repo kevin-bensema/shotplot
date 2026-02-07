@@ -3,6 +3,8 @@
 #include <QGraphicsItem>
 #include <QColor>
 
+class GraphicsSettingsService;
+
 /// @brief Bright green line for scale calibration
 /// 
 /// A graphics item that renders a bright green line with circular endpoints
@@ -52,9 +54,9 @@ public:
     void paint(QPainter* pPainter, const QStyleOptionGraphicsItem* pOption, QWidget* pWidget) override;
 
 private:
-    QPointF m_start;              ///< Starting point of the line
-    QPointF m_end;                ///< Ending point of the line
-    QColor m_color;               ///< Bright green color for visibility
-    double m_lineWidth;           ///< Width of the line stroke in pixels
-    double m_endpointRadius;      ///< Radius of the circular endpoint markers
+    QPointF m_start;                          ///< Starting point of the line
+    QPointF m_end;                            ///< Ending point of the line
+    GraphicsSettingsService& m_service;       ///< Service for graphics settings
+    double m_lineWidth;                       ///< Width of the line stroke in pixels
+    double m_endpointRadius;                  ///< Radius of the circular endpoint markers
 };

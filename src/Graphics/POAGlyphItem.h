@@ -3,6 +3,8 @@
 #include <QGraphicsItem>
 #include <QColor>
 
+class GraphicsSettingsService;
+
 /// @brief X-shaped point of aim marker (rotated 45 degrees)
 /// 
 /// Renders a visual marker consisting of two diagonal lines forming an X shape,
@@ -22,11 +24,12 @@ public:
     /// \param size The new size in pixels (must be positive).
     void setSize(double size);
 
-    /// Returns the color of the glyph lines.
+    /// Returns the color of the glyph lines from the graphics settings service.
     QColor color() const;
     
-    /// Sets the color of the glyph lines.
+    /// Sets the color of the glyph lines (deprecated - color now managed by GraphicsSettingsService).
     /// \param color The new color for the X marker.
+    /// \deprecated This method is kept for backward compatibility but has no effect.
     void setColor(const QColor& color);
 
     // QGraphicsItem interface
@@ -45,5 +48,5 @@ public:
 
 private:
     double m_size = 30.0;                    ///< Size (diameter) of the glyph in pixels.
-    QColor m_color = QColor(255, 0, 255);    ///< Color of the marker (default: magenta).
+    GraphicsSettingsService& m_service;      ///< Service for graphics settings
 };

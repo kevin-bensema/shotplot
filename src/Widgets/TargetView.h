@@ -154,6 +154,9 @@ private:
     /// otherwise resets to the default arrow cursor. Called when the state
     /// changes or when panning ends.
     void updateCursor();
+    
+    /// Updates the background color from the graphics settings service
+    void updateBackgroundColor();
 
 private:
     /// The current workflow state that receives delegated mouse events

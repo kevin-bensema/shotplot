@@ -1,5 +1,7 @@
 #include <QApplication>
+#include <QX/Services.h>
 #include "App/MainWindow.h"
+#include "Services/GraphicsSettingsService.h"
 
 int main(int argc, char *argv[])
 {
@@ -11,8 +13,15 @@ int main(int argc, char *argv[])
     QApplication::setOrganizationName("ShotPlot");
     QApplication::setOrganizationDomain("shotplot.app");
     
+    // Initialize service locator and register services
+    qx::InitServiceLocator();
+    qx::RegisterService(new GraphicsSettingsService());
+    
     MainWindow mainWindow;
     mainWindow.show();
     
-    return app.exec();
+    int result = app.exec();
+    
+    qx::ShutdownServiceLocator();
+    return result;
 }

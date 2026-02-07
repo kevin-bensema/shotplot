@@ -3,6 +3,8 @@
 #include <QGraphicsItem>
 #include <QColor>
 
+class GraphicsSettingsService;
+
 /// @brief Semi-transparent circle overlay for group visualization
 /// 
 /// Renders a colored circle with semi-transparent fill and solid outline
@@ -54,5 +56,5 @@ private:
     Type m_type;
     QPointF m_center;
     double m_radius = 0.0;
-    QColor m_color;
+    GraphicsSettingsService& m_service;      ///< Service for graphics settings
 };

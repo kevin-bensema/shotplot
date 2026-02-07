@@ -1,6 +1,8 @@
 #include "TargetView.h"
 #include <Graphics/TargetScene.h>
 #include <States/WorkflowState.h>
+#include <Services/GraphicsSettingsService.h>
+#include <QX/Services.h>
 
 #include <QGraphicsPixmapItem>
 #include <QWheelEvent>
@@ -34,11 +36,18 @@ TargetView::TargetView(QWidget* pParent)
     // Enable mouse tracking for cursor updates
     setMouseTracking(true);
     
-    // Background
-    setBackgroundBrush(QBrush(Qt::darkGray));
+    // Background - get from graphics settings service
+    updateBackgroundColor();
     
     // Drag mode - we handle this manually
     setDragMode(QGraphicsView::NoDrag);
+    
+    // Connect to graphics settings service for color/opacity changes
+    auto& graphicsService = qx::GetService<GraphicsSettingsService>();
+    connect(&graphicsService, &GraphicsSettingsService::settingsChanged, this, [this]() {
+        updateBackgroundColor();
+        update();
+    });
 }
 
 void TargetView::setTargetScene(TargetScene* pScene)
@@ -250,4 +259,11 @@ void TargetView::updateCursor()
     {
         setCursor(Qt::ArrowCursor);
     }
+}
+
+void TargetView::updateBackgroundColor()
+{
+    auto& graphicsService = qx::GetService<GraphicsSettingsService>();
+    const QColor backgroundColor = graphicsService.color(GraphicsSettingsService::ColorRole::Background);
+    setBackgroundBrush(QBrush(backgroundColor));
 }

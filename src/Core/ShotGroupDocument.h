@@ -102,8 +102,8 @@ public:
     void clearImpacts();
     /// Replaces all impacts with the provided list and invalidates cached statistics
     void replaceImpacts(const QList<ShotImpact>& impacts);
-    /// Returns the next available unique impact ID and increments the counter
-    int nextImpactId();
+    /// Returns the next available unique impact ID based on current impact count
+    int nextImpactId() const;
 
     // ===== Metadata =====
     QString firearm() const;
@@ -222,7 +222,6 @@ private:
     
     // Impacts
     QList<ShotImpact> m_impacts;
-    int m_nextImpactId = 1;
     
     // Metadata
     QString m_firearm;

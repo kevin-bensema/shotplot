@@ -224,9 +224,9 @@ void ShotGroupDocument::replaceImpacts(const QList<ShotImpact>& impacts)
     emit impactsChanged();
 }
 
-int ShotGroupDocument::nextImpactId()
+int ShotGroupDocument::nextImpactId() const
 {
-    return m_nextImpactId++;
+    return m_impacts.size() + 1;
 }
 
 // ===== Metadata =====
@@ -536,9 +536,7 @@ bool ShotGroupDocument::fromJson(const QJsonObject& json, QString* pErrorMsg)
         impact.x = shotObj["x"].toDouble();
         impact.y = shotObj["y"].toDouble();
         m_impacts.append(impact);
-        maxId = qMax(maxId, impact.id);
     }
-    m_nextImpactId = maxId + 1;
     
     // Metadata
     QJsonObject metadataObj = json["metadata"].toObject();

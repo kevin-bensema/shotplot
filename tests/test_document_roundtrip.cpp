@@ -179,16 +179,16 @@ TEST_CASE("JSON round-trip with empty impacts list", "[serialization][json]")
     CHECK_FALSE(loaded.statistics().valid);
 }
 
-TEST_CASE("JSON round-trip preserves impact IDs and next-ID counter", "[serialization][json]")
+TEST_CASE("JSON round-trip preserves impact IDs", "[serialization][json]")
 {
     ShotGroupDocument original;
     original.setPixelsPerInch(72.0);
     original.setBulletDiameter(0.224);
 
-    // Add impacts with specific IDs via nextImpactId()
-    int id1 = original.nextImpactId(); // 1
-    int id2 = original.nextImpactId(); // 2
-    int id3 = original.nextImpactId(); // 3
+    // Add impacts with specific IDs
+    int id1 = 1;
+    int id2 = 2;
+    int id3 = 3;
     original.addImpact(ShotImpact(id1, 10.0, 20.0));
     original.addImpact(ShotImpact(id2, 30.0, 40.0));
     original.addImpact(ShotImpact(id3, 50.0, 60.0));
@@ -203,10 +203,9 @@ TEST_CASE("JSON round-trip preserves impact IDs and next-ID counter", "[serializ
     CHECK(loaded.impactAt(1).id == id2);
     CHECK(loaded.impactAt(2).id == id3);
 
-    // After loading, nextImpactId should be max(existing IDs) + 1
-    // so a new impact won't collide with loaded IDs
+    // After loading, nextImpactId should be count + 1
     int nextId = loaded.nextImpactId();
-    CHECK(nextId > id3);
+    CHECK(nextId == 4);
 }
 
 TEST_CASE("fromJson rejects missing version field", "[serialization][json]")

@@ -563,16 +563,16 @@ void MainWindow::setCurrentState(int stateIndex)
     }
     
     m_currentStateIndex = stateIndex;
-    
-    // Enter new state
-    m_states[m_currentStateIndex]->onEnter();
-    
+
     // Update UI
     m_pWorkflowToolbar->setCurrentState(stateIndex);
     m_pPerStateToolbar->setCurrentState(m_states[stateIndex].get());
     
     // Update target view with current state
     m_pTargetView->setWorkflowState(m_states[stateIndex].get());
+
+    // Enter new state
+    m_states[m_currentStateIndex]->onEnter();
 }
 
 void MainWindow::createNewDocument(const QImage &image)
@@ -599,6 +599,15 @@ void MainWindow::createNewDocument(const QImage &image)
     m_states.push_back(std::make_unique<POAState>(m_document.get(), m_pTargetView));
     m_states.push_back(std::make_unique<MarkImpactsState>(m_document.get(), m_pTargetView, m_pUndoStack));
     m_states.push_back(std::make_unique<VisualizationState>(m_document.get(), m_pTargetView));
+    
+    // Connect state signals
+    for (int i = 0; i < static_cast<int>(m_states.size()); ++i)
+    {
+        connect(m_states[i].get(), &WorkflowState::requestNextState,
+                this, [this, i]() {
+                    setCurrentState(i + 1);
+                });
+    }
     
     // Update workflow toolbar
     m_pWorkflowToolbar->setDocument(m_document.get());
@@ -649,6 +658,15 @@ void MainWindow::loadDocumentFromFile(const QString &filePath)
     m_states.push_back(std::make_unique<POAState>(m_document.get(), m_pTargetView));
     m_states.push_back(std::make_unique<MarkImpactsState>(m_document.get(), m_pTargetView, m_pUndoStack));
     m_states.push_back(std::make_unique<VisualizationState>(m_document.get(), m_pTargetView));
+    
+    // Connect state signals
+    for (int i = 0; i < static_cast<int>(m_states.size()); ++i)
+    {
+        connect(m_states[i].get(), &WorkflowState::requestNextState,
+                this, [this, i]() {
+                    setCurrentState(i + 1);
+                });
+    }
     
     // Update workflow toolbar
     m_pWorkflowToolbar->setDocument(m_document.get());

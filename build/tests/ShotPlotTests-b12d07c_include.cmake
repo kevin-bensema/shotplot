@@ -1,5 +1,0 @@
-if(EXISTS "/home/kevin/Projects/ShotPlot/build/tests/ShotPlotTests-b12d07c_tests.cmake")
-  include("/home/kevin/Projects/ShotPlot/build/tests/ShotPlotTests-b12d07c_tests.cmake")
-else()
-  add_test(ShotPlotTests_NOT_BUILT-b12d07c ShotPlotTests_NOT_BUILT-b12d07c)
-endif()

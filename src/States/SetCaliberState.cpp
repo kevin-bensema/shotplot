@@ -17,7 +17,7 @@ SetCaliberState::~SetCaliberState() = default;
 
 void SetCaliberState::onEnter()
 {
-    bool alreadyHasCaliber = m_pDocument->hasCaliberSet();
+    const bool alreadyHasCaliber = m_pDocument->hasCaliberSet();
 
     // Show caliber dialog
     CaliberDialog dialog(m_pParentWidget);
@@ -31,11 +31,7 @@ void SetCaliberState::onEnter()
     {
         m_pDocument->setBulletDiameter(dialog.bulletDiameter());
         emit stateCompleted();
-        
-        if (!alreadyHasCaliber)
-        {
-            emit requestNextState();
-        }
+        emit requestNextState();
     }
 }
 

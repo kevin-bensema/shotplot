@@ -590,6 +590,7 @@ void MainWindow::createNewDocument(const QImage &image)
     
     // Set up scene with image
     m_pTargetScene->setTargetImage(image);
+    m_pTargetScene->setDocument(m_document.get());
     m_pTargetView->zoomFit();
     
     // Create workflow states
@@ -649,6 +650,7 @@ void MainWindow::loadDocumentFromFile(const QString &filePath)
     
     // Set up scene with loaded image
     m_pTargetScene->setTargetImage(m_document->targetImage());
+    m_pTargetScene->setDocument(m_document.get());
     m_pTargetView->zoomFit();
     
     // Create workflow states

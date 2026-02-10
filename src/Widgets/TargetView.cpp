@@ -81,21 +81,19 @@ WorkflowState* TargetView::workflowState() const
 
 void TargetView::zoomIn()
 {
-    double newZoom = m_zoomFactor * kZoomStep;
+    double newZoom = transform().m11() * kZoomStep;
     if (newZoom <= kMaxZoom)
     {
         scale(kZoomStep, kZoomStep);
-        m_zoomFactor = newZoom;
     }
 }
 
 void TargetView::zoomOut()
 {
-    double newZoom = m_zoomFactor / kZoomStep;
+    double newZoom = transform().m11() / kZoomStep;
     if (newZoom >= kMinZoom)
     {
         scale(1.0 / kZoomStep, 1.0 / kZoomStep);
-        m_zoomFactor = newZoom;
     }
 }
 
@@ -105,7 +103,6 @@ void TargetView::zoomFit()
     
     // Reset transform
     resetTransform();
-    m_zoomFactor = 1.0;
     
     // Fit scene in view
     QRectF sceneRect = m_pTargetScene->sceneRect();
@@ -126,25 +123,7 @@ void TargetView::zoomFit()
         {
             fitInView(sceneRect, Qt::KeepAspectRatio);
         }
-        
-        // Calculate actual zoom factor
-        QTransform t = transform();
-        m_zoomFactor = t.m11();  // Assuming uniform scaling
     }
-}
-
-void TargetView::setZoomFactor(double factor)
-{
-    if (factor < kMinZoom || factor > kMaxZoom) return;
-    
-    double scaleFactor = factor / m_zoomFactor;
-    scale(scaleFactor, scaleFactor);
-    m_zoomFactor = factor;
-}
-
-double TargetView::zoomFactor() const
-{
-    return m_zoomFactor;
 }
 
 void TargetView::wheelEvent(QWheelEvent* pEvent)
@@ -274,7 +253,7 @@ void TargetView::updateCursor()
 
 void TargetView::updateBackgroundColor()
 {
-    auto& graphicsService = qx::GetService<GraphicsSettingsService>();
+    auto const& graphicsService = qx::GetService<GraphicsSettingsService>();
     const QColor backgroundColor = graphicsService.color(GraphicsSettingsService::ColorRole::Background);
     setBackgroundBrush(QBrush(backgroundColor));
 }
@@ -289,7 +268,7 @@ void TargetView::paintEvent(QPaintEvent* pEvent)
     {
         QPainter painter(viewport());
         painter.setRenderHint(QPainter::Antialiasing);
-        m_pCurrentState->drawCursor(&painter, m_currentMousePos, m_zoomFactor);
+        m_pCurrentState->drawCursor(&painter, m_currentMousePos, transform().m11());
     }
 }
 

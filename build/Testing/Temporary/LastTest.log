@@ -1,0 +1,223 @@
+Start testing: Feb 06 16:30 PST
+----------------------------------------------------------
+1/11 Testing: Smoke test: UnitConverter pixel/inch round-trip
+1/11 Test: Smoke test: UnitConverter pixel/inch round-trip
+Command: "/home/kevin/Projects/ShotPlot/build/ShotPlotTests" "Smoke test: UnitConverter pixel/inch round-trip"
+Directory: /home/kevin/Projects/ShotPlot/build/tests
+"Smoke test: UnitConverter pixel/inch round-trip" start time: Feb 06 16:30 PST
+Output:
+----------------------------------------------------------
+Filters: "Smoke test: UnitConverter pixel/inch round-trip"
+Randomness seeded to: 774013920
+===============================================================================
+All tests passed (1 assertion in 1 test case)
+
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"Smoke test: UnitConverter pixel/inch round-trip" end time: Feb 06 16:30 PST
+"Smoke test: UnitConverter pixel/inch round-trip" time elapsed: 00:00:00
+----------------------------------------------------------
+
+2/11 Testing: JSON round-trip preserves all document fields
+2/11 Test: JSON round-trip preserves all document fields
+Command: "/home/kevin/Projects/ShotPlot/build/ShotPlotTests" "JSON round-trip preserves all document fields"
+Directory: /home/kevin/Projects/ShotPlot/build/tests
+"JSON round-trip preserves all document fields" start time: Feb 06 16:30 PST
+Output:
+----------------------------------------------------------
+Filters: "JSON round-trip preserves all document fields"
+Randomness seeded to: 2645426355
+===============================================================================
+All tests passed (33 assertions in 1 test case)
+
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"JSON round-trip preserves all document fields" end time: Feb 06 16:30 PST
+"JSON round-trip preserves all document fields" time elapsed: 00:00:00
+----------------------------------------------------------
+
+3/11 Testing: JSON round-trip without point of aim
+3/11 Test: JSON round-trip without point of aim
+Command: "/home/kevin/Projects/ShotPlot/build/ShotPlotTests" "JSON round-trip without point of aim"
+Directory: /home/kevin/Projects/ShotPlot/build/tests
+"JSON round-trip without point of aim" start time: Feb 06 16:30 PST
+Output:
+----------------------------------------------------------
+Filters: "JSON round-trip without point of aim"
+Randomness seeded to: 918397119
+===============================================================================
+All tests passed (4 assertions in 1 test case)
+
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"JSON round-trip without point of aim" end time: Feb 06 16:30 PST
+"JSON round-trip without point of aim" time elapsed: 00:00:00
+----------------------------------------------------------
+
+4/11 Testing: JSON round-trip with meters distance unit
+4/11 Test: JSON round-trip with meters distance unit
+Command: "/home/kevin/Projects/ShotPlot/build/ShotPlotTests" "JSON round-trip with meters distance unit"
+Directory: /home/kevin/Projects/ShotPlot/build/tests
+"JSON round-trip with meters distance unit" start time: Feb 06 16:30 PST
+Output:
+----------------------------------------------------------
+Filters: "JSON round-trip with meters distance unit"
+Randomness seeded to: 1188693074
+===============================================================================
+All tests passed (3 assertions in 1 test case)
+
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"JSON round-trip with meters distance unit" end time: Feb 06 16:30 PST
+"JSON round-trip with meters distance unit" time elapsed: 00:00:00
+----------------------------------------------------------
+
+5/11 Testing: JSON round-trip with empty impacts list
+5/11 Test: JSON round-trip with empty impacts list
+Command: "/home/kevin/Projects/ShotPlot/build/ShotPlotTests" "JSON round-trip with empty impacts list"
+Directory: /home/kevin/Projects/ShotPlot/build/tests
+"JSON round-trip with empty impacts list" start time: Feb 06 16:30 PST
+Output:
+----------------------------------------------------------
+Filters: "JSON round-trip with empty impacts list"
+Randomness seeded to: 2821965161
+===============================================================================
+All tests passed (3 assertions in 1 test case)
+
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"JSON round-trip with empty impacts list" end time: Feb 06 16:30 PST
+"JSON round-trip with empty impacts list" time elapsed: 00:00:00
+----------------------------------------------------------
+
+6/11 Testing: JSON round-trip preserves impact IDs
+6/11 Test: JSON round-trip preserves impact IDs
+Command: "/home/kevin/Projects/ShotPlot/build/ShotPlotTests" "JSON round-trip preserves impact IDs"
+Directory: /home/kevin/Projects/ShotPlot/build/tests
+"JSON round-trip preserves impact IDs" start time: Feb 06 16:30 PST
+Output:
+----------------------------------------------------------
+Filters: "JSON round-trip preserves impact IDs"
+Randomness seeded to: 1234880838
+===============================================================================
+All tests passed (6 assertions in 1 test case)
+
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"JSON round-trip preserves impact IDs" end time: Feb 06 16:30 PST
+"JSON round-trip preserves impact IDs" time elapsed: 00:00:00
+----------------------------------------------------------
+
+7/11 Testing: fromJson rejects missing version field
+7/11 Test: fromJson rejects missing version field
+Command: "/home/kevin/Projects/ShotPlot/build/ShotPlotTests" "fromJson rejects missing version field"
+Directory: /home/kevin/Projects/ShotPlot/build/tests
+"fromJson rejects missing version field" start time: Feb 06 16:30 PST
+Output:
+----------------------------------------------------------
+Filters: "fromJson rejects missing version field"
+Randomness seeded to: 3985833870
+===============================================================================
+All tests passed (2 assertions in 1 test case)
+
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"fromJson rejects missing version field" end time: Feb 06 16:30 PST
+"fromJson rejects missing version field" time elapsed: 00:00:00
+----------------------------------------------------------
+
+8/11 Testing: SPZ file round-trip preserves all document data
+8/11 Test: SPZ file round-trip preserves all document data
+Command: "/home/kevin/Projects/ShotPlot/build/ShotPlotTests" "SPZ file round-trip preserves all document data"
+Directory: /home/kevin/Projects/ShotPlot/build/tests
+"SPZ file round-trip preserves all document data" start time: Feb 06 16:30 PST
+Output:
+----------------------------------------------------------
+Filters: "SPZ file round-trip preserves all document data"
+Randomness seeded to: 3852995163
+===============================================================================
+All tests passed (37 assertions in 1 test case)
+
+<end of output>
+Test time =   0.01 sec
+----------------------------------------------------------
+Test Passed.
+"SPZ file round-trip preserves all document data" end time: Feb 06 16:30 PST
+"SPZ file round-trip preserves all document data" time elapsed: 00:00:00
+----------------------------------------------------------
+
+9/11 Testing: SPZ file round-trip with minimal document
+9/11 Test: SPZ file round-trip with minimal document
+Command: "/home/kevin/Projects/ShotPlot/build/ShotPlotTests" "SPZ file round-trip with minimal document"
+Directory: /home/kevin/Projects/ShotPlot/build/tests
+"SPZ file round-trip with minimal document" start time: Feb 06 16:30 PST
+Output:
+----------------------------------------------------------
+Filters: "SPZ file round-trip with minimal document"
+Randomness seeded to: 408429042
+===============================================================================
+All tests passed (8 assertions in 1 test case)
+
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"SPZ file round-trip with minimal document" end time: Feb 06 16:30 PST
+"SPZ file round-trip with minimal document" time elapsed: 00:00:00
+----------------------------------------------------------
+
+10/11 Testing: SPZ file round-trip preserves image pixel data
+10/11 Test: SPZ file round-trip preserves image pixel data
+Command: "/home/kevin/Projects/ShotPlot/build/ShotPlotTests" "SPZ file round-trip preserves image pixel data"
+Directory: /home/kevin/Projects/ShotPlot/build/tests
+"SPZ file round-trip preserves image pixel data" start time: Feb 06 16:30 PST
+Output:
+----------------------------------------------------------
+Filters: "SPZ file round-trip preserves image pixel data"
+Randomness seeded to: 894277009
+===============================================================================
+All tests passed (7 assertions in 1 test case)
+
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"SPZ file round-trip preserves image pixel data" end time: Feb 06 16:30 PST
+"SPZ file round-trip preserves image pixel data" time elapsed: 00:00:00
+----------------------------------------------------------
+
+11/11 Testing: Loading non-existent file fails gracefully
+11/11 Test: Loading non-existent file fails gracefully
+Command: "/home/kevin/Projects/ShotPlot/build/ShotPlotTests" "Loading non-existent file fails gracefully"
+Directory: /home/kevin/Projects/ShotPlot/build/tests
+"Loading non-existent file fails gracefully" start time: Feb 06 16:30 PST
+Output:
+----------------------------------------------------------
+Filters: "Loading non-existent file fails gracefully"
+Randomness seeded to: 1160473749
+===============================================================================
+All tests passed (2 assertions in 1 test case)
+
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"Loading non-existent file fails gracefully" end time: Feb 06 16:30 PST
+"Loading non-existent file fails gracefully" time elapsed: 00:00:00
+----------------------------------------------------------
+
+End testing: Feb 06 16:30 PST

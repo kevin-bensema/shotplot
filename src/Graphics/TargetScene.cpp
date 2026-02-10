@@ -58,6 +58,11 @@ QGraphicsPixmapItem* TargetScene::targetImageItem() const
 
 void TargetScene::setDocument(ShotGroupDocument* pDocument)
 {
+    if (m_pDocument)
+    {
+        disconnect(m_pDocument, nullptr, this, nullptr);
+    }
+
     m_pDocument = pDocument;
     
     if (m_pDocument)
@@ -66,6 +71,9 @@ void TargetScene::setDocument(ShotGroupDocument* pDocument)
                 this, &TargetScene::updateFromDocument);
         connect(m_pDocument, &ShotGroupDocument::visualizationSettingsChanged,
                 this, &TargetScene::updateFromDocument);
+        
+        // Initial update
+        updateFromDocument();
     }
 }
 
@@ -255,6 +263,29 @@ void TargetScene::updateFromDocument()
         return;
     }
     
+    // Update impact glyphs
+    clearImpactGlyphs();
+    double diameter = 20.0; // Default
+    if (m_pDocument->hasScaleFactorSet())
+    {
+        diameter = m_pDocument->bulletDiameter() * m_pDocument->pixelsPerInch();
+    }
+    
+    for (const auto& impact : m_pDocument->impacts())
+    {
+        addImpactGlyph(impact.id, impact.position(), diameter);
+    }
+
+    // Update POA glyph
+    if (m_pDocument->hasPointOfAimSet())
+    {
+        setPOAGlyph(m_pDocument->pointOfAim());
+    }
+    else
+    {
+        clearPOAGlyph();
+    }
+
     // Update group circle visibility
     setGroupCirclesVisible(
         m_pDocument->showFullGroupCircle(),

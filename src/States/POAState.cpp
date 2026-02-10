@@ -20,11 +20,6 @@ POAState::~POAState() = default;
 
 void POAState::onEnter()
 {
-    // Show existing POA if any
-    if (m_pDocument->hasPointOfAimSet())
-    {
-        m_pView->targetScene()->setPOAGlyph(m_pDocument->pointOfAim());
-    }
 }
 
 void POAState::onExit()

@@ -1,0 +1,44 @@
+All:
+    Need to reference glyph colors from a central ColorManager class.
+    We probably need a ServiceLocator.
+    We should add an explicit ShotGroupDocumentView to wrap up some of this functionality,
+    and provide an interface to the states. The states shouldn't know about the scene/view split.
+
+
+
+ShotGroupDocument.cpp
+    Unclear why we are saving image dimensions to JSON, we are saving the image itself. We don't need the dimensions.
+    Unclear why calibration gets a full subobject.
+
+StatisticsCalculator.cpp
+    80% group calculation is incorrect. Comments say to loop over N choose K combinations, but the code does not actually do that.
+    Taking the closest 80% to the centroid is not absolutely guaranteed to get you the tightest 80% group.
+
+UnitConverter:
+    Why do we need anything other than pixels to {MRAD, MOA, Inches} conversions? I don't see a use case for MRAD to inches
+
+TargetScene:
+    When a new image is set, we should probably clear all impacts and reset the undo stack.
+    Do we need [[nodiscard]] on addImpactGlyph?
+    I think we should consider a decoupling of the group circles from their percentiles. Maybe the scene has a list of percentile circles indexed by string keys.
+    There are methods to add group circles (called at construction time by the application) with the right keys, and then setting, hiding/showing, or getting group circle objects by key. Or we could use the enums we already have - I don't know why we're duplicating methods with identical behavior here.
+    We need to update the cursor to a segmented circle (green?) when marking impacts.
+
+ImpactGlyphItem:
+    Why is the item selectable? We only allow undo/redo/clear to get rid of old items.
+
+POAGlyphItem:
+    Common base with ImpactGlyphItem?
+    Should probably be a circle+ symbol instead of a diagonal COD hit marker.
+
+WorkflowState
+    Instead of completely rebuilding the toolbar each time we switch states, we should have the workflow state return a
+    QWidget (perhaps) for the toolbar, and add it to a QStackedWidget which is the toolbar.
+
+SetCaliberState
+    Does not need a TargetView reference at all.
+
+POAState
+    Entering the state should not add the point of aim glyph to the scene - that should be added to the scene on document load.
+    Displaying the POA glyph is not dependent on entering the state.
+

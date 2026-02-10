@@ -34,16 +34,6 @@ void MarkImpactsState::onEnter()
     connect(m_pDocument, &ShotGroupDocument::impactsChanged,
             this, &MarkImpactsState::updateGroupCircles);
     
-    // Recreate impact glyphs from document
-    auto* pScene = m_pView->targetScene();
-    pScene->clearImpactGlyphs();
-    double diameter = bulletDiameterPixels();
-    
-    for (const auto& impact : m_pDocument->impacts())
-    {
-        pScene->addImpactGlyph(impact.id, impact.position(), diameter);
-    }
-    
     updateGroupCircles();
 }
 

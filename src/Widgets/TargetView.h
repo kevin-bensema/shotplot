@@ -87,18 +87,6 @@ public:
     /// zoom factor tracking to match the actual transform. Does nothing
     /// if no scene is set or the scene rectangle is empty.
     void zoomFit();
-    
-    /// Sets the zoom factor to a specific value
-    ///
-    /// Applies a uniform scale transform to achieve the requested zoom level.
-    /// The zoom factor is clamped to the valid range [MIN_ZOOM, MAX_ZOOM].
-    /// If the requested factor is outside this range, no change is made.
-    /// \param factor The desired zoom factor (1.0 = 100%, 2.0 = 200%, etc.)
-    void setZoomFactor(double factor);
-    
-    /// Returns the current zoom factor
-    /// \return The current zoom factor (1.0 = 100%, 2.0 = 200%, etc.)
-    double zoomFactor() const;
 
 signals:
     /// Emitted when the mouse position changes over the view
@@ -198,10 +186,4 @@ private:
 
     /// Current mouse position in viewport coordinates
     QPoint m_currentMousePos;
-
-    /// Current zoom factor (1.0 = 100%, 2.0 = 200%, etc.)
-    ///
-    /// Tracks the cumulative zoom level for zoom limit enforcement and
-    /// programmatic zoom control. Updated whenever zoom operations occur.
-    double m_zoomFactor = 1.0;
 };

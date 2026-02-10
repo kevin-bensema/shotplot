@@ -1,0 +1,117 @@
+{
+	"BUILD_DIR" : "/home/kevin/Projects/ShotPlot/build/src/QX/QX_autogen",
+	"CMAKE_BINARY_DIR" : "/home/kevin/Projects/ShotPlot/build",
+	"CMAKE_CURRENT_BINARY_DIR" : "/home/kevin/Projects/ShotPlot/build/src/QX",
+	"CMAKE_CURRENT_SOURCE_DIR" : "/home/kevin/Projects/ShotPlot/src/QX",
+	"CMAKE_EXECUTABLE" : "/usr/bin/cmake",
+	"CMAKE_LIST_FILES" : 
+	[
+		"/home/kevin/Projects/ShotPlot/src/QX/CMakeLists.txt",
+		"/usr/share/cmake-3.28/Modules/GenerateExportHeader.cmake",
+		"/usr/share/cmake-3.28/Modules/CheckCompilerFlag.cmake",
+		"/usr/share/cmake-3.28/Modules/Internal/CheckCompilerFlag.cmake",
+		"/usr/share/cmake-3.28/Modules/CheckSourceCompiles.cmake",
+		"/usr/share/cmake-3.28/Modules/Internal/CheckSourceCompiles.cmake",
+		"/usr/share/cmake-3.28/Modules/CheckCCompilerFlag.cmake",
+		"/usr/share/cmake-3.28/Modules/Internal/CheckCompilerFlag.cmake",
+		"/usr/share/cmake-3.28/Modules/CheckCSourceCompiles.cmake",
+		"/usr/share/cmake-3.28/Modules/Internal/CheckSourceCompiles.cmake",
+		"/usr/share/cmake-3.28/Modules/CheckCXXCompilerFlag.cmake",
+		"/usr/share/cmake-3.28/Modules/exportheader.cmake.in"
+	],
+	"CMAKE_SOURCE_DIR" : "/home/kevin/Projects/ShotPlot",
+	"DEP_FILE" : "/home/kevin/Projects/ShotPlot/build/src/QX/QX_autogen/deps",
+	"DEP_FILE_RULE_NAME" : "QX_autogen/timestamp",
+	"HEADERS" : 
+	[
+		[
+			"/home/kevin/Projects/ShotPlot/src/QX/Inc/QX/QService.h",
+			"MU",
+			"CSDST34HEE/moc_QService.cpp",
+			null
+		],
+		[
+			"/home/kevin/Projects/ShotPlot/src/QX/Inc/QX/Services.h",
+			"MU",
+			"CSDST34HEE/moc_Services.cpp",
+			null
+		],
+		[
+			"/home/kevin/Projects/ShotPlot/src/QX/Src/QServiceLocator.h",
+			"MU",
+			"NTUIWEGXGO/moc_QServiceLocator.cpp",
+			null
+		]
+	],
+	"HEADER_EXTENSIONS" : [ "h", "hh", "h++", "hm", "hpp", "hxx", "in", "txx" ],
+	"INCLUDE_DIR" : "/home/kevin/Projects/ShotPlot/build/src/QX/QX_autogen/include",
+	"MOC_COMPILATION_FILE" : "/home/kevin/Projects/ShotPlot/build/src/QX/QX_autogen/mocs_compilation.cpp",
+	"MOC_DEFINITIONS" : [ "QT_CORE_LIB", "QT_NO_DEBUG", "QX_EXPORTS" ],
+	"MOC_DEPEND_FILTERS" : 
+	[
+		[
+			"Q_PLUGIN_METADATA",
+			"[\n][ \t]*Q_PLUGIN_METADATA[ \t]*\\([^\\)]*FILE[ \t]*\"([^\"]+)\""
+		]
+	],
+	"MOC_INCLUDES" : 
+	[
+		"/home/kevin/Projects/ShotPlot/src/QX/Inc",
+		"/home/kevin/Projects/ShotPlot/src/QX/Src",
+		"/usr/include/x86_64-linux-gnu/qt6/QtCore",
+		"/usr/include/x86_64-linux-gnu/qt6",
+		"/usr/lib/x86_64-linux-gnu/qt6/mkspecs/linux-g++",
+		"/usr/include/c++/13",
+		"/usr/include/x86_64-linux-gnu/c++/13",
+		"/usr/include/c++/13/backward",
+		"/usr/lib/gcc/x86_64-linux-gnu/13/include",
+		"/usr/local/include",
+		"/usr/include/x86_64-linux-gnu",
+		"/usr/include"
+	],
+	"MOC_MACRO_NAMES" : 
+	[
+		"Q_OBJECT",
+		"Q_GADGET",
+		"Q_GADGET_EXPORT",
+		"Q_NAMESPACE",
+		"Q_NAMESPACE_EXPORT"
+	],
+	"MOC_OPTIONS" : [],
+	"MOC_PATH_PREFIX" : false,
+	"MOC_PREDEFS_CMD" : 
+	[
+		"/usr/bin/c++",
+		"-std=gnu++17",
+		"-dM",
+		"-E",
+		"-c",
+		"/usr/share/cmake-3.28/Modules/CMakeCXXCompilerABI.cpp"
+	],
+	"MOC_PREDEFS_FILE" : "/home/kevin/Projects/ShotPlot/build/src/QX/QX_autogen/moc_predefs.h",
+	"MOC_RELAXED_MODE" : false,
+	"MOC_SKIP" : [],
+	"MULTI_CONFIG" : false,
+	"PARALLEL" : 8,
+	"PARSE_CACHE_FILE" : "/home/kevin/Projects/ShotPlot/build/src/QX/CMakeFiles/QX_autogen.dir/ParseCache.txt",
+	"QT_MOC_EXECUTABLE" : "/usr/lib/qt6/libexec/moc",
+	"QT_UIC_EXECUTABLE" : "/usr/lib/qt6/libexec/uic",
+	"QT_VERSION_MAJOR" : 6,
+	"QT_VERSION_MINOR" : 4,
+	"SETTINGS_FILE" : "/home/kevin/Projects/ShotPlot/build/src/QX/CMakeFiles/QX_autogen.dir/AutogenUsed.txt",
+	"SOURCES" : 
+	[
+		[ "/home/kevin/Projects/ShotPlot/src/QX/Src/QService.cpp", "MU", null ],
+		[
+			"/home/kevin/Projects/ShotPlot/src/QX/Src/QServiceLocator.cpp",
+			"MU",
+			null
+		],
+		[ "/home/kevin/Projects/ShotPlot/src/QX/Src/Services.cpp", "MU", null ]
+	],
+	"UIC_OPTIONS" : [],
+	"UIC_SEARCH_PATHS" : [],
+	"UIC_SKIP" : [],
+	"UIC_UI_FILES" : [],
+	"VERBOSITY" : 0
+}

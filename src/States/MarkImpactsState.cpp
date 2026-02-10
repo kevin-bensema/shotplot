@@ -92,6 +92,15 @@ void MarkImpactsState::populateToolbar(QToolBar* pToolbar)
     
     pToolbar->addSeparator();
     
+    QPushButton* pDoneButton = new QPushButton(tr("Done marking impacts"));
+    pDoneButton->setDefault(true);
+    connect(pDoneButton, &QPushButton::clicked, this, [this]() {
+        emit requestNextState();
+    });
+    pToolbar->addWidget(pDoneButton);
+
+    pToolbar->addSeparator();
+
     QPushButton* pClearButton = new QPushButton(tr("Clear All"));
     connect(pClearButton, &QPushButton::clicked, [this]() {
         if (m_pDocument->impactCount() > 0)

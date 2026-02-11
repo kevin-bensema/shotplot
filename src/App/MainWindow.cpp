@@ -577,12 +577,12 @@ void MainWindow::setCurrentState(int stateIndex)
 
 void MainWindow::createNewDocument(const QImage &image)
 {
-    // Create new document
-    m_document = std::make_unique<ShotGroupDocument>();
-    m_document->setTargetImage(image);
+    // Create new document locally first
+    auto newDocument = std::make_unique<ShotGroupDocument>();
+    newDocument->setTargetImage(image);
     
     // Connect document signals
-    connect(m_document.get(), &ShotGroupDocument::dirtyChanged,
+    connect(newDocument.get(), &ShotGroupDocument::dirtyChanged,
             this, [this](bool /*dirty*/) {
                 updateWindowTitle();
                 updateMenuState();
@@ -590,16 +590,16 @@ void MainWindow::createNewDocument(const QImage &image)
     
     // Set up scene with image
     m_pTargetScene->setTargetImage(image);
-    m_pTargetScene->setDocument(m_document.get());
+    m_pTargetScene->setDocument(newDocument.get());
     m_pTargetView->zoomFit();
     
     // Create workflow states
     m_states.clear();
-    m_states.push_back(std::make_unique<SetCaliberState>(m_document.get(), m_pTargetView, this));
-    m_states.push_back(std::make_unique<ScaleFactorState>(m_document.get(), m_pTargetView));
-    m_states.push_back(std::make_unique<POAState>(m_document.get(), m_pTargetView));
-    m_states.push_back(std::make_unique<MarkImpactsState>(m_document.get(), m_pTargetView, m_pUndoStack));
-    m_states.push_back(std::make_unique<VisualizationState>(m_document.get(), m_pTargetView));
+    m_states.push_back(std::make_unique<SetCaliberState>(newDocument.get(), m_pTargetView, this));
+    m_states.push_back(std::make_unique<ScaleFactorState>(newDocument.get(), m_pTargetView));
+    m_states.push_back(std::make_unique<POAState>(newDocument.get(), m_pTargetView));
+    m_states.push_back(std::make_unique<MarkImpactsState>(newDocument.get(), m_pTargetView, m_pUndoStack));
+    m_states.push_back(std::make_unique<VisualizationState>(newDocument.get(), m_pTargetView));
     
     // Connect state signals
     for (int i = 0; i < static_cast<int>(m_states.size()); ++i)
@@ -611,16 +611,20 @@ void MainWindow::createNewDocument(const QImage &image)
     }
     
     // Update workflow toolbar
-    m_pWorkflowToolbar->setDocument(m_document.get());
+    m_pWorkflowToolbar->setDocument(newDocument.get());
     
     // Update statistics panel
-    m_pStatisticsPanel->setDocument(m_document.get());
+    m_pStatisticsPanel->setDocument(newDocument.get());
     
     // Start with caliber state
     setCurrentState(0);
     
     // Mark as dirty (new unsaved document)
-    m_document->setDirty(true);
+    newDocument->setDirty(true);
+
+    // Finally, take ownership. The old document is destroyed here,
+    // and QObject automatically drops its connections.
+    m_document = std::move(newDocument);
     
     updateWindowTitle();
     updateMenuState();
@@ -628,38 +632,36 @@ void MainWindow::createNewDocument(const QImage &image)
 
 void MainWindow::loadDocumentFromFile(const QString &filePath)
 {
-    // Create and load document
-    auto document = std::make_unique<ShotGroupDocument>();
+    // Create and load document locally first
+    auto newDocument = std::make_unique<ShotGroupDocument>();
     QString errorMsg;
-    if (!document->loadFromFile(filePath, &errorMsg))
+    if (!newDocument->loadFromFile(filePath, &errorMsg))
     {
         QMessageBox::warning(this, tr("Load Error"), errorMsg);
         return;
     }
     
-    // Take ownership
-    m_document = std::move(document);
-    m_document->setFilePath(filePath);
+    newDocument->setFilePath(filePath);
     
     // Connect document signals
-    connect(m_document.get(), &ShotGroupDocument::dirtyChanged,
+    connect(newDocument.get(), &ShotGroupDocument::dirtyChanged,
             this, [this](bool /*dirty*/) {
                 updateWindowTitle();
                 updateMenuState();
             });
     
     // Set up scene with loaded image
-    m_pTargetScene->setTargetImage(m_document->targetImage());
-    m_pTargetScene->setDocument(m_document.get());
+    m_pTargetScene->setTargetImage(newDocument->targetImage());
+    m_pTargetScene->setDocument(newDocument.get());
     m_pTargetView->zoomFit();
     
     // Create workflow states
     m_states.clear();
-    m_states.push_back(std::make_unique<SetCaliberState>(m_document.get(), m_pTargetView, this));
-    m_states.push_back(std::make_unique<ScaleFactorState>(m_document.get(), m_pTargetView));
-    m_states.push_back(std::make_unique<POAState>(m_document.get(), m_pTargetView));
-    m_states.push_back(std::make_unique<MarkImpactsState>(m_document.get(), m_pTargetView, m_pUndoStack));
-    m_states.push_back(std::make_unique<VisualizationState>(m_document.get(), m_pTargetView));
+    m_states.push_back(std::make_unique<SetCaliberState>(newDocument.get(), m_pTargetView, this));
+    m_states.push_back(std::make_unique<ScaleFactorState>(newDocument.get(), m_pTargetView));
+    m_states.push_back(std::make_unique<POAState>(newDocument.get(), m_pTargetView));
+    m_states.push_back(std::make_unique<MarkImpactsState>(newDocument.get(), m_pTargetView, m_pUndoStack));
+    m_states.push_back(std::make_unique<VisualizationState>(newDocument.get(), m_pTargetView));
     
     // Connect state signals
     for (int i = 0; i < static_cast<int>(m_states.size()); ++i)
@@ -671,24 +673,27 @@ void MainWindow::loadDocumentFromFile(const QString &filePath)
     }
     
     // Update workflow toolbar
-    m_pWorkflowToolbar->setDocument(m_document.get());
+    m_pWorkflowToolbar->setDocument(newDocument.get());
     
     // Update statistics panel
-    m_pStatisticsPanel->setDocument(m_document.get());
+    m_pStatisticsPanel->setDocument(newDocument.get());
     
     // Determine starting state based on loaded data
     int startState = 0;
-    if (m_document->canEnableVisualizationState())
+    if (newDocument->canEnableVisualizationState())
         startState = 3; // MarkImpacts - let user continue adding shots
-    else if (m_document->canEnablePointOfAimState())
+    else if (newDocument->canEnablePointOfAimState())
         startState = 2; // POA
-    else if (m_document->canEnableScaleFactorState())
+    else if (newDocument->canEnableScaleFactorState())
         startState = 1; // ScaleFactor
     
     setCurrentState(startState);
     
     // Document was just loaded - not dirty
-    m_document->setDirty(false);
+    newDocument->setDirty(false);
+
+    // Finally, take ownership. The old document is destroyed here.
+    m_document = std::move(newDocument);
     
     updateWindowTitle();
     updateMenuState();

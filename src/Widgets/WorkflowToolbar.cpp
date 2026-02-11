@@ -55,6 +55,11 @@ void WorkflowToolbar::setupButtons()
 
 void WorkflowToolbar::setDocument(ShotGroupDocument* pDocument)
 {
+    if (m_pDocument)
+    {
+        m_pDocument->disconnect(this);
+    }
+
     m_pDocument = pDocument;
     
     if (m_pDocument)

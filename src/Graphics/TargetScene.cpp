@@ -71,7 +71,7 @@ void TargetScene::setDocument(ShotGroupDocument* pDocument)
 {
     if (m_pDocument)
     {
-        disconnect(m_pDocument, nullptr, this, nullptr);
+        m_pDocument->disconnect(this);
     }
 
     m_pDocument = pDocument;

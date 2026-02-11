@@ -1,7 +1,8 @@
 #pragma once
 
 #include <QGraphicsItem>
-#include <QColor>
+#include <QPainter>
+#include <Core/GroupCircle.h>
 
 class GraphicsSettingsService;
 
@@ -17,21 +18,13 @@ class GraphicsSettingsService;
 class GroupCircleItem : public QGraphicsItem
 {
 public:
-    /// Circle type determines color and visualization purpose
-    enum class Type
-    {
-        Full,      ///< Full group circle (blue)
-        Percent80, ///< 80% group circle (green)
-        Percent90  ///< 90% group circle (orange)
-    };
-
     /// Constructs a group circle item with the specified type
     /// \param type The circle type (determines color)
     /// \param pParent Optional parent graphics item
-    explicit GroupCircleItem(Type type, QGraphicsItem* pParent = nullptr);
+    explicit GroupCircleItem(GroupCircle::Type type, QGraphicsItem* pParent = nullptr);
 
     /// Returns the circle type
-    Type circleType() const;
+    GroupCircle::Type circleType() const;
 
     /// Sets the circle geometry and updates the item position
     ///
@@ -53,7 +46,7 @@ public:
     void paint(QPainter* pPainter, const QStyleOptionGraphicsItem* pOption, QWidget* pWidget) override;
 
 private:
-    Type m_type;
+    GroupCircle::Type m_type;
     QPointF m_center;
     double m_radius = 0.0;
     GraphicsSettingsService& m_service;      ///< Service for graphics settings

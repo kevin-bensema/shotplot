@@ -7,6 +7,8 @@
 #include <QList>
 #include <QString>
 
+#include <QMap>
+#include <Core/GroupCircle.h>
 #include "ShotImpact.h"
 #include "Statistics.h"
 
@@ -116,14 +118,8 @@ public:
     void setNotes(const QString& notes);
 
     // ===== Visualization Settings =====
-    bool showFullGroupCircle() const;
-    void setShowFullGroupCircle(bool show);
-
-    bool show80PercentCircle() const;
-    void setShow80PercentCircle(bool show);
-
-    bool show90PercentCircle() const;
-    void setShow90PercentCircle(bool show);
+    bool showGroupCircle(GroupCircle::Type type) const;
+    void setShowGroupCircle(GroupCircle::Type type, bool show);
 
     bool showPointOfAim() const;
     void setShowPointOfAim(bool show);
@@ -229,9 +225,7 @@ private:
     QString m_notes;
     
     // Visualization settings
-    bool m_showFullGroupCircle;
-    bool m_show80PercentCircle;
-    bool m_show90PercentCircle;
+    QMap<GroupCircle::Type, bool> m_showGroupCircles;
     bool m_showPointOfAim;
     PlaqueConfig m_plaqueConfig;
     

@@ -121,29 +121,25 @@ void MarkImpactsState::updateGroupCircles()
         return;
     }
     
-    const Statistics &stats = m_pDocument->statistics();
+    const Statistics& stats = m_pDocument->statistics();
     
     if (stats.fullGroupCircle.isValid())
     {
-        pScene->setFullGroupCircle(stats.fullGroupCircle.center, stats.fullGroupCircle.radiusPixels);
+        pScene->setGroupCircle(GroupCircle::Type::Full, stats.fullGroupCircle.center, stats.fullGroupCircle.radiusPixels);
     }
     
     if (stats.group80Circle.isValid())
     {
-        pScene->set80GroupCircle(stats.group80Circle.center, stats.group80Circle.radiusPixels);
+        pScene->setGroupCircle(GroupCircle::Type::Percent80, stats.group80Circle.center, stats.group80Circle.radiusPixels);
     }
     
     if (stats.group90Circle.isValid())
     {
-        pScene->set90GroupCircle(stats.group90Circle.center, stats.group90Circle.radiusPixels);
+        pScene->setGroupCircle(GroupCircle::Type::Percent90, stats.group90Circle.center, stats.group90Circle.radiusPixels);
     }
     
     // Update visibility based on document settings
-    pScene->setGroupCirclesVisible(
-        m_pDocument->showFullGroupCircle(),
-        m_pDocument->show80PercentCircle(),
-        m_pDocument->show90PercentCircle()
-    );
+    pScene->updateGroupCirclesVisibility();
 }
 
 QString MarkImpactsState::stateName() const

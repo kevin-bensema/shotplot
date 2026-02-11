@@ -11,9 +11,6 @@
 namespace {
     constexpr double kDefaultTargetDistance = 100.0;
     constexpr ShotGroupDocument::DistanceUnit kDefaultDistanceUnit = ShotGroupDocument::DistanceUnit::Yards;
-    constexpr bool kDefaultShowFullGroupCircle = true;
-    constexpr bool kDefaultShow80PercentCircle = false;
-    constexpr bool kDefaultShow90PercentCircle = false;
     constexpr bool kDefaultShowPointOfAim = true;
     constexpr bool kDefaultPlaqueEnabled = false;
     constexpr int kDefaultPlaqueX = 50;
@@ -28,12 +25,13 @@ ShotGroupDocument::ShotGroupDocument(QObject* pParent)
     , m_targetDistance(kDefaultTargetDistance)
     , m_distanceUnit(kDefaultDistanceUnit)
     , m_sessionDate(QDate::currentDate())
-    , m_showFullGroupCircle(kDefaultShowFullGroupCircle)
-    , m_show80PercentCircle(kDefaultShow80PercentCircle)
-    , m_show90PercentCircle(kDefaultShow90PercentCircle)
     , m_showPointOfAim(kDefaultShowPointOfAim)
     , m_plaqueConfig{kDefaultPlaqueEnabled, kDefaultPlaqueX, kDefaultPlaqueY, kDefaultPlaqueWidth, kDefaultPlaqueHeight, kDefaultPlaqueTitle, QString()}
 {
+    m_showGroupCircles[GroupCircle::Type::Full] = true;
+    m_showGroupCircles[GroupCircle::Type::Percent80] = false;
+    m_showGroupCircles[GroupCircle::Type::Percent90] = false;
+
     auto updateStats = [this]() { updateStatistics(); };
     connect(this, &ShotGroupDocument::dataChanged, this, updateStats);
     connect(this, &ShotGroupDocument::impactsChanged, this, updateStats);
@@ -278,46 +276,16 @@ void ShotGroupDocument::setNotes(const QString& notes)
 
 // ===== Visualization Settings =====
 
-bool ShotGroupDocument::showFullGroupCircle() const
+bool ShotGroupDocument::showGroupCircle(GroupCircle::Type type) const
 {
-    return m_showFullGroupCircle;
+    return m_showGroupCircles.value(type, false);
 }
 
-void ShotGroupDocument::setShowFullGroupCircle(bool show)
+void ShotGroupDocument::setShowGroupCircle(GroupCircle::Type type, bool show)
 {
-    if (m_showFullGroupCircle != show)
+    if (m_showGroupCircles.value(type) != show)
     {
-        m_showFullGroupCircle = show;
-        setDirty(true);
-        emit visualizationSettingsChanged();
-    }
-}
-
-bool ShotGroupDocument::show80PercentCircle() const
-{
-    return m_show80PercentCircle;
-}
-
-void ShotGroupDocument::setShow80PercentCircle(bool show)
-{
-    if (m_show80PercentCircle != show)
-    {
-        m_show80PercentCircle = show;
-        setDirty(true);
-        emit visualizationSettingsChanged();
-    }
-}
-
-bool ShotGroupDocument::show90PercentCircle() const
-{
-    return m_show90PercentCircle;
-}
-
-void ShotGroupDocument::setShow90PercentCircle(bool show)
-{
-    if (m_show90PercentCircle != show)
-    {
-        m_show90PercentCircle = show;
+        m_showGroupCircles[type] = show;
         setDirty(true);
         emit visualizationSettingsChanged();
     }
@@ -483,9 +451,9 @@ QJsonObject ShotGroupDocument::toJson() const
     
     // Visualization settings
     QJsonObject vizObj;
-    vizObj["showFullGroupCircle"] = m_showFullGroupCircle;
-    vizObj["show80PercentCircle"] = m_show80PercentCircle;
-    vizObj["show90PercentCircle"] = m_show90PercentCircle;
+    vizObj["showFullGroupCircle"] = m_showGroupCircles[GroupCircle::Type::Full];
+    vizObj["show80PercentCircle"] = m_showGroupCircles[GroupCircle::Type::Percent80];
+    vizObj["show90PercentCircle"] = m_showGroupCircles[GroupCircle::Type::Percent90];
     root["visualizationSettings"] = vizObj;
     
     return root;
@@ -547,9 +515,9 @@ bool ShotGroupDocument::fromJson(const QJsonObject& json, QString* pErrorMsg)
     
     // Visualization settings
     QJsonObject vizObj = json["visualizationSettings"].toObject();
-    m_showFullGroupCircle = vizObj["showFullGroupCircle"].toBool(kDefaultShowFullGroupCircle);
-    m_show80PercentCircle = vizObj["show80PercentCircle"].toBool(kDefaultShow80PercentCircle);
-    m_show90PercentCircle = vizObj["show90PercentCircle"].toBool(kDefaultShow90PercentCircle);
+    m_showGroupCircles[GroupCircle::Type::Full] = vizObj["showFullGroupCircle"].toBool(true);
+    m_showGroupCircles[GroupCircle::Type::Percent80] = vizObj["show80PercentCircle"].toBool(false);
+    m_showGroupCircles[GroupCircle::Type::Percent90] = vizObj["show90PercentCircle"].toBool(false);
     
     updateStatistics();
     return true;

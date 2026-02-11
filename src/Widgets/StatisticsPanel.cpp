@@ -67,7 +67,27 @@ void StatisticsPanel::setupUi()
             this, [this](bool checked) {
                 if (m_pDocument)
                 {
-                    m_pDocument->setShowFullGroupCircle(checked);
+                    m_pDocument->setShowGroupCircle(GroupCircle::Type::Full, checked);
+                }
+            });
+
+    m_pShow80GroupCheck = new QCheckBox(tr("80% Group Circle"));
+    m_pShow80GroupCheck->setChecked(false);
+    connect(m_pShow80GroupCheck, &QCheckBox::toggled,
+            this, [this](bool checked) {
+                if (m_pDocument)
+                {
+                    m_pDocument->setShowGroupCircle(GroupCircle::Type::Percent80, checked);
+                }
+            });
+
+    m_pShow90GroupCheck = new QCheckBox(tr("90% Group Circle"));
+    m_pShow90GroupCheck->setChecked(false);
+    connect(m_pShow90GroupCheck, &QCheckBox::toggled,
+            this, [this](bool checked) {
+                if (m_pDocument)
+                {
+                    m_pDocument->setShowGroupCircle(GroupCircle::Type::Percent90, checked);
                 }
             });
     
@@ -82,6 +102,8 @@ void StatisticsPanel::setupUi()
             });
     
     pDisplayLayout->addWidget(m_pShowFullGroupCheck);
+    pDisplayLayout->addWidget(m_pShow80GroupCheck);
+    pDisplayLayout->addWidget(m_pShow90GroupCheck);
     pDisplayLayout->addWidget(m_pShowPOACheck);
     
     pLayout->addWidget(pDisplayGroup);
@@ -108,7 +130,9 @@ void StatisticsPanel::setDocument(ShotGroupDocument* pDocument)
                 this, &StatisticsPanel::updateStatistics);
         
         // Sync checkboxes with document
-        m_pShowFullGroupCheck->setChecked(m_pDocument->showFullGroupCircle());
+        m_pShowFullGroupCheck->setChecked(m_pDocument->showGroupCircle(GroupCircle::Type::Full));
+        m_pShow80GroupCheck->setChecked(m_pDocument->showGroupCircle(GroupCircle::Type::Percent80));
+        m_pShow90GroupCheck->setChecked(m_pDocument->showGroupCircle(GroupCircle::Type::Percent90));
         m_pShowPOACheck->setChecked(m_pDocument->showPointOfAim());
     }
     

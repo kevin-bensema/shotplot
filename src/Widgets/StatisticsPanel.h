@@ -68,6 +68,8 @@ private:
     QLabel* m_pStdDevLabel = nullptr;
     
     QCheckBox* m_pShowFullGroupCheck = nullptr;
+    QCheckBox* m_pShow80GroupCheck = nullptr;
+    QCheckBox* m_pShow90GroupCheck = nullptr;
     QCheckBox* m_pShowPOACheck = nullptr;
 };
 

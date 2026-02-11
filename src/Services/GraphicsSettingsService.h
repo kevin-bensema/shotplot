@@ -4,6 +4,8 @@
 #include <QColor>
 #include <QHash>
 
+#include <Core/GroupCircle.h>
+
 /// Service for managing graphics colors and opacities
 /// 
 /// GraphicsSettingsService decouples color and opacity roles from their actual
@@ -31,7 +33,7 @@ public:
         PointOfAimCursor    ///< Cursor for point of aim marking
     };
 
-    /// Opacity roles for group circle fills (0-100 scale)
+    /// Opacity roles for various graphics elements (0-100 scale)
     enum class OpacityRole
     {
         FullGroupCircle,    ///< Full group circle fill opacity
@@ -44,14 +46,26 @@ public:
     /// Returns the color for the specified role
     QColor color(ColorRole role) const;
 
+    /// Returns the color for the specified group circle type
+    QColor color(GroupCircle::Type type) const;
+
     /// Returns the opacity for the specified role (0-100 scale)
     int opacity(OpacityRole role) const;
+
+    /// Returns the opacity for the specified group circle type (0-100 scale)
+    int opacity(GroupCircle::Type type) const;
 
     /// Sets the color for the specified role and persists to settings
     void setColor(ColorRole role, const QColor& color);
 
+    /// Sets the color for the specified group circle type and persists to settings
+    void setColor(GroupCircle::Type type, const QColor& color);
+
     /// Sets the opacity for the specified role and persists to settings (0-100 scale)
     void setOpacity(OpacityRole role, int opacity);
+
+    /// Sets the opacity for the specified group circle type and persists to settings (0-100 scale)
+    void setOpacity(GroupCircle::Type type, int opacity);
 
     /// Restores all colors and opacities to default values
     void restoreDefaults();

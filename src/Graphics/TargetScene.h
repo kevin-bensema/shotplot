@@ -3,6 +3,7 @@
 #include <QGraphicsScene>
 #include <QImage>
 #include <QMap>
+#include <Core/GroupCircle.h>
 
 class QGraphicsPixmapItem;
 class ImpactGlyphItem;
@@ -116,42 +117,21 @@ public:
     void setPOAVisible(bool visible);
 
     // Group circles
-    /// @brief Sets the full group circle (100% of shots)
+    /// @brief Sets the geometry for a specific group circle type
     /// 
     /// Creates the circle if it doesn't exist, then updates its center
-    /// and radius. The circle is rendered at z-value 50.
+    /// and radius. The circle is rendered at a type-specific z-value.
     /// 
+    /// \param type The type of group circle to set
     /// \param center Center point of the circle in scene coordinates
     /// \param radius Radius of the circle in scene coordinates
-    void setFullGroupCircle(const QPointF& center, double radius);
-    
-    /// @brief Sets the 80% group circle
-    /// 
-    /// Creates the circle if it doesn't exist, then updates its center
-    /// and radius. The circle is rendered at z-value 51.
-    /// 
-    /// \param center Center point of the circle in scene coordinates
-    /// \param radius Radius of the circle in scene coordinates
-    void set80GroupCircle(const QPointF& center, double radius);
-    
-    /// @brief Sets the 90% group circle
-    /// 
-    /// Creates the circle if it doesn't exist, then updates its center
-    /// and radius. The circle is rendered at z-value 52.
-    /// 
-    /// \param center Center point of the circle in scene coordinates
-    /// \param radius Radius of the circle in scene coordinates
-    void set90GroupCircle(const QPointF& center, double radius);
+    void setGroupCircle(GroupCircle::Type type, const QPointF& center, double radius);
     
     /// @brief Removes all group circles from the scene
     void clearGroupCircles();
     
-    /// @brief Controls visibility of all group circles
-    /// 
-    /// \param full True to show the full group circle
-    /// \param g80 True to show the 80% group circle
-    /// \param g90 True to show the 90% group circle
-    void setGroupCirclesVisible(bool full, bool g80, bool g90);
+    /// @brief Updates the visibility of all group circles based on document settings
+    void updateGroupCirclesVisibility();
 
     // Scale line (for calibration)
     /// @brief Shows the scale calibration line with both endpoints
@@ -206,9 +186,7 @@ private:
     POAGlyphItem* m_pPoaGlyph = nullptr;                ///< X-shaped point of aim marker (z-value 90)
 
     // Group circles
-    GroupCircleItem* m_pFullGroupCircle = nullptr;      ///< 100% group circle (z-value 50)
-    GroupCircleItem* m_p80GroupCircle = nullptr;        ///< 80% group circle (z-value 51)
-    GroupCircleItem* m_p90GroupCircle = nullptr;        ///< 90% group circle (z-value 52)
+    QMap<GroupCircle::Type, GroupCircleItem*> m_groupCircles; ///< Map of circle type to item (z-values 50-52)
 
     // Scale calibration line
     ScaleLineItem* m_pScaleLine = nullptr;               ///< Reference line for scale calibration (z-value 200)

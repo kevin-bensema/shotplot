@@ -34,6 +34,34 @@ namespace
     constexpr int kDefaultPercent90CircleOpacity = 16;
     constexpr int kDefaultPercent80CircleOpacity = 16;
 
+    GraphicsSettingsService::ColorRole groupCircleTypeToColorRole(GroupCircle::Type type)
+    {
+        switch (type)
+        {
+            case GroupCircle::Type::Full:
+                return GraphicsSettingsService::ColorRole::FullGroupCircle;
+            case GroupCircle::Type::Percent80:
+                return GraphicsSettingsService::ColorRole::Percent80Circle;
+            case GroupCircle::Type::Percent90:
+                return GraphicsSettingsService::ColorRole::Percent90Circle;
+        }
+        return GraphicsSettingsService::ColorRole::FullGroupCircle;
+    }
+
+    GraphicsSettingsService::OpacityRole groupCircleTypeToOpacityRole(GroupCircle::Type type)
+    {
+        switch (type)
+        {
+            case GroupCircle::Type::Full:
+                return GraphicsSettingsService::OpacityRole::FullGroupCircle;
+            case GroupCircle::Type::Percent80:
+                return GraphicsSettingsService::OpacityRole::Percent80Circle;
+            case GroupCircle::Type::Percent90:
+                return GraphicsSettingsService::OpacityRole::Percent90Circle;
+        }
+        return GraphicsSettingsService::OpacityRole::FullGroupCircle;
+    }
+
     QString colorRoleToKey(GraphicsSettingsService::ColorRole role)
     {
         switch (role)
@@ -126,9 +154,19 @@ QColor GraphicsSettingsService::color(ColorRole role) const
     return m_colors.value(role);
 }
 
+QColor GraphicsSettingsService::color(GroupCircle::Type type) const
+{
+    return color(groupCircleTypeToColorRole(type));
+}
+
 int GraphicsSettingsService::opacity(OpacityRole role) const
 {
     return m_opacities.value(role);
+}
+
+int GraphicsSettingsService::opacity(GroupCircle::Type type) const
+{
+    return opacity(groupCircleTypeToOpacityRole(type));
 }
 
 void GraphicsSettingsService::setColor(ColorRole role, const QColor& color)
@@ -139,6 +177,11 @@ void GraphicsSettingsService::setColor(ColorRole role, const QColor& color)
         saveColorToSettings(role, color);
         emit settingsChanged();
     }
+}
+
+void GraphicsSettingsService::setColor(GroupCircle::Type type, const QColor& color)
+{
+    setColor(groupCircleTypeToColorRole(type), color);
 }
 
 void GraphicsSettingsService::setOpacity(OpacityRole role, int opacity)
@@ -152,6 +195,11 @@ void GraphicsSettingsService::setOpacity(OpacityRole role, int opacity)
         saveOpacityToSettings(role, opacity);
         emit settingsChanged();
     }
+}
+
+void GraphicsSettingsService::setOpacity(GroupCircle::Type type, int opacity)
+{
+    setOpacity(groupCircleTypeToOpacityRole(type), opacity);
 }
 
 void GraphicsSettingsService::restoreDefaults()

@@ -46,9 +46,9 @@ static void populateDocument(ShotGroupDocument& doc)
     doc.addImpact(ShotImpact(doc.nextImpactId(), 96.5,  74.3));
 
     // Visualization settings
-    doc.setShowFullGroupCircle(true);
-    doc.setShow80PercentCircle(true);
-    doc.setShow90PercentCircle(false);
+    doc.setShowGroupCircle(GroupCircle::Type::Full, true);
+    doc.setShowGroupCircle(GroupCircle::Type::Percent80, true);
+    doc.setShowGroupCircle(GroupCircle::Type::Percent90, false);
 }
 
 // ---------------------------------------------------------------------------
@@ -93,9 +93,9 @@ static void verifyDocumentsMatch(const ShotGroupDocument& original,
     }
 
     // Visualization settings
-    CHECK(loaded.showFullGroupCircle() == original.showFullGroupCircle());
-    CHECK(loaded.show80PercentCircle() == original.show80PercentCircle());
-    CHECK(loaded.show90PercentCircle() == original.show90PercentCircle());
+    CHECK(loaded.showGroupCircle(GroupCircle::Type::Full) == original.showGroupCircle(GroupCircle::Type::Full));
+    CHECK(loaded.showGroupCircle(GroupCircle::Type::Percent80) == original.showGroupCircle(GroupCircle::Type::Percent80));
+    CHECK(loaded.showGroupCircle(GroupCircle::Type::Percent90) == original.showGroupCircle(GroupCircle::Type::Percent90));
 
     // Image (only for file round-trips where the image is stored)
     if (expectImage)

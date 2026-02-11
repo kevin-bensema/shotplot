@@ -8,44 +8,16 @@ namespace
 {
     constexpr double kLineWidth = 2.0;
     constexpr double kCrossSize = 5.0;
-
-    GraphicsSettingsService::ColorRole typeToColorRole(GroupCircleItem::Type type)
-    {
-        switch (type)
-        {
-            case GroupCircleItem::Type::Full:
-                return GraphicsSettingsService::ColorRole::FullGroupCircle;
-            case GroupCircleItem::Type::Percent80:
-                return GraphicsSettingsService::ColorRole::Percent80Circle;
-            case GroupCircleItem::Type::Percent90:
-                return GraphicsSettingsService::ColorRole::Percent90Circle;
-        }
-        return GraphicsSettingsService::ColorRole::FullGroupCircle;
-    }
-
-    GraphicsSettingsService::OpacityRole typeToOpacityRole(GroupCircleItem::Type type)
-    {
-        switch (type)
-        {
-            case GroupCircleItem::Type::Full:
-                return GraphicsSettingsService::OpacityRole::FullGroupCircle;
-            case GroupCircleItem::Type::Percent80:
-                return GraphicsSettingsService::OpacityRole::Percent80Circle;
-            case GroupCircleItem::Type::Percent90:
-                return GraphicsSettingsService::OpacityRole::Percent90Circle;
-        }
-        return GraphicsSettingsService::OpacityRole::FullGroupCircle;
-    }
 }
 
-GroupCircleItem::GroupCircleItem(Type type, QGraphicsItem* pParent)
+GroupCircleItem::GroupCircleItem(GroupCircle::Type type, QGraphicsItem* pParent)
     : QGraphicsItem(pParent)
     , m_type(type)
     , m_service(qx::GetService<GraphicsSettingsService>())
 {
 }
 
-GroupCircleItem::Type GroupCircleItem::circleType() const
+GroupCircle::Type GroupCircleItem::circleType() const
 {
     return m_type;
 }
@@ -89,8 +61,8 @@ void GroupCircleItem::paint(QPainter* pPainter, const QStyleOptionGraphicsItem* 
     pPainter->setRenderHint(QPainter::Antialiasing);
 
     // Get color and opacity from service
-    const QColor color = m_service.color(typeToColorRole(m_type));
-    const int opacity = m_service.opacity(typeToOpacityRole(m_type));
+    const QColor color = m_service.color(m_type);
+    const int opacity = m_service.opacity(m_type);
 
     // Fill with semi-transparent color (convert opacity from 0-100 to 0-255)
     QColor fillColor = color;

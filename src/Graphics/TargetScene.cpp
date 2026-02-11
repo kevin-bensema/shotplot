@@ -12,10 +12,21 @@ namespace
     constexpr double kTargetImageZValue = -1000.0;
     constexpr double kImpactGlyphZValue = 100.0;
     constexpr double kPOAGlyphZValue = 90.0;
-    constexpr double kFullGroupCircleZValue = 50.0;
-    constexpr double k80GroupCircleZValue = 51.0;
-    constexpr double k90GroupCircleZValue = 52.0;
     constexpr double kScaleLineZValue = 200.0;
+
+    double groupCircleTypeToZValue(GroupCircle::Type type)
+    {
+        switch (type)
+        {
+            case GroupCircle::Type::Full:
+                return 50.0;
+            case GroupCircle::Type::Percent80:
+                return 51.0;
+            case GroupCircle::Type::Percent90:
+                return 52.0;
+        }
+        return 50.0;
+    }
 }
 
 TargetScene::TargetScene(QObject* pParent)
@@ -145,74 +156,41 @@ void TargetScene::setPOAVisible(bool visible)
     }
 }
 
-void TargetScene::setFullGroupCircle(const QPointF& center, double radius)
+void TargetScene::setGroupCircle(GroupCircle::Type type, const QPointF& center, double radius)
 {
-    if (!m_pFullGroupCircle)
+    if (!m_groupCircles.contains(type))
     {
-        m_pFullGroupCircle = new GroupCircleItem(GroupCircleItem::Type::Full);
-        m_pFullGroupCircle->setZValue(kFullGroupCircleZValue);
-        addItem(m_pFullGroupCircle);
+        auto* pCircle = new GroupCircleItem(type);
+        pCircle->setZValue(groupCircleTypeToZValue(type));
+        addItem(pCircle);
+        m_groupCircles[type] = pCircle;
     }
-    m_pFullGroupCircle->setCircle(center, radius);
-}
-
-void TargetScene::set80GroupCircle(const QPointF& center, double radius)
-{
-    if (!m_p80GroupCircle)
-    {
-        m_p80GroupCircle = new GroupCircleItem(GroupCircleItem::Type::Percent80);
-        m_p80GroupCircle->setZValue(k80GroupCircleZValue);
-        addItem(m_p80GroupCircle);
-    }
-    m_p80GroupCircle->setCircle(center, radius);
-}
-
-void TargetScene::set90GroupCircle(const QPointF& center, double radius)
-{
-    if (!m_p90GroupCircle)
-    {
-        m_p90GroupCircle = new GroupCircleItem(GroupCircleItem::Type::Percent90);
-        m_p90GroupCircle->setZValue(k90GroupCircleZValue);
-        addItem(m_p90GroupCircle);
-    }
-    m_p90GroupCircle->setCircle(center, radius);
+    m_groupCircles[type]->setCircle(center, radius);
 }
 
 void TargetScene::clearGroupCircles()
 {
-    if (m_pFullGroupCircle)
+    for (auto* pCircle : m_groupCircles)
     {
-        removeItem(m_pFullGroupCircle);
-        delete m_pFullGroupCircle;
-        m_pFullGroupCircle = nullptr;
+        removeItem(pCircle);
+        delete pCircle;
     }
-    if (m_p80GroupCircle)
-    {
-        removeItem(m_p80GroupCircle);
-        delete m_p80GroupCircle;
-        m_p80GroupCircle = nullptr;
-    }
-    if (m_p90GroupCircle)
-    {
-        removeItem(m_p90GroupCircle);
-        delete m_p90GroupCircle;
-        m_p90GroupCircle = nullptr;
-    }
+    m_groupCircles.clear();
 }
 
-void TargetScene::setGroupCirclesVisible(bool full, bool g80, bool g90)
+void TargetScene::updateGroupCirclesVisibility()
 {
-    if (m_pFullGroupCircle)
+    if (!m_pDocument)
     {
-        m_pFullGroupCircle->setVisible(full);
+        return;
     }
-    if (m_p80GroupCircle)
+
+    for (auto type : GroupCircle::allTypes())
     {
-        m_p80GroupCircle->setVisible(g80);
-    }
-    if (m_p90GroupCircle)
-    {
-        m_p90GroupCircle->setVisible(g90);
+        if (m_groupCircles.contains(type))
+        {
+            m_groupCircles[type]->setVisible(m_pDocument->showGroupCircle(type));
+        }
     }
 }
 
@@ -287,11 +265,7 @@ void TargetScene::updateFromDocument()
     }
 
     // Update group circle visibility
-    setGroupCirclesVisible(
-        m_pDocument->showFullGroupCircle(),
-        m_pDocument->show80PercentCircle(),
-        m_pDocument->show90PercentCircle()
-    );
+    updateGroupCirclesVisibility();
     
     // Update POA visibility
     setPOAVisible(m_pDocument->showPointOfAim() && m_pDocument->hasPointOfAimSet());

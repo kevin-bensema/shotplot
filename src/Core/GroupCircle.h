@@ -26,9 +26,23 @@
 /// optimization of the smallest enclosing circle.
 struct GroupCircle
 {
+    /// @brief Types of group circles supported by the system
+    enum class Type
+    {
+        Full,      ///< Full group circle (100% of shots)
+        Percent80, ///< 80% group circle
+        Percent90  ///< 90% group circle
+    };
+
     QPointF center;              ///< Circle center in pixel coordinates
     double radiusPixels = 0.0;   ///< Circle radius in pixels
     QList<int> shotIndices;      ///< Indices of shots enclosed by this circle
+    
+    /// Returns a list of all supported group circle types
+    static QList<Type> allTypes()
+    {
+        return { Type::Full, Type::Percent80, Type::Percent90 };
+    }
     
     /// Default constructor
     ///

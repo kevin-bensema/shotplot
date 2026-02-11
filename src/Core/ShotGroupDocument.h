@@ -124,6 +124,9 @@ public:
     bool showPointOfAim() const;
     void setShowPointOfAim(bool show);
 
+    bool showCentroid() const;
+    void setShowCentroid(bool show);
+
     PlaqueConfig plaqueConfig() const;
     void setPlaqueConfig(const PlaqueConfig& config);
 
@@ -227,6 +230,7 @@ private:
     // Visualization settings
     QMap<GroupCircle::Type, bool> m_showGroupCircles;
     bool m_showPointOfAim;
+    bool m_showCentroid;
     PlaqueConfig m_plaqueConfig;
     
     // Statistics

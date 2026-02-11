@@ -24,6 +24,7 @@ public:
     {
         CalibrationLine,    ///< Calibration measurement tool
         PointOfAim,         ///< Point of aim glyph
+        Centroid,           ///< Centroid glyph
         Impact,             ///< Impact glyph
         FullGroupCircle,    ///< Full group circle
         Percent90Circle,    ///< 90% group circle

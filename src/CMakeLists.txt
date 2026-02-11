@@ -36,6 +36,7 @@ set(GRAPHICS_SOURCES
     Graphics/TargetScene.cpp
     Graphics/ImpactGlyphItem.cpp
     Graphics/POAGlyphItem.cpp
+    Graphics/CentroidGlyphItem.cpp
     Graphics/GroupCircleItem.cpp
     Graphics/ScaleLineItem.cpp
 )

@@ -6,16 +6,18 @@
 #include "ShotImpact.h"
 #include "GroupCircle.h"
 
+class ShotGroupDocument;
+
 /// @brief Stateless service class for calculating shot group statistics
 /// 
 /// Provides static utility methods for computing various statistical measures
-/// of shot groups, including centroid, mean radius, standard deviation, and
-/// group circles (80%, 90%, and 100%).
+/// of shot groups, including centroid, mean radius, standard deviation, offset
+/// from point of aim, and group circles (80%, 90%, and 100%).
 /// 
 /// All calculations are performed in pixel space. The class cannot be
 /// instantiated - all methods are static utility functions.
 /// 
-/// The main entry point is calculate(), which processes a list of shot impacts
+/// The main entry point is calculate(), which accepts a document pointer
 /// and returns a complete Statistics structure. Individual calculation methods
 /// are also exposed for cases where only specific statistics are needed.
 class StatisticsCalculator
@@ -23,20 +25,22 @@ class StatisticsCalculator
 public:
     /// Calculate complete statistics for a shot group
     ///
-    /// Processes a list of shot impacts and computes all available statistics,
-    /// including centroid, mean radius, standard deviation, and group circles.
+    /// Processes the shot impacts from the document and computes all available
+    /// statistics, including centroid, mean radius, standard deviation, offset
+    /// from point of aim (if set), and group circles.
     /// 
     /// Requirements:
     /// - At least 2 impacts are required for valid statistics
     /// - At least 3 impacts are required for 80% and 90% group circles
+    /// - Point of aim must be set for offset calculation
     /// 
     /// If insufficient impacts are provided, the returned Statistics object
     /// will have valid=false. Otherwise, all calculated values are in pixels.
     ///
-    /// \param impacts List of shot impacts to analyze
+    /// \param pDocument Pointer to the document containing impacts and point of aim
     /// \return Statistics structure containing all calculated values, with
     ///         valid=false if fewer than 2 impacts provided
-    static Statistics calculate(const QList<ShotImpact>& impacts);
+    static Statistics calculate(const ShotGroupDocument* pDocument);
     
     /// Calculate centroid (geometric center) of points
     ///

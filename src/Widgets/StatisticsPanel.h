@@ -66,10 +66,13 @@ private:
     QLabel* m_pGroup90Label = nullptr;
     QLabel* m_pMeanRadiusLabel = nullptr;
     QLabel* m_pStdDevLabel = nullptr;
+    QLabel* m_pOffsetXLabel = nullptr;
+    QLabel* m_pOffsetYLabel = nullptr;
     
     QCheckBox* m_pShowFullGroupCheck = nullptr;
     QCheckBox* m_pShow80GroupCheck = nullptr;
     QCheckBox* m_pShow90GroupCheck = nullptr;
     QCheckBox* m_pShowPOACheck = nullptr;
+    QCheckBox* m_pShowCentroidCheck = nullptr;
 };
 

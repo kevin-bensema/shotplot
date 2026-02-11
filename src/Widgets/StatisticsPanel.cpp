@@ -46,12 +46,16 @@ void StatisticsPanel::setupUi()
     m_pGroup90Label = new QLabel(tr("90% Group: --"));
     m_pMeanRadiusLabel = new QLabel(tr("Mean Radius: --"));
     m_pStdDevLabel = new QLabel(tr("Std Dev: --"));
+    m_pOffsetXLabel = new QLabel(tr("Offset X: --"));
+    m_pOffsetYLabel = new QLabel(tr("Offset Y: --"));
     
     pStatsLayout->addWidget(m_pFullGroupLabel);
     pStatsLayout->addWidget(m_pGroup80Label);
     pStatsLayout->addWidget(m_pGroup90Label);
     pStatsLayout->addWidget(m_pMeanRadiusLabel);
     pStatsLayout->addWidget(m_pStdDevLabel);
+    pStatsLayout->addWidget(m_pOffsetXLabel);
+    pStatsLayout->addWidget(m_pOffsetYLabel);
     
     pLayout->addWidget(pStatsGroup);
     
@@ -101,10 +105,21 @@ void StatisticsPanel::setupUi()
                 }
             });
     
+    m_pShowCentroidCheck = new QCheckBox(tr("Centroid"));
+    m_pShowCentroidCheck->setChecked(false);
+    connect(m_pShowCentroidCheck, &QCheckBox::toggled,
+            this, [this](bool checked) {
+                if (m_pDocument)
+                {
+                    m_pDocument->setShowCentroid(checked);
+                }
+            });
+    
     pDisplayLayout->addWidget(m_pShowFullGroupCheck);
     pDisplayLayout->addWidget(m_pShow80GroupCheck);
     pDisplayLayout->addWidget(m_pShow90GroupCheck);
     pDisplayLayout->addWidget(m_pShowPOACheck);
+    pDisplayLayout->addWidget(m_pShowCentroidCheck);
     
     pLayout->addWidget(pDisplayGroup);
     
@@ -134,6 +149,7 @@ void StatisticsPanel::setDocument(ShotGroupDocument* pDocument)
         m_pShow80GroupCheck->setChecked(m_pDocument->showGroupCircle(GroupCircle::Type::Percent80));
         m_pShow90GroupCheck->setChecked(m_pDocument->showGroupCircle(GroupCircle::Type::Percent90));
         m_pShowPOACheck->setChecked(m_pDocument->showPointOfAim());
+        m_pShowCentroidCheck->setChecked(m_pDocument->showCentroid());
     }
     
     updateStatistics();
@@ -154,6 +170,8 @@ void StatisticsPanel::updateStatistics()
         m_pGroup90Label->setText(tr("90% Group: --"));
         m_pMeanRadiusLabel->setText(tr("Mean Radius: --"));
         m_pStdDevLabel->setText(tr("Std Dev: --"));
+        m_pOffsetXLabel->setText(tr("Offset X: --"));
+        m_pOffsetYLabel->setText(tr("Offset Y: --"));
         return;
     }
     m_pShotCountLabel->setText(tr("Shots: %1").arg(m_pDocument->impactCount()));
@@ -165,6 +183,8 @@ void StatisticsPanel::updateStatistics()
         m_pGroup90Label->setText(tr("90% Group: --"));
         m_pMeanRadiusLabel->setText(tr("Mean Radius: --"));
         m_pStdDevLabel->setText(tr("Std Dev: --"));
+        m_pOffsetXLabel->setText(tr("Offset X: --"));
+        m_pOffsetYLabel->setText(tr("Offset Y: --"));
         return;
     }
     
@@ -217,5 +237,42 @@ void StatisticsPanel::updateStatistics()
     
     m_pMeanRadiusLabel->setText(tr("Mean Radius: %1").arg(formatValue(stats.meanRadiusPixels)));
     m_pStdDevLabel->setText(tr("Std Dev: %1").arg(formatValue(stats.standardDeviationPixels)));
+    
+    // Display offset from point of aim (if calculated)
+    if (stats.offsetFromPOA.has_value())
+    {
+        const QPointF& offset = stats.offsetFromPOA.value();
+        
+        // Convert offset to display units with coordinate transformation
+        // Image coordinates: right=+X, down=+Y
+        // Shooter perspective: right=+X, up=+Y (negate Y)
+        double offsetXPixels = offset.x();
+        double offsetYPixels = -offset.y();  // Negate for shooter perspective
+        
+        double offsetXInches = UnitConverter::pixelsToInches(offsetXPixels, ppi);
+        double offsetYInches = UnitConverter::pixelsToInches(offsetYPixels, ppi);
+        
+        double offsetXValue = offsetXInches;
+        double offsetYValue = offsetYInches;
+        
+        if (unit == UnitConverter::Unit::MOA)
+        {
+            offsetXValue = UnitConverter::inchesToMOA(offsetXInches, distanceYards);
+            offsetYValue = UnitConverter::inchesToMOA(offsetYInches, distanceYards);
+        }
+        else if (unit == UnitConverter::Unit::MRAD)
+        {
+            offsetXValue = UnitConverter::inchesToMRAD(offsetXInches, distanceYards);
+            offsetYValue = UnitConverter::inchesToMRAD(offsetYInches, distanceYards);
+        }
+        
+        m_pOffsetXLabel->setText(tr("Offset X: %1").arg(UnitConverter::formatWithUnit(offsetXValue, unit)));
+        m_pOffsetYLabel->setText(tr("Offset Y: %1").arg(UnitConverter::formatWithUnit(offsetYValue, unit)));
+    }
+    else
+    {
+        m_pOffsetXLabel->setText(tr("Offset X: --"));
+        m_pOffsetYLabel->setText(tr("Offset Y: --"));
+    }
 }
 

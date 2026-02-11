@@ -1,13 +1,22 @@
 #include "StatisticsCalculator.h"
+#include "ShotGroupDocument.h"
 #include "MinimumEnclosingCircle.h"
 
 #include <cmath>
 #include <algorithm>
 #include <numeric>
 
-Statistics StatisticsCalculator::calculate(const QList<ShotImpact>& impacts)
+Statistics StatisticsCalculator::calculate(const ShotGroupDocument* pDocument)
 {
     Statistics stats;
+    
+    if (!pDocument)
+    {
+        stats.valid = false;
+        return stats;
+    }
+    
+    const QList<ShotImpact>& impacts = pDocument->impacts();
     
     if (impacts.size() < 2) 
     {
@@ -25,6 +34,16 @@ Statistics StatisticsCalculator::calculate(const QList<ShotImpact>& impacts)
     
     // Calculate centroid
     stats.centroid = calculateCentroid(points);
+    
+    // Calculate offset from point of aim (if set)
+    if (pDocument->hasPointOfAimSet())
+    {
+        stats.offsetFromPOA = stats.centroid - pDocument->pointOfAim();
+    }
+    else
+    {
+        stats.offsetFromPOA = std::nullopt;
+    }
     
     // Calculate mean radius
     stats.meanRadiusPixels = calculateMeanRadius(points, stats.centroid);

@@ -30,7 +30,12 @@ void POAState::onExit()
 void POAState::handleMouseClick(const QPointF& scenePos)
 {
     m_pDocument->setPointOfAim(scenePos);
-    m_pView->targetScene()->setPOAGlyph(scenePos);
+    
+    // Calculate POA glyph diameter: 1.2x bullet diameter
+    double diameter = m_pDocument->bulletDiameter() * m_pDocument->pixelsPerInch();
+    double poaDiameter = diameter * 1.2;
+    
+    m_pView->targetScene()->setPOAGlyph(scenePos, poaDiameter);
     
     emit stateCompleted();
     emit requestNextState();

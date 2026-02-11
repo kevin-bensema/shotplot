@@ -5,19 +5,19 @@
 
 class GraphicsSettingsService;
 
-/// @brief X-shaped point of aim marker (rotated 45 degrees)
+/// @brief Plus-shaped centroid marker
 /// 
-/// Renders a visual marker consisting of two diagonal lines forming an X shape,
-/// used to indicate the point of aim on a target. The glyph is centered at its
-/// position and can be customized with size and color.
-class POAGlyphItem : public QGraphicsItem
+/// Renders a visual marker consisting of horizontal and vertical lines forming a + shape,
+/// used to indicate the centroid (geometric center) of a shot group. The glyph is centered
+/// at its position and can be customized with size. Color is managed by GraphicsSettingsService.
+class CentroidGlyphItem : public QGraphicsItem
 {
 public:
-    /// Constructs a POA glyph with the specified diameter
+    /// Constructs a centroid glyph with the specified diameter
     ///
     /// \param diameterPixels The size (diameter) of the glyph in pixels
     /// \param pParent Optional parent graphics item
-    explicit POAGlyphItem(double diameterPixels, QGraphicsItem* pParent = nullptr);
+    explicit CentroidGlyphItem(double diameterPixels, QGraphicsItem* pParent = nullptr);
 
     /// Returns the size (diameter) of the glyph in pixels.
     double size() const;
@@ -30,11 +30,6 @@ public:
 
     /// Returns the color of the glyph lines from the graphics settings service.
     QColor color() const;
-    
-    /// Sets the color of the glyph lines (deprecated - color now managed by GraphicsSettingsService).
-    /// \param color The new color for the X marker.
-    /// \deprecated This method is kept for backward compatibility but has no effect.
-    void setColor(const QColor& color);
 
     // QGraphicsItem interface
     
@@ -44,9 +39,9 @@ public:
     /// is visible when rendered.
     QRectF boundingRect() const override;
     
-    /// Paints the X-shaped marker using antialiased rendering.
+    /// Paints the plus-shaped marker using antialiased rendering.
     ///
-    /// Draws two diagonal lines from corner to corner, forming an X shape.
+    /// Draws horizontal and vertical lines, forming a + shape.
     /// The lines use round cap style for smoother appearance.
     void paint(QPainter* pPainter, const QStyleOptionGraphicsItem* pOption, QWidget* pWidget) override;
 

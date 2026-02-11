@@ -1,6 +1,7 @@
 #include "TargetScene.h"
 #include "ImpactGlyphItem.h"
 #include "POAGlyphItem.h"
+#include "CentroidGlyphItem.h"
 #include "GroupCircleItem.h"
 #include "ScaleLineItem.h"
 #include <Core/ShotGroupDocument.h>
@@ -11,6 +12,7 @@ namespace
 {
     constexpr double kTargetImageZValue = -1000.0;
     constexpr double kImpactGlyphZValue = 100.0;
+    constexpr double kCentroidGlyphZValue = 95.0;
     constexpr double kPOAGlyphZValue = 90.0;
     constexpr double kScaleLineZValue = 200.0;
 
@@ -82,6 +84,8 @@ void TargetScene::setDocument(ShotGroupDocument* pDocument)
                 this, &TargetScene::updateFromDocument);
         connect(m_pDocument, &ShotGroupDocument::visualizationSettingsChanged,
                 this, &TargetScene::updateFromDocument);
+        connect(m_pDocument, &ShotGroupDocument::statisticsChanged,
+                this, &TargetScene::updateFromDocument);
         
         // Initial update
         updateFromDocument();
@@ -126,13 +130,17 @@ void TargetScene::updateImpactGlyphSizes(double diameterPixels)
     }
 }
 
-void TargetScene::setPOAGlyph(const QPointF& position)
+void TargetScene::setPOAGlyph(const QPointF& position, double diameterPixels)
 {
     if (!m_pPoaGlyph)
     {
-        m_pPoaGlyph = new POAGlyphItem();
+        m_pPoaGlyph = new POAGlyphItem(diameterPixels);
         m_pPoaGlyph->setZValue(kPOAGlyphZValue);
         addItem(m_pPoaGlyph);
+    }
+    else
+    {
+        m_pPoaGlyph->setSize(diameterPixels);
     }
     m_pPoaGlyph->setPos(position);
     m_pPoaGlyph->setVisible(true);
@@ -153,6 +161,40 @@ void TargetScene::setPOAVisible(bool visible)
     if (m_pPoaGlyph)
     {
         m_pPoaGlyph->setVisible(visible);
+    }
+}
+
+void TargetScene::setCentroidGlyph(const QPointF& position, double diameterPixels)
+{
+    if (!m_pCentroidGlyph)
+    {
+        m_pCentroidGlyph = new CentroidGlyphItem(diameterPixels);
+        m_pCentroidGlyph->setZValue(kCentroidGlyphZValue);
+        addItem(m_pCentroidGlyph);
+    }
+    else
+    {
+        m_pCentroidGlyph->setSize(diameterPixels);
+    }
+    m_pCentroidGlyph->setPos(position);
+    m_pCentroidGlyph->setVisible(true);
+}
+
+void TargetScene::clearCentroidGlyph()
+{
+    if (m_pCentroidGlyph)
+    {
+        removeItem(m_pCentroidGlyph);
+        delete m_pCentroidGlyph;
+        m_pCentroidGlyph = nullptr;
+    }
+}
+
+void TargetScene::setCentroidVisible(bool visible)
+{
+    if (m_pCentroidGlyph)
+    {
+        m_pCentroidGlyph->setVisible(visible);
     }
 }
 
@@ -257,11 +299,26 @@ void TargetScene::updateFromDocument()
     // Update POA glyph
     if (m_pDocument->hasPointOfAimSet())
     {
-        setPOAGlyph(m_pDocument->pointOfAim());
+        // Calculate POA glyph diameter: 1.2x bullet diameter
+        double poaDiameter = diameter * 1.2;
+        setPOAGlyph(m_pDocument->pointOfAim(), poaDiameter);
     }
     else
     {
         clearPOAGlyph();
+    }
+
+    // Update centroid glyph
+    const Statistics& stats = m_pDocument->statistics();
+    if (stats.valid)
+    {
+        // Calculate glyph diameter: 1.2x bullet diameter
+        double centroidDiameter = diameter * 1.2;
+        setCentroidGlyph(stats.centroid, centroidDiameter);
+    }
+    else
+    {
+        clearCentroidGlyph();
     }
 
     // Update group circle visibility
@@ -269,4 +326,7 @@ void TargetScene::updateFromDocument()
     
     // Update POA visibility
     setPOAVisible(m_pDocument->showPointOfAim() && m_pDocument->hasPointOfAimSet());
+    
+    // Update centroid visibility
+    setCentroidVisible(m_pDocument->showCentroid() && stats.valid);
 }

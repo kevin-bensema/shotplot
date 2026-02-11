@@ -1,6 +1,7 @@
 #pragma once
 
 #include "GroupCircle.h"
+#include <optional>
 
 /// @brief Contains all calculated statistics for a shot group
 ///
@@ -50,6 +51,14 @@ struct Statistics
     /// coordinates. This serves as the reference point for radial distance calculations
     /// and represents the "center of mass" of the shot group.
     QPointF centroid;
+    
+    /// Offset vector from point of aim to centroid, in pixel coordinates
+    ///
+    /// Represents the displacement from the point of aim to the shot group centroid.
+    /// This is the adjustment needed to move the shot group to the point of aim.
+    /// Only calculated when a point of aim is set in the document; otherwise std::nullopt.
+    /// The offset is stored in standard image coordinates (right=+X, down=+Y).
+    std::optional<QPointF> offsetFromPOA;
     
     /// Smallest enclosing circle for 100% of shots (all impacts)
     ///

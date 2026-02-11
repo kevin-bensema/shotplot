@@ -8,6 +8,7 @@
 class QGraphicsPixmapItem;
 class ImpactGlyphItem;
 class POAGlyphItem;
+class CentroidGlyphItem;
 class GroupCircleItem;
 class ScaleLineItem;
 class ShotGroupDocument;
@@ -22,6 +23,7 @@ class ShotGroupDocument;
 /// - Target image: z-value -1000 (background)
 /// - Group circles: z-value 50-52 (middle layer)
 /// - POA glyph: z-value 90
+/// - Centroid glyph: z-value 95
 /// - Impact glyphs: z-value 100
 /// - Scale line: z-value 200 (top layer)
 /// 
@@ -106,7 +108,8 @@ public:
     /// as an X-shaped marker at z-value 90.
     /// 
     /// \param position Scene coordinates for the point of aim
-    void setPOAGlyph(const QPointF& position);
+    /// \param diameterPixels Diameter of the POA marker in pixels
+    void setPOAGlyph(const QPointF& position, double diameterPixels);
     
     /// @brief Removes the POA glyph from the scene
     void clearPOAGlyph();
@@ -115,6 +118,25 @@ public:
     /// 
     /// \param visible True to show the glyph, false to hide it
     void setPOAVisible(bool visible);
+
+    // Centroid
+    /// @brief Sets the position of the centroid marker
+    /// 
+    /// Creates the centroid glyph if it doesn't exist, then positions and
+    /// shows it at the specified location. The centroid glyph is rendered
+    /// as a plus-shaped marker at z-value 95.
+    /// 
+    /// \param position Scene coordinates for the centroid
+    /// \param diameterPixels Diameter of the centroid marker in pixels
+    void setCentroidGlyph(const QPointF& position, double diameterPixels);
+    
+    /// @brief Removes the centroid glyph from the scene
+    void clearCentroidGlyph();
+    
+    /// @brief Shows or hides the centroid glyph without removing it
+    /// 
+    /// \param visible True to show the glyph, false to hide it
+    void setCentroidVisible(bool visible);
 
     // Group circles
     /// @brief Sets the geometry for a specific group circle type
@@ -184,6 +206,9 @@ private:
 
     // Point of Aim
     POAGlyphItem* m_pPoaGlyph = nullptr;                ///< X-shaped point of aim marker (z-value 90)
+
+    // Centroid
+    CentroidGlyphItem* m_pCentroidGlyph = nullptr;      ///< Plus-shaped centroid marker (z-value 95)
 
     // Group circles
     QMap<GroupCircle::Type, GroupCircleItem*> m_groupCircles; ///< Map of circle type to item (z-values 50-52)

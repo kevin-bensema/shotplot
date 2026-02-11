@@ -8,8 +8,9 @@ namespace {
     constexpr double kLineWidth = 3.0;  ///< Width of the lines forming the X shape.
 }
 
-POAGlyphItem::POAGlyphItem(QGraphicsItem* pParent)
+POAGlyphItem::POAGlyphItem(double diameterPixels, QGraphicsItem* pParent)
     : QGraphicsItem(pParent)
+    , m_size(diameterPixels)
     , m_service(qx::GetService<GraphicsSettingsService>())
 {
 }

@@ -6,6 +6,7 @@ namespace
     // QSettings keys using dot-notation
     const QString kColorCalibrationLineKey = QStringLiteral("Graphics.Colors.CalibrationLine");
     const QString kColorPointOfAimKey = QStringLiteral("Graphics.Colors.PointOfAim");
+    const QString kColorCentroidKey = QStringLiteral("Graphics.Colors.Centroid");
     const QString kColorImpactKey = QStringLiteral("Graphics.Colors.Impact");
     const QString kColorFullGroupCircleKey = QStringLiteral("Graphics.Colors.FullGroupCircle");
     const QString kColorPercent90CircleKey = QStringLiteral("Graphics.Colors.Percent90Circle");
@@ -21,6 +22,7 @@ namespace
     // Default color values
     const QColor kDefaultCalibrationLineColor(0, 255, 0);           // Bright green
     const QColor kDefaultPointOfAimColor(0, 0, 139);                // Dark blue
+    const QColor kDefaultCentroidColor(0, 235, 0);                  // Green
     const QColor kDefaultImpactColor(Qt::red);                      // Red
     const QColor kDefaultFullGroupCircleColor(0, 102, 204);         // Blue
     const QColor kDefaultPercent90CircleColor(255, 153, 51);        // Orange
@@ -70,6 +72,8 @@ namespace
                 return kColorCalibrationLineKey;
             case GraphicsSettingsService::ColorRole::PointOfAim:
                 return kColorPointOfAimKey;
+            case GraphicsSettingsService::ColorRole::Centroid:
+                return kColorCentroidKey;
             case GraphicsSettingsService::ColorRole::Impact:
                 return kColorImpactKey;
             case GraphicsSettingsService::ColorRole::FullGroupCircle:
@@ -110,6 +114,8 @@ namespace
                 return kDefaultCalibrationLineColor;
             case GraphicsSettingsService::ColorRole::PointOfAim:
                 return kDefaultPointOfAimColor;
+            case GraphicsSettingsService::ColorRole::Centroid:
+                return kDefaultCentroidColor;
             case GraphicsSettingsService::ColorRole::Impact:
                 return kDefaultImpactColor;
             case GraphicsSettingsService::ColorRole::FullGroupCircle:
@@ -207,6 +213,7 @@ void GraphicsSettingsService::restoreDefaults()
     // Restore all colors
     m_colors[ColorRole::CalibrationLine] = kDefaultCalibrationLineColor;
     m_colors[ColorRole::PointOfAim] = kDefaultPointOfAimColor;
+    m_colors[ColorRole::Centroid] = kDefaultCentroidColor;
     m_colors[ColorRole::Impact] = kDefaultImpactColor;
     m_colors[ColorRole::FullGroupCircle] = kDefaultFullGroupCircleColor;
     m_colors[ColorRole::Percent90Circle] = kDefaultPercent90CircleColor;
@@ -243,6 +250,8 @@ void GraphicsSettingsService::loadFromSettings()
         kColorCalibrationLineKey, kDefaultCalibrationLineColor).value<QColor>();
     m_colors[ColorRole::PointOfAim] = settings.value(
         kColorPointOfAimKey, kDefaultPointOfAimColor).value<QColor>();
+    m_colors[ColorRole::Centroid] = settings.value(
+        kColorCentroidKey, kDefaultCentroidColor).value<QColor>();
     m_colors[ColorRole::Impact] = settings.value(
         kColorImpactKey, kDefaultImpactColor).value<QColor>();
     m_colors[ColorRole::FullGroupCircle] = settings.value(

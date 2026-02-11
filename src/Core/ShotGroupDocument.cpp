@@ -26,6 +26,7 @@ ShotGroupDocument::ShotGroupDocument(QObject* pParent)
     , m_distanceUnit(kDefaultDistanceUnit)
     , m_sessionDate(QDate::currentDate())
     , m_showPointOfAim(kDefaultShowPointOfAim)
+    , m_showCentroid(false)
     , m_plaqueConfig{kDefaultPlaqueEnabled, kDefaultPlaqueX, kDefaultPlaqueY, kDefaultPlaqueWidth, kDefaultPlaqueHeight, kDefaultPlaqueTitle, QString()}
 {
     m_showGroupCircles[GroupCircle::Type::Full] = true;
@@ -306,6 +307,21 @@ void ShotGroupDocument::setShowPointOfAim(bool show)
     }
 }
 
+bool ShotGroupDocument::showCentroid() const
+{
+    return m_showCentroid;
+}
+
+void ShotGroupDocument::setShowCentroid(bool show)
+{
+    if (m_showCentroid != show)
+    {
+        m_showCentroid = show;
+        setDirty(true);
+        emit visualizationSettingsChanged();
+    }
+}
+
 ShotGroupDocument::PlaqueConfig ShotGroupDocument::plaqueConfig() const
 {
     return m_plaqueConfig;
@@ -327,7 +343,7 @@ const Statistics &ShotGroupDocument::statistics() const
 
 void ShotGroupDocument::updateStatistics()
 {
-    m_statistics = StatisticsCalculator::calculate(m_impacts);
+    m_statistics = StatisticsCalculator::calculate(this);
     emit statisticsChanged();
 }
 

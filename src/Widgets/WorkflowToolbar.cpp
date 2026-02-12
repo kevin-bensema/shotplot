@@ -1,5 +1,6 @@
 #include "WorkflowToolbar.h"
 #include "Core/ShotGroupDocument.h"
+#include "States/WorkflowState.h"
 
 #include <QToolButton>
 #include <QLabel>
@@ -93,17 +94,17 @@ void WorkflowToolbar::updateStateEnablement()
     }
     
     // State 0: Caliber - always enabled when document exists
-    m_buttons[0]->setEnabled(true);
+    m_buttons[WorkflowState::kSetCaliberStateIndex]->setEnabled(true);
     
     // State 1: Scale - enabled after caliber is set
-    m_buttons[1]->setEnabled(m_pDocument->canEnableScaleFactorState());
+    m_buttons[WorkflowState::kScaleFactorStateIndex]->setEnabled(m_pDocument->canEnableScaleFactorState());
     
     // State 2: POA - enabled after scale factor is set
-    m_buttons[2]->setEnabled(m_pDocument->canEnablePointOfAimState());
+    m_buttons[WorkflowState::kPOAStateIndex]->setEnabled(m_pDocument->canEnablePointOfAimState());
     
     // State 3: Mark Impacts - enabled after scale factor is set
-    m_buttons[3]->setEnabled(m_pDocument->canEnableMarkImpactsState());
+    m_buttons[WorkflowState::kMarkImpactsStateIndex]->setEnabled(m_pDocument->canEnableMarkImpactsState());
     
     // State 4: Visualization - enabled after at least one impact
-    m_buttons[4]->setEnabled(m_pDocument->canEnableVisualizationState());
+    m_buttons[WorkflowState::kVisualizationStateIndex]->setEnabled(m_pDocument->canEnableVisualizationState());
 }

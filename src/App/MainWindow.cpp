@@ -578,11 +578,10 @@ void MainWindow::setCurrentState(int stateIndex)
     // Update target view with current state
     m_pTargetView->setWorkflowState(m_states[stateIndex].get());
 
-    // Enable plaque settings only in Visualization state (index 4)
-    constexpr int kVisualizationStateIndex = 4;
+    // Enable plaque settings only in Visualization state
     if (m_pPlaqueSettingsWidget)
     {
-        m_pPlaqueSettingsWidget->setEnabled(stateIndex == kVisualizationStateIndex);
+        m_pPlaqueSettingsWidget->setEnabled(stateIndex == WorkflowState::kVisualizationStateIndex);
     }
 
     // Enter new state
@@ -632,7 +631,7 @@ void MainWindow::createNewDocument(const QImage &image)
     m_pPlaqueSettingsWidget->setDocument(newDocument.get());
     
     // Start with caliber state
-    setCurrentState(0);
+    setCurrentState(WorkflowState::kSetCaliberStateIndex);
     
     // Mark as dirty (new unsaved document)
     newDocument->setDirty(true);
@@ -695,15 +694,15 @@ void MainWindow::loadDocumentFromFile(const QString &filePath)
     m_pPlaqueSettingsWidget->setDocument(newDocument.get());
     
     // Determine starting state based on loaded data
-    int startState = 0;
+    int startState = WorkflowState::kSetCaliberStateIndex;
     if (newDocument->hasSavedPlaqueConfig() && newDocument->canEnableVisualizationState())
-        startState = 4; // Visualization - plaque was configured
+        startState = WorkflowState::kVisualizationStateIndex; // Visualization - plaque was configured
     else if (newDocument->canEnableVisualizationState())
-        startState = 3; // MarkImpacts - let user continue adding shots
+        startState = WorkflowState::kMarkImpactsStateIndex; // MarkImpacts - let user continue adding shots
     else if (newDocument->canEnablePointOfAimState())
-        startState = 2; // POA
+        startState = WorkflowState::kPOAStateIndex; // POA
     else if (newDocument->canEnableScaleFactorState())
-        startState = 1; // ScaleFactor
+        startState = WorkflowState::kScaleFactorStateIndex; // ScaleFactor
     
     setCurrentState(startState);
     

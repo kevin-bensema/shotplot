@@ -111,6 +111,20 @@ public:
     /// \return The state's display name (e.g., "Scale Factor", "Mark Impacts")
     virtual QString stateName() const = 0;
 
+    /// Symbolic constants for workflow state indices
+    ///
+    /// These constants define the standard ordering of states in the workflow.
+    /// Use these instead of hardcoded integer indices to improve readability
+    /// and maintainability of state transition logic.
+    enum StateIndex {
+        kSetCaliberStateIndex = 0,
+        kScaleFactorStateIndex = 1,
+        kPOAStateIndex = 2,
+        kMarkImpactsStateIndex = 3,
+        kVisualizationStateIndex = 4,
+        kStateCount = 5
+    };
+
     /// Draws a custom cursor glyph if this state requires one
     ///
     /// Called by TargetView during paintEvent to allow the state to draw a custom

@@ -16,12 +16,12 @@ VisualizationState::~VisualizationState() = default;
 
 void VisualizationState::onEnter()
 {
-    m_pView()->targetScene()->showPlaque();
+    m_pView->targetScene()->showPlaque();
 }
 
 void VisualizationState::onExit()
 {
-    m_pView()->targetScene()->hidePlaque();
+    m_pView->targetScene()->hidePlaque();
 }
 
 void VisualizationState::handleMouseClick(const QPointF& scenePos)

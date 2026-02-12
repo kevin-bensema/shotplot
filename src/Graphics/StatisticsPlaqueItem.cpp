@@ -31,6 +31,12 @@ StatisticsPlaqueItem::StatisticsPlaqueItem(ShotGroupDocument* pDocument, QGraphi
     updateFromDocument();
 }
 
+void StatisticsPlaqueItem::setDocument(ShotGroupDocument* pDocument)
+{
+    m_pDocument = pDocument;
+    updateFromDocument();
+}
+
 void StatisticsPlaqueItem::updateFromDocument()
 {
     if (!m_pDocument)

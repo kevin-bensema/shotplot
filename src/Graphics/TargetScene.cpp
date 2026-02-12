@@ -92,6 +92,11 @@ void TargetScene::setDocument(ShotGroupDocument* pDocument)
         connect(m_pDocument, &ShotGroupDocument::statisticsChanged,
                 this, &TargetScene::updatePlaque);
         
+        if (m_pPlaqueItem)
+        {
+            m_pPlaqueItem->setDocument(m_pDocument);
+        }
+
         // Initial update
         updateFromDocument();
     }

@@ -30,6 +30,9 @@ public:
     /// \param pParent Optional parent graphics item
     explicit StatisticsPlaqueItem(ShotGroupDocument* pDocument, QGraphicsItem* pParent = nullptr);
 
+    /// Updates the document pointer and refreshes the plaque
+    void setDocument(ShotGroupDocument* pDocument);
+
     /// Re-reads PlaqueConfig and Statistics from the document and repaints
     void updateFromDocument();
 

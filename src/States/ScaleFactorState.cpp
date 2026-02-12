@@ -114,3 +114,9 @@ QString ScaleFactorState::stateName() const
 {
     return tr("Scale Factor");
 }
+
+void ScaleFactorState::setDocument(ShotGroupDocument* pDocument)
+{
+    WorkflowState::setDocument(pDocument);
+    reset();
+}

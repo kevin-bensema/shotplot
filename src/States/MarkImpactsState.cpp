@@ -31,8 +31,9 @@ MarkImpactsState::~MarkImpactsState() = default;
 void MarkImpactsState::onEnter()
 {
     // Connect to document changes for updating circles
+    // Use UniqueConnection to avoid multiple connections if setDocument was called while active
     connect(m_pDocument, &ShotGroupDocument::impactsChanged,
-            this, &MarkImpactsState::updateGroupCircles);
+            this, &MarkImpactsState::updateGroupCircles, Qt::UniqueConnection);
     
     updateGroupCircles();
 }
@@ -145,6 +146,17 @@ void MarkImpactsState::updateGroupCircles()
 QString MarkImpactsState::stateName() const
 {
     return tr("Mark Impacts");
+}
+
+void MarkImpactsState::setDocument(ShotGroupDocument* pDocument)
+{
+    if (m_pDocument)
+    {
+        disconnect(m_pDocument, &ShotGroupDocument::impactsChanged,
+                   this, &MarkImpactsState::updateGroupCircles);
+    }
+
+    WorkflowState::setDocument(pDocument);
 }
 
 void MarkImpactsState::drawCursor(QPainter* pPainter, const QPointF& viewportPos, double zoomFactor)

@@ -32,3 +32,8 @@ void WorkflowState::drawCursor(QPainter* pPainter, const QPointF& viewportPos, d
     Q_UNUSED(zoomFactor)
     // Default: do nothing
 }
+
+void WorkflowState::setDocument(ShotGroupDocument* pDocument)
+{
+    m_pDocument = pDocument;
+}

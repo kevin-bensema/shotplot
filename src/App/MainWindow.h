@@ -110,6 +110,9 @@ private:
     /// Loads a document from a .spz file path, initializes UI and determines starting workflow state
     void loadDocumentFromFile(const QString &filePath);
     
+    /// Initializes workflow states once at startup
+    void setupStates();
+    
 private:
     // UI Components
     TargetView* m_pTargetView = nullptr;              ///< Graphics view displaying the target scene

@@ -111,6 +111,10 @@ public:
     /// \return The state's display name (e.g., "Scale Factor", "Mark Impacts")
     virtual QString stateName() const = 0;
 
+    /// Sets the document that this state operates on
+    /// \param pDocument The new document to associate with this state
+    virtual void setDocument(ShotGroupDocument* pDocument);
+
     /// Symbolic constants for workflow state indices
     ///
     /// These constants define the standard ordering of states in the workflow.

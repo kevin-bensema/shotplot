@@ -55,6 +55,7 @@ MainWindow::MainWindow(QWidget* pParent)
     setupToolbars();
     setupCentralWidget();
     setupDockWidgets();
+    setupStates();
     setupConnections();
     
     // Initial state
@@ -216,6 +217,24 @@ void MainWindow::setupDockWidgets()
     m_pPlaqueSettingsWidget->setFloating(false);
     m_pPlaqueSettingsWidget->setEnabled(false);
     addDockWidget(Qt::LeftDockWidgetArea, m_pPlaqueSettingsWidget);
+}
+
+void MainWindow::setupStates()
+{
+    m_states.clear();
+    m_states.push_back(std::make_unique<SetCaliberState>(nullptr, m_pTargetView, this));
+    m_states.push_back(std::make_unique<ScaleFactorState>(nullptr, m_pTargetView));
+    m_states.push_back(std::make_unique<POAState>(nullptr, m_pTargetView));
+    m_states.push_back(std::make_unique<MarkImpactsState>(nullptr, m_pTargetView, m_pUndoStack));
+    m_states.push_back(std::make_unique<VisualizationState>(nullptr, m_pTargetView));
+
+    for (int i = 0; i < static_cast<int>(m_states.size()); ++i)
+    {
+        connect(m_states[i].get(), &WorkflowState::requestNextState,
+                this, [this, i]() {
+                    setCurrentState(i + 1);
+                });
+    }
 }
 
 void MainWindow::setupConnections()
@@ -606,21 +625,10 @@ void MainWindow::createNewDocument(const QImage &image)
     m_pTargetScene->setDocument(newDocument.get());
     m_pTargetView->zoomFit();
     
-    // Create workflow states
-    m_states.clear();
-    m_states.push_back(std::make_unique<SetCaliberState>(newDocument.get(), m_pTargetView, this));
-    m_states.push_back(std::make_unique<ScaleFactorState>(newDocument.get(), m_pTargetView));
-    m_states.push_back(std::make_unique<POAState>(newDocument.get(), m_pTargetView));
-    m_states.push_back(std::make_unique<MarkImpactsState>(newDocument.get(), m_pTargetView, m_pUndoStack));
-    m_states.push_back(std::make_unique<VisualizationState>(newDocument.get(), m_pTargetView));
-    
-    // Connect state signals
-    for (int i = 0; i < static_cast<int>(m_states.size()); ++i)
+    // Update workflow states with the new document
+    for (auto& state : m_states)
     {
-        connect(m_states[i].get(), &WorkflowState::requestNextState,
-                this, [this, i]() {
-                    setCurrentState(i + 1);
-                });
+        state->setDocument(newDocument.get());
     }
     
     // Update workflow toolbar
@@ -669,21 +677,10 @@ void MainWindow::loadDocumentFromFile(const QString &filePath)
     m_pTargetScene->setDocument(newDocument.get());
     m_pTargetView->zoomFit();
     
-    // Create workflow states
-    m_states.clear();
-    m_states.push_back(std::make_unique<SetCaliberState>(newDocument.get(), m_pTargetView, this));
-    m_states.push_back(std::make_unique<ScaleFactorState>(newDocument.get(), m_pTargetView));
-    m_states.push_back(std::make_unique<POAState>(newDocument.get(), m_pTargetView));
-    m_states.push_back(std::make_unique<MarkImpactsState>(newDocument.get(), m_pTargetView, m_pUndoStack));
-    m_states.push_back(std::make_unique<VisualizationState>(newDocument.get(), m_pTargetView));
-    
-    // Connect state signals
-    for (int i = 0; i < static_cast<int>(m_states.size()); ++i)
+    // Update workflow states with the new document
+    for (auto& state : m_states)
     {
-        connect(m_states[i].get(), &WorkflowState::requestNextState,
-                this, [this, i]() {
-                    setCurrentState(i + 1);
-                });
+        state->setDocument(newDocument.get());
     }
     
     // Update workflow toolbar

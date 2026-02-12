@@ -72,6 +72,9 @@ public:
     /// Returns the display name for this state: "Scale Factor"
     QString stateName() const override;
 
+    /// Updates the document and resets internal state.
+    void setDocument(ShotGroupDocument* pDocument) override;
+
 private:
     void calculateScaleFactor();
     void reset();

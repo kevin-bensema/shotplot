@@ -56,6 +56,9 @@ public:
     /// Returns the display name of this state.
     QString stateName() const override;
 
+    /// Updates the document and refreshes signal connections.
+    void setDocument(ShotGroupDocument* pDocument) override;
+
     /// Draws a segmented circle cursor at the mouse position.
     /// \param pPainter The painter to use for drawing on the viewport
     /// \param viewportPos The current mouse position in viewport coordinates

@@ -11,6 +11,7 @@ class POAGlyphItem;
 class CentroidGlyphItem;
 class GroupCircleItem;
 class ScaleLineItem;
+class StatisticsPlaqueItem;
 class ShotGroupDocument;
 
 /// @brief QGraphicsScene for displaying target images and shot group overlays
@@ -188,6 +189,21 @@ public:
     /// \param end New ending point of the line in scene coordinates
     void updateScaleLineEnd(const QPointF& end);
 
+    // Statistics plaque
+    /// @brief Shows the statistics plaque overlay
+    ///
+    /// Creates the plaque item lazily if it does not exist, then makes it
+    /// visible and updates its contents from the document.
+    void showPlaque();
+
+    /// @brief Hides the statistics plaque overlay without removing it
+    void hidePlaque();
+
+    /// @brief Updates the plaque contents from the document
+    ///
+    /// Called when statistics or plaque settings change.
+    void updatePlaque();
+
 private:
     /// @brief Updates scene visualization based on document settings
     /// 
@@ -215,4 +231,7 @@ private:
 
     // Scale calibration line
     ScaleLineItem* m_pScaleLine = nullptr;               ///< Reference line for scale calibration (z-value 200)
+
+    // Statistics plaque
+    StatisticsPlaqueItem* m_pPlaqueItem = nullptr;       ///< Statistics plaque overlay (z-value 300)
 };

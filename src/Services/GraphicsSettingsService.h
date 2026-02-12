@@ -30,8 +30,12 @@ public:
         Percent90Circle,    ///< 90% group circle
         Percent80Circle,    ///< 80% group circle
         Background,         ///< Background color
-        ImpactCursor,       ///< Cursor for impact marking
-        PointOfAimCursor    ///< Cursor for point of aim marking
+        ImpactCursor,           ///< Cursor for impact marking
+        PointOfAimCursor,       ///< Cursor for point of aim marking
+        PlaqueTitleBarText,     ///< Statistics plaque title bar text
+        PlaqueTitleBarBackground, ///< Statistics plaque title bar background
+        PlaqueBodyText,         ///< Statistics plaque body text
+        PlaqueBodyBackground    ///< Statistics plaque body background
     };
 
     /// Opacity roles for various graphics elements (0-100 scale)
@@ -39,7 +43,8 @@ public:
     {
         FullGroupCircle,    ///< Full group circle fill opacity
         Percent90Circle,    ///< 90% percentile circle fill opacity
-        Percent80Circle     ///< 80% percentile circle fill opacity
+        Percent80Circle,    ///< 80% percentile circle fill opacity
+        Plaque              ///< Statistics plaque overall opacity
     };
 
     explicit GraphicsSettingsService(QObject* pParent = nullptr);

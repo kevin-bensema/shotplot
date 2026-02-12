@@ -155,6 +155,9 @@ private:
     /// Updates the background color from the graphics settings service
     void updateBackgroundColor();
 
+    /// Returns true if a QGraphicsItem has grabbed the mouse (e.g. during drag/resize)
+    bool isItemGrabbingMouse() const;
+
 private:
     /// The current workflow state that receives delegated mouse events
     ///

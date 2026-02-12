@@ -4,6 +4,7 @@
 #include <IO/DocumentSerializer.h>
 
 #include <QDebug>
+#include <QFont>
 #include <QJsonObject>
 #include <QJsonArray>
 #include <QJsonDocument>
@@ -12,12 +13,66 @@ namespace {
     constexpr double kDefaultTargetDistance = 100.0;
     constexpr ShotGroupDocument::DistanceUnit kDefaultDistanceUnit = ShotGroupDocument::DistanceUnit::Yards;
     constexpr bool kDefaultShowPointOfAim = true;
-    constexpr bool kDefaultPlaqueEnabled = false;
+    constexpr bool kDefaultPlaqueEnabled = true;
     constexpr int kDefaultPlaqueX = 50;
     constexpr int kDefaultPlaqueY = 50;
     constexpr int kDefaultPlaqueWidth = 300;
     constexpr int kDefaultPlaqueHeight = 200;
-    const QString kDefaultPlaqueTitle = "Shot Group Statistics";
+    const QString kDefaultPlaqueTitle = QStringLiteral("Title bar text");
+
+    int defaultPlaqueFontSize()
+    {
+        return QFont().pointSize() + 6;
+    }
+
+    QSet<ShotGroupDocument::PlaqueStat> defaultPlaqueStats()
+    {
+        return {
+            ShotGroupDocument::PlaqueStat::FullGroup,
+            ShotGroupDocument::PlaqueStat::Group80,
+            ShotGroupDocument::PlaqueStat::MeanRadius
+        };
+    }
+
+    QString plaqueStatToString(ShotGroupDocument::PlaqueStat stat)
+    {
+        using PS = ShotGroupDocument::PlaqueStat;
+        switch (stat)
+        {
+            case PS::ShotCount:  return QStringLiteral("shotCount");
+            case PS::FullGroup:  return QStringLiteral("fullGroup");
+            case PS::Group80:    return QStringLiteral("group80");
+            case PS::Group90:    return QStringLiteral("group90");
+            case PS::MeanRadius: return QStringLiteral("meanRadius");
+            case PS::StdDev:     return QStringLiteral("stdDev");
+            case PS::OffsetX:    return QStringLiteral("offsetX");
+            case PS::OffsetY:    return QStringLiteral("offsetY");
+        }
+        return QString();
+    }
+
+    ShotGroupDocument::PlaqueStat plaqueStatFromString(const QString& str, bool* ok = nullptr)
+    {
+        using PS = ShotGroupDocument::PlaqueStat;
+        static const QHash<QString, PS> map = {
+            {QStringLiteral("shotCount"),  PS::ShotCount},
+            {QStringLiteral("fullGroup"),  PS::FullGroup},
+            {QStringLiteral("group80"),    PS::Group80},
+            {QStringLiteral("group90"),    PS::Group90},
+            {QStringLiteral("meanRadius"), PS::MeanRadius},
+            {QStringLiteral("stdDev"),     PS::StdDev},
+            {QStringLiteral("offsetX"),    PS::OffsetX},
+            {QStringLiteral("offsetY"),    PS::OffsetY}
+        };
+        auto it = map.find(str);
+        if (it != map.end())
+        {
+            if (ok) *ok = true;
+            return it.value();
+        }
+        if (ok) *ok = false;
+        return PS::ShotCount;
+    }
 }
 
 ShotGroupDocument::ShotGroupDocument(QObject* pParent)
@@ -27,7 +82,7 @@ ShotGroupDocument::ShotGroupDocument(QObject* pParent)
     , m_sessionDate(QDate::currentDate())
     , m_showPointOfAim(kDefaultShowPointOfAim)
     , m_showCentroid(false)
-    , m_plaqueConfig{kDefaultPlaqueEnabled, kDefaultPlaqueX, kDefaultPlaqueY, kDefaultPlaqueWidth, kDefaultPlaqueHeight, kDefaultPlaqueTitle, QString()}
+    , m_plaqueConfig{kDefaultPlaqueEnabled, kDefaultPlaqueX, kDefaultPlaqueY, kDefaultPlaqueWidth, kDefaultPlaqueHeight, kDefaultPlaqueTitle, defaultPlaqueStats(), defaultPlaqueFontSize()}
 {
     m_showGroupCircles[GroupCircle::Type::Full] = true;
     m_showGroupCircles[GroupCircle::Type::Percent80] = false;
@@ -331,7 +386,12 @@ void ShotGroupDocument::setPlaqueConfig(const PlaqueConfig& config)
 {
     m_plaqueConfig = config;
     setDirty(true);
-    emit visualizationSettingsChanged();
+    emit plaqueSettingsChanged();
+}
+
+bool ShotGroupDocument::hasSavedPlaqueConfig() const
+{
+    return m_hasSavedPlaqueConfig;
 }
 
 // ===== Statistics =====
@@ -470,6 +530,26 @@ QJsonObject ShotGroupDocument::toJson() const
     vizObj["showFullGroupCircle"] = m_showGroupCircles[GroupCircle::Type::Full];
     vizObj["show80PercentCircle"] = m_showGroupCircles[GroupCircle::Type::Percent80];
     vizObj["show90PercentCircle"] = m_showGroupCircles[GroupCircle::Type::Percent90];
+
+    // Plaque config
+    QJsonObject plaqueObj;
+    plaqueObj["version"] = QStringLiteral("0.1");
+    plaqueObj["enabled"] = m_plaqueConfig.enabled;
+    plaqueObj["x"] = m_plaqueConfig.x;
+    plaqueObj["y"] = m_plaqueConfig.y;
+    plaqueObj["width"] = m_plaqueConfig.width;
+    plaqueObj["height"] = m_plaqueConfig.height;
+    plaqueObj["title"] = m_plaqueConfig.title;
+    plaqueObj["baseFontSize"] = m_plaqueConfig.baseFontSize;
+
+    QJsonArray statsArray;
+    for (const auto& stat : m_plaqueConfig.enabledStats)
+    {
+        statsArray.append(plaqueStatToString(stat));
+    }
+    plaqueObj["enabledStats"] = statsArray;
+    vizObj["plaqueConfig"] = plaqueObj;
+
     root["visualizationSettings"] = vizObj;
     
     return root;
@@ -534,6 +614,34 @@ bool ShotGroupDocument::fromJson(const QJsonObject& json, QString* pErrorMsg)
     m_showGroupCircles[GroupCircle::Type::Full] = vizObj["showFullGroupCircle"].toBool(true);
     m_showGroupCircles[GroupCircle::Type::Percent80] = vizObj["show80PercentCircle"].toBool(false);
     m_showGroupCircles[GroupCircle::Type::Percent90] = vizObj["show90PercentCircle"].toBool(false);
+
+    // Plaque config (backward compatible — use defaults if absent)
+    m_hasSavedPlaqueConfig = vizObj.contains("plaqueConfig");
+    if (m_hasSavedPlaqueConfig)
+    {
+        QJsonObject plaqueObj = vizObj["plaqueConfig"].toObject();
+        m_plaqueConfig.enabled = plaqueObj["enabled"].toBool(kDefaultPlaqueEnabled);
+        m_plaqueConfig.x = plaqueObj["x"].toInt(kDefaultPlaqueX);
+        m_plaqueConfig.y = plaqueObj["y"].toInt(kDefaultPlaqueY);
+        m_plaqueConfig.width = plaqueObj["width"].toInt(kDefaultPlaqueWidth);
+        m_plaqueConfig.height = plaqueObj["height"].toInt(kDefaultPlaqueHeight);
+        m_plaqueConfig.title = plaqueObj["title"].toString(kDefaultPlaqueTitle);
+        m_plaqueConfig.baseFontSize = plaqueObj["baseFontSize"].toInt(defaultPlaqueFontSize());
+
+        QSet<PlaqueStat> stats;
+        QJsonArray statsArray = plaqueObj["enabledStats"].toArray();
+        for (const auto& val : statsArray)
+        {
+            bool ok = false;
+            PlaqueStat stat = plaqueStatFromString(val.toString(), &ok);
+            if (ok)
+            {
+                stats.insert(stat);
+            }
+        }
+        m_plaqueConfig.enabledStats = stats;
+    }
+    // else: m_plaqueConfig retains its constructor defaults
     
     updateStatistics();
     return true;

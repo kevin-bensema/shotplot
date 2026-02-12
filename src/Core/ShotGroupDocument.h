@@ -8,6 +8,7 @@
 #include <QString>
 
 #include <QMap>
+#include <QSet>
 #include <Core/GroupCircle.h>
 #include "ShotImpact.h"
 #include "Statistics.h"
@@ -39,6 +40,19 @@ public:
     /// Distance units for target range measurement
     enum class DistanceUnit { Yards, Meters };
     
+    /// @brief Statistics that can be displayed on the plaque overlay
+    enum class PlaqueStat
+    {
+        ShotCount,
+        FullGroup,
+        Group80,
+        Group90,
+        MeanRadius,
+        StdDev,
+        OffsetX,
+        OffsetY
+    };
+
     /// @brief Configuration for the statistics plaque overlay
     /// 
     /// Controls the position, size, and content of the statistics text overlay
@@ -51,7 +65,8 @@ public:
         int width;                 ///< Width in pixels
         int height;                ///< Height in pixels
         QString title;             ///< Plaque title text
-        QString formatString;      ///< Format string for statistics display
+        QSet<PlaqueStat> enabledStats; ///< Which statistics to display
+        int baseFontSize;          ///< Body font size in points
     };
 
     explicit ShotGroupDocument(QObject* pParent = nullptr);
@@ -130,6 +145,10 @@ public:
     PlaqueConfig plaqueConfig() const;
     void setPlaqueConfig(const PlaqueConfig& config);
 
+    /// Returns true if the document was loaded from a file that contained
+    /// an explicit plaque configuration (used to determine starting state)
+    bool hasSavedPlaqueConfig() const;
+
     // ===== Statistics =====
     /// @brief Returns the current statistics
     /// 
@@ -199,8 +218,10 @@ signals:
     void impactsChanged();
     /// Emitted when statistics values have changed
     void statisticsChanged();
-    /// Emitted when visualization settings change (circles, plaque, etc.)
+    /// Emitted when visualization settings change (circles, POA, centroid)
     void visualizationSettingsChanged();
+    /// Emitted when plaque configuration changes (title, enabled stats, position, size)
+    void plaqueSettingsChanged();
 
 private:
     // Image
@@ -232,6 +253,7 @@ private:
     bool m_showPointOfAim;
     bool m_showCentroid;
     PlaqueConfig m_plaqueConfig;
+    bool m_hasSavedPlaqueConfig = false;  ///< Set during fromJson() when plaqueConfig was present
     
     // Statistics
     Statistics m_statistics;

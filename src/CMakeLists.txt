@@ -26,6 +26,7 @@ set(WIDGETS_SOURCES
     Widgets/StatisticsPanel.cpp
     Widgets/CaliberDialog.cpp
     Widgets/GraphicsSettingsDialog.cpp
+    Widgets/PlaqueSettingsWidget.cpp
 )
 
 set(SERVICES_SOURCES
@@ -39,6 +40,7 @@ set(GRAPHICS_SOURCES
     Graphics/CentroidGlyphItem.cpp
     Graphics/GroupCircleItem.cpp
     Graphics/ScaleLineItem.cpp
+    Graphics/StatisticsPlaqueItem.cpp
 )
 
 set(IO_SOURCES

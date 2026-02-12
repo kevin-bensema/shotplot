@@ -12,6 +12,7 @@ class StatisticsPanel;
 class ShotGroupDocument;
 class WorkflowState;
 class GraphicsSettingsDialog;
+class PlaqueSettingsWidget;
 
 /// @brief Main application window for ShotPlot
 /// 
@@ -116,6 +117,7 @@ private:
     WorkflowToolbar* m_pWorkflowToolbar = nullptr;    ///< Toolbar showing workflow pipeline and state selection
     PerStateToolbar* m_pPerStateToolbar = nullptr;    ///< Toolbar with state-specific controls
     StatisticsPanel* m_pStatisticsPanel = nullptr;    ///< Dock widget displaying shot group statistics
+    PlaqueSettingsWidget* m_pPlaqueSettingsWidget = nullptr; ///< Dock widget for plaque configuration (left dock)
     GraphicsSettingsDialog* m_pGraphicsSettingsDialog = nullptr;  ///< Non-modal graphics settings dialog
     
     // Document

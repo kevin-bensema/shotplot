@@ -4,6 +4,7 @@
 #include "CentroidGlyphItem.h"
 #include "GroupCircleItem.h"
 #include "ScaleLineItem.h"
+#include "StatisticsPlaqueItem.h"
 #include <Core/ShotGroupDocument.h>
 
 #include <QGraphicsPixmapItem>
@@ -86,6 +87,10 @@ void TargetScene::setDocument(ShotGroupDocument* pDocument)
                 this, &TargetScene::updateFromDocument);
         connect(m_pDocument, &ShotGroupDocument::statisticsChanged,
                 this, &TargetScene::updateFromDocument);
+        connect(m_pDocument, &ShotGroupDocument::plaqueSettingsChanged,
+                this, &TargetScene::updatePlaque);
+        connect(m_pDocument, &ShotGroupDocument::statisticsChanged,
+                this, &TargetScene::updatePlaque);
         
         // Initial update
         updateFromDocument();
@@ -329,4 +334,39 @@ void TargetScene::updateFromDocument()
     
     // Update centroid visibility
     setCentroidVisible(m_pDocument->showCentroid() && stats.valid);
+}
+
+void TargetScene::showPlaque()
+{
+    if (!m_pDocument)
+        return;
+
+    if (!m_pPlaqueItem)
+    {
+        m_pPlaqueItem = new StatisticsPlaqueItem(m_pDocument);
+        addItem(m_pPlaqueItem);
+    }
+
+    m_pPlaqueItem->updateFromDocument();
+
+    if (m_pDocument->plaqueConfig().enabled)
+    {
+        m_pPlaqueItem->setVisible(true);
+    }
+}
+
+void TargetScene::hidePlaque()
+{
+    if (m_pPlaqueItem)
+    {
+        m_pPlaqueItem->setVisible(false);
+    }
+}
+
+void TargetScene::updatePlaque()
+{
+    if (m_pPlaqueItem && m_pPlaqueItem->isVisible())
+    {
+        m_pPlaqueItem->updateFromDocument();
+    }
 }

@@ -1,6 +1,7 @@
 #include "VisualizationState.h"
 #include <Core/ShotGroupDocument.h>
 #include <Widgets/TargetView.h>
+#include <Graphics/TargetScene.h>
 
 #include <QToolBar>
 #include <QLabel>
@@ -15,12 +16,12 @@ VisualizationState::~VisualizationState() = default;
 
 void VisualizationState::onEnter()
 {
-    // TODO: Set up visualization configuration UI
+    m_pView()->targetScene()->showPlaque();
 }
 
 void VisualizationState::onExit()
 {
-    // TODO: Clean up
+    m_pView()->targetScene()->hidePlaque();
 }
 
 void VisualizationState::handleMouseClick(const QPointF& scenePos)
@@ -41,5 +42,5 @@ QString VisualizationState::stateName() const
 
 void VisualizationState::populateToolbar(QToolBar* pToolbar)
 {
-    pToolbar->addWidget(new QLabel(tr("Configure visualization (not yet implemented)")));
+    pToolbar->addWidget(new QLabel(tr("Visualization")));
 }

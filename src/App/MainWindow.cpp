@@ -34,6 +34,7 @@ namespace {
 #include <Widgets/WorkflowToolbar.h>
 #include <Widgets/PerStateToolbar.h>
 #include <Widgets/StatisticsPanel.h>
+#include <Widgets/PlaqueSettingsWidget.h>
 #include <Widgets/GraphicsSettingsDialog.h>
 #include <Graphics/TargetScene.h>
 #include <Core/ShotGroupDocument.h>
@@ -209,6 +210,12 @@ void MainWindow::setupDockWidgets()
     pStatsDock->setWidget(m_pStatisticsPanel);
     
     addDockWidget(Qt::RightDockWidgetArea, pStatsDock);
+
+    // Plaque settings (left dock, disabled until Visualization state)
+    m_pPlaqueSettingsWidget = new PlaqueSettingsWidget(this);
+    m_pPlaqueSettingsWidget->setFloating(false);
+    m_pPlaqueSettingsWidget->setEnabled(false);
+    addDockWidget(Qt::LeftDockWidgetArea, m_pPlaqueSettingsWidget);
 }
 
 void MainWindow::setupConnections()
@@ -571,6 +578,13 @@ void MainWindow::setCurrentState(int stateIndex)
     // Update target view with current state
     m_pTargetView->setWorkflowState(m_states[stateIndex].get());
 
+    // Enable plaque settings only in Visualization state (index 4)
+    constexpr int kVisualizationStateIndex = 4;
+    if (m_pPlaqueSettingsWidget)
+    {
+        m_pPlaqueSettingsWidget->setEnabled(stateIndex == kVisualizationStateIndex);
+    }
+
     // Enter new state
     m_states[m_currentStateIndex]->onEnter();
 }
@@ -613,8 +627,9 @@ void MainWindow::createNewDocument(const QImage &image)
     // Update workflow toolbar
     m_pWorkflowToolbar->setDocument(newDocument.get());
     
-    // Update statistics panel
+    // Update statistics panel and plaque settings
     m_pStatisticsPanel->setDocument(newDocument.get());
+    m_pPlaqueSettingsWidget->setDocument(newDocument.get());
     
     // Start with caliber state
     setCurrentState(0);
@@ -675,12 +690,15 @@ void MainWindow::loadDocumentFromFile(const QString &filePath)
     // Update workflow toolbar
     m_pWorkflowToolbar->setDocument(newDocument.get());
     
-    // Update statistics panel
+    // Update statistics panel and plaque settings
     m_pStatisticsPanel->setDocument(newDocument.get());
+    m_pPlaqueSettingsWidget->setDocument(newDocument.get());
     
     // Determine starting state based on loaded data
     int startState = 0;
-    if (newDocument->canEnableVisualizationState())
+    if (newDocument->hasSavedPlaqueConfig() && newDocument->canEnableVisualizationState())
+        startState = 4; // Visualization - plaque was configured
+    else if (newDocument->canEnableVisualizationState())
         startState = 3; // MarkImpacts - let user continue adding shots
     else if (newDocument->canEnablePointOfAimState())
         startState = 2; // POA

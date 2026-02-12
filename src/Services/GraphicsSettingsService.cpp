@@ -14,10 +14,15 @@ namespace
     const QString kColorBackgroundKey = QStringLiteral("Graphics.Colors.Background");
     const QString kColorImpactCursorKey = QStringLiteral("Graphics.Colors.ImpactCursor");
     const QString kColorPointOfAimCursorKey = QStringLiteral("Graphics.Colors.PointOfAimCursor");
+    const QString kColorPlaqueTitleBarTextKey = QStringLiteral("Graphics.Colors.PlaqueTitleBarText");
+    const QString kColorPlaqueTitleBarBackgroundKey = QStringLiteral("Graphics.Colors.PlaqueTitleBarBackground");
+    const QString kColorPlaqueBodyTextKey = QStringLiteral("Graphics.Colors.PlaqueBodyText");
+    const QString kColorPlaqueBodyBackgroundKey = QStringLiteral("Graphics.Colors.PlaqueBodyBackground");
     
     const QString kOpacityFullGroupCircleKey = QStringLiteral("Graphics.Opacities.FullGroupCircle");
     const QString kOpacityPercent90CircleKey = QStringLiteral("Graphics.Opacities.Percent90Circle");
     const QString kOpacityPercent80CircleKey = QStringLiteral("Graphics.Opacities.Percent80Circle");
+    const QString kOpacityPlaqueKey = QStringLiteral("Graphics.Opacities.Plaque");
 
     // Default color values
     const QColor kDefaultCalibrationLineColor(0, 255, 0);           // Bright green
@@ -30,11 +35,16 @@ namespace
     const QColor kDefaultBackgroundColor(30, 30, 30);               // Almost black
     const QColor kDefaultImpactCursorColor(255, 155, 10);           // Reddish-orange
     const QColor kDefaultPointOfAimCursorColor(32, 178, 170);       // Light Sea Green
+    const QColor kDefaultPlaqueTitleBarTextColor(Qt::white);         // White
+    const QColor kDefaultPlaqueTitleBarBackgroundColor(Qt::black);   // Black
+    const QColor kDefaultPlaqueBodyTextColor(Qt::white);             // White
+    const QColor kDefaultPlaqueBodyBackgroundColor(40, 40, 40);      // Very dark gray
 
     // Default opacity values (0-100 scale)
     constexpr int kDefaultFullGroupCircleOpacity = 16;              // 40/255 ≈ 16%
     constexpr int kDefaultPercent90CircleOpacity = 16;
     constexpr int kDefaultPercent80CircleOpacity = 16;
+    constexpr int kDefaultPlaqueOpacity = 85;                      // 85% opaque
 
     GraphicsSettingsService::ColorRole groupCircleTypeToColorRole(GroupCircle::Type type)
     {
@@ -88,6 +98,14 @@ namespace
                 return kColorImpactCursorKey;
             case GraphicsSettingsService::ColorRole::PointOfAimCursor:
                 return kColorPointOfAimCursorKey;
+            case GraphicsSettingsService::ColorRole::PlaqueTitleBarText:
+                return kColorPlaqueTitleBarTextKey;
+            case GraphicsSettingsService::ColorRole::PlaqueTitleBarBackground:
+                return kColorPlaqueTitleBarBackgroundKey;
+            case GraphicsSettingsService::ColorRole::PlaqueBodyText:
+                return kColorPlaqueBodyTextKey;
+            case GraphicsSettingsService::ColorRole::PlaqueBodyBackground:
+                return kColorPlaqueBodyBackgroundKey;
         }
         return QString();
     }
@@ -102,6 +120,8 @@ namespace
                 return kOpacityPercent90CircleKey;
             case GraphicsSettingsService::OpacityRole::Percent80Circle:
                 return kOpacityPercent80CircleKey;
+            case GraphicsSettingsService::OpacityRole::Plaque:
+                return kOpacityPlaqueKey;
         }
         return QString();
     }
@@ -130,6 +150,14 @@ namespace
                 return kDefaultImpactCursorColor;
             case GraphicsSettingsService::ColorRole::PointOfAimCursor:
                 return kDefaultPointOfAimCursorColor;
+            case GraphicsSettingsService::ColorRole::PlaqueTitleBarText:
+                return kDefaultPlaqueTitleBarTextColor;
+            case GraphicsSettingsService::ColorRole::PlaqueTitleBarBackground:
+                return kDefaultPlaqueTitleBarBackgroundColor;
+            case GraphicsSettingsService::ColorRole::PlaqueBodyText:
+                return kDefaultPlaqueBodyTextColor;
+            case GraphicsSettingsService::ColorRole::PlaqueBodyBackground:
+                return kDefaultPlaqueBodyBackgroundColor;
         }
         return QColor();
     }
@@ -144,6 +172,8 @@ namespace
                 return kDefaultPercent90CircleOpacity;
             case GraphicsSettingsService::OpacityRole::Percent80Circle:
                 return kDefaultPercent80CircleOpacity;
+            case GraphicsSettingsService::OpacityRole::Plaque:
+                return kDefaultPlaqueOpacity;
         }
         return 0;
     }
@@ -221,11 +251,16 @@ void GraphicsSettingsService::restoreDefaults()
     m_colors[ColorRole::Background] = kDefaultBackgroundColor;
     m_colors[ColorRole::ImpactCursor] = kDefaultImpactCursorColor;
     m_colors[ColorRole::PointOfAimCursor] = kDefaultPointOfAimCursorColor;
+    m_colors[ColorRole::PlaqueTitleBarText] = kDefaultPlaqueTitleBarTextColor;
+    m_colors[ColorRole::PlaqueTitleBarBackground] = kDefaultPlaqueTitleBarBackgroundColor;
+    m_colors[ColorRole::PlaqueBodyText] = kDefaultPlaqueBodyTextColor;
+    m_colors[ColorRole::PlaqueBodyBackground] = kDefaultPlaqueBodyBackgroundColor;
 
     // Restore all opacities
     m_opacities[OpacityRole::FullGroupCircle] = kDefaultFullGroupCircleOpacity;
     m_opacities[OpacityRole::Percent90Circle] = kDefaultPercent90CircleOpacity;
     m_opacities[OpacityRole::Percent80Circle] = kDefaultPercent80CircleOpacity;
+    m_opacities[OpacityRole::Plaque] = kDefaultPlaqueOpacity;
 
     // Save all to settings
     QSettings settings;
@@ -266,6 +301,14 @@ void GraphicsSettingsService::loadFromSettings()
         kColorImpactCursorKey, kDefaultImpactCursorColor).value<QColor>();
     m_colors[ColorRole::PointOfAimCursor] = settings.value(
         kColorPointOfAimCursorKey, kDefaultPointOfAimCursorColor).value<QColor>();
+    m_colors[ColorRole::PlaqueTitleBarText] = settings.value(
+        kColorPlaqueTitleBarTextKey, kDefaultPlaqueTitleBarTextColor).value<QColor>();
+    m_colors[ColorRole::PlaqueTitleBarBackground] = settings.value(
+        kColorPlaqueTitleBarBackgroundKey, kDefaultPlaqueTitleBarBackgroundColor).value<QColor>();
+    m_colors[ColorRole::PlaqueBodyText] = settings.value(
+        kColorPlaqueBodyTextKey, kDefaultPlaqueBodyTextColor).value<QColor>();
+    m_colors[ColorRole::PlaqueBodyBackground] = settings.value(
+        kColorPlaqueBodyBackgroundKey, kDefaultPlaqueBodyBackgroundColor).value<QColor>();
 
     // Load opacities with defaults
     m_opacities[OpacityRole::FullGroupCircle] = settings.value(
@@ -274,6 +317,8 @@ void GraphicsSettingsService::loadFromSettings()
         kOpacityPercent90CircleKey, kDefaultPercent90CircleOpacity).toInt();
     m_opacities[OpacityRole::Percent80Circle] = settings.value(
         kOpacityPercent80CircleKey, kDefaultPercent80CircleOpacity).toInt();
+    m_opacities[OpacityRole::Plaque] = settings.value(
+        kOpacityPlaqueKey, kDefaultPlaqueOpacity).toInt();
 }
 
 void GraphicsSettingsService::saveColorToSettings(ColorRole role, const QColor& color)

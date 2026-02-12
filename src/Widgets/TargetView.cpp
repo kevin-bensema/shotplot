@@ -164,8 +164,14 @@ void TargetView::mousePressEvent(QMouseEvent* pEvent)
         return;
     }
     
-    // Left button - let state handle it on release (to distinguish click from drag)
+    // Left button - forward to scene first so items can grab the mouse,
+    // then handle click-vs-drag on release if no item grabbed it
     QGraphicsView::mousePressEvent(pEvent);
+}
+
+bool TargetView::isItemGrabbingMouse() const
+{
+    return scene() && scene()->mouseGrabberItem();
 }
 
 void TargetView::mouseMoveEvent(QMouseEvent* pEvent)
@@ -188,8 +194,9 @@ void TargetView::mouseMoveEvent(QMouseEvent* pEvent)
         return;
     }
     
-    // Check if we've dragged far enough to start panning
-    if (pEvent->buttons() & Qt::LeftButton)
+    // Check if we've dragged far enough to start panning, but only if
+    // no scene item has grabbed the mouse (e.g. plaque drag/resize)
+    if ((pEvent->buttons() & Qt::LeftButton) && !isItemGrabbingMouse())
     {
         QPointF delta = pEvent->pos() - m_mousePressPos;
         double distance = std::sqrt(delta.x() * delta.x() + delta.y() * delta.y());
@@ -222,6 +229,14 @@ void TargetView::mouseReleaseEvent(QMouseEvent* pEvent)
         return;
     }
     
+    // If a scene item was handling the mouse (e.g. plaque drag/resize),
+    // just let the base class finalize it — don't interpret as a view click
+    if (isItemGrabbingMouse())
+    {
+        QGraphicsView::mouseReleaseEvent(pEvent);
+        return;
+    }
+
     // Check for click vs drag
     QPointF delta = pEvent->pos() - m_mousePressPos;
     double distance = std::sqrt(delta.x() * delta.x() + delta.y() * delta.y());

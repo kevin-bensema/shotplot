@@ -27,6 +27,7 @@ set(WIDGETS_SOURCES
     Widgets/CaliberDialog.cpp
     Widgets/GraphicsSettingsDialog.cpp
     Widgets/PlaqueSettingsWidget.cpp
+    Widgets/ImageCropRotateDialog.cpp
 )
 
 set(SERVICES_SOURCES
@@ -41,6 +42,7 @@ set(GRAPHICS_SOURCES
     Graphics/GroupCircleItem.cpp
     Graphics/ScaleLineItem.cpp
     Graphics/StatisticsPlaqueItem.cpp
+    Graphics/CroppingToolItem.cpp
 )
 
 set(IO_SOURCES

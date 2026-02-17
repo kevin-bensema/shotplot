@@ -36,6 +36,7 @@ namespace {
 #include <Widgets/StatisticsPanel.h>
 #include <Widgets/PlaqueSettingsWidget.h>
 #include <Widgets/GraphicsSettingsDialog.h>
+#include <Widgets/ImageCropRotateDialog.h>
 #include <Graphics/TargetScene.h>
 #include <Core/ShotGroupDocument.h>
 
@@ -327,8 +328,12 @@ bool MainWindow::eventFilter(QObject* pObject, QEvent* pEvent)
                         QImage image(path);
                         if (!image.isNull())
                         {
-                            createNewDocument(image);
-                            statusBar()->showMessage(tr("Imported: %1").arg(path));
+                            ImageCropRotateDialog dialog(image, this);
+                            if (dialog.exec() == QDialog::Accepted)
+                            {
+                                createNewDocument(dialog.resultImage());
+                                statusBar()->showMessage(tr("Imported: %1").arg(path));
+                            }
                         }
                         else
                         {
@@ -371,7 +376,13 @@ void MainWindow::onImport()
         return;
     }
     
-    createNewDocument(image);
+    ImageCropRotateDialog dialog(image, this);
+    if (dialog.exec() != QDialog::Accepted)
+    {
+        return;
+    }
+    
+    createNewDocument(dialog.resultImage());
     statusBar()->showMessage(tr("Imported: %1").arg(path));
 }
 

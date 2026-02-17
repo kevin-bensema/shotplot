@@ -1,10 +1,7 @@
 <!DOCTYPE RCC>
 <RCC version="1.0">
-    <qresource prefix="/icons">
-        <!-- Application icons will go here -->
-        <!-- <file>icons/app-icon.png</file> -->
-    </qresource>
-    <qresource prefix="/cursors">
-        <!-- Custom cursor images will go here -->
+    <qresource>
+        <file>icons/rotate-left.svg</file>
+        <file>icons/rotate-right.svg</file>
     </qresource>
 </RCC>

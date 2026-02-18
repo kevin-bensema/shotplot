@@ -33,7 +33,7 @@ TargetView::TargetView(QWidget* pParent)
     // Viewport settings
     setViewportUpdateMode(QGraphicsView::FullViewportUpdate);
     setTransformationAnchor(QGraphicsView::AnchorUnderMouse);
-    setResizeAnchor(QGraphicsView::AnchorUnderMouse);
+    setResizeAnchor(QGraphicsView::AnchorViewCenter);
     
     // Enable mouse tracking for cursor updates
     setMouseTracking(true);

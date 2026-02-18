@@ -227,12 +227,12 @@ void StatisticsPanel::updateStatistics()
     
     if (stats.group80Circle.isValid())
     {
-        m_pGroup80Label->setText(tr("80%% Group: %1").arg(formatValue(stats.group80Circle.diameterPixels())));
+        m_pGroup80Label->setText(tr("80% Group: %1").arg(formatValue(stats.group80Circle.diameterPixels())));
     }
     
     if (stats.group90Circle.isValid())
     {
-        m_pGroup90Label->setText(tr("90%% Group: %1").arg(formatValue(stats.group90Circle.diameterPixels())));
+        m_pGroup90Label->setText(tr("90% Group: %1").arg(formatValue(stats.group90Circle.diameterPixels())));
     }
     
     m_pMeanRadiusLabel->setText(tr("Mean Radius: %1").arg(formatValue(stats.meanRadiusPixels)));

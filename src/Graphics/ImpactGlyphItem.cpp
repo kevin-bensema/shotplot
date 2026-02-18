@@ -17,7 +17,6 @@ ImpactGlyphItem::ImpactGlyphItem(int shotNumber, double diameter, QGraphicsItem*
     , m_diameter(diameter)
     , m_service(qx::GetService<GraphicsSettingsService>())
 {
-    setFlag(QGraphicsItem::ItemIsSelectable);
 }
 
 void ImpactGlyphItem::setShotNumber(int number)

@@ -331,6 +331,21 @@ void TargetScene::updateFromDocument()
         clearCentroidGlyph();
     }
 
+    // Reconstruct group circles from statistics.
+    // This must happen here (not only in MarkImpactsState) so that circles are
+    // present when the document is loaded and the app opens directly in
+    // VisualizationState, bypassing MarkImpactsState entirely.
+    clearGroupCircles();
+    if (stats.valid)
+    {
+        if (stats.fullGroupCircle.isValid())
+            setGroupCircle(GroupCircle::Type::Full, stats.fullGroupCircle.center, stats.fullGroupCircle.radiusPixels);
+        if (stats.group80Circle.isValid())
+            setGroupCircle(GroupCircle::Type::Percent80, stats.group80Circle.center, stats.group80Circle.radiusPixels);
+        if (stats.group90Circle.isValid())
+            setGroupCircle(GroupCircle::Type::Percent90, stats.group90Circle.center, stats.group90Circle.radiusPixels);
+    }
+
     // Update group circle visibility
     updateGroupCirclesVisibility();
     

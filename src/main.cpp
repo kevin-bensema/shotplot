@@ -1,5 +1,6 @@
 #include <QApplication>
 #include <QX/Services.h>
+#include <QX/QStylingService.h>
 #include "App/MainWindow.h"
 #include "Services/GraphicsSettingsService.h"
 
@@ -16,6 +17,7 @@ int main(int argc, char *argv[])
     // Initialize service locator and register services
     qx::InitServiceLocator();
     qx::RegisterService(new GraphicsSettingsService());
+    qx::RegisterService(new QStylingService());
     
     MainWindow mainWindow;
     mainWindow.show();

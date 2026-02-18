@@ -7,7 +7,6 @@
 class QGraphicsScene;
 class QGraphicsPixmapItem;
 class CroppingToolItem;
-class QToolButton;
 class QPushButton;
 
 class ImageCropRotateView : public QGraphicsView
@@ -50,7 +49,7 @@ private:
     QGraphicsPixmapItem* m_pPixmapItem = nullptr;
     CroppingToolItem* m_pCroppingTool = nullptr;
     
-    QToolButton* m_pRotateLeftBtn = nullptr;
-    QToolButton* m_pRotateRightBtn = nullptr;
+    QPushButton* m_pRotateLeftBtn = nullptr;
+    QPushButton* m_pRotateRightBtn = nullptr;
     QPushButton* m_pResetBtn = nullptr;
 };

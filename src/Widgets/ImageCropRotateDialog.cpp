@@ -1,13 +1,14 @@
 #include "ImageCropRotateDialog.h"
 #include "Graphics/CroppingToolItem.h"
 
+#include <QX/Services.h>
+#include <QX/QStylingService.h>
+
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 #include <QGraphicsView>
 #include <QGraphicsScene>
 #include <QGraphicsPixmapItem>
-#include <QToolButton>
-#include <QToolBar>
 #include <QPushButton>
 #include <QDialogButtonBox>
 #include <QLabel>
@@ -108,34 +109,26 @@ void ImageCropRotateDialog::setupUi()
     // Instructions
     pMainLayout->addWidget(new QLabel(tr("Adjust the cropping area and rotate the image if necessary:")));
     
-    // Toolbar for rotation
-    QToolBar* pRotateToolbar = new QToolBar(this);
-    pRotateToolbar->setIconSize(QSize(64, 64));
-    pRotateToolbar->setMovable(false);
-    pRotateToolbar->setFloatable(false);
-    
-    // Create a container for centering buttons in the toolbar
-    QWidget* pSpacerLeft = new QWidget();
-    pSpacerLeft->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
-    pRotateToolbar->addWidget(pSpacerLeft);
-    
-    m_pRotateLeftBtn = new QToolButton(this);
-    m_pRotateLeftBtn->setIcon(QIcon(":/icons/rotate-left.svg"));
-    m_pRotateLeftBtn->setToolTip(tr("Rotate Left"));
-    connect(m_pRotateLeftBtn, &QToolButton::clicked, this, &ImageCropRotateDialog::onRotateLeft);
-    pRotateToolbar->addWidget(m_pRotateLeftBtn);
-    
-    m_pRotateRightBtn = new QToolButton(this);
-    m_pRotateRightBtn->setIcon(QIcon(":/icons/rotate-right.svg"));
-    m_pRotateRightBtn->setToolTip(tr("Rotate Right"));
-    connect(m_pRotateRightBtn, &QToolButton::clicked, this, &ImageCropRotateDialog::onRotateRight);
-    pRotateToolbar->addWidget(m_pRotateRightBtn);
-    
-    QWidget* pSpacerRight = new QWidget();
-    pSpacerRight->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
-    pRotateToolbar->addWidget(pSpacerRight);
-    
-    pMainLayout->addWidget(pRotateToolbar);
+    // Rotation buttons, centered
+    auto& styling = qx::GetService<QStylingService>();
+    const QSize iconSize(32, 32);
+
+    m_pRotateLeftBtn = new QPushButton(tr("Rotate Left"), this);
+    m_pRotateLeftBtn->setIcon(styling.createThemedIconFromSvg(":/icons/rotate-left.svg", palette()));
+    m_pRotateLeftBtn->setIconSize(iconSize);
+    connect(m_pRotateLeftBtn, &QPushButton::clicked, this, &ImageCropRotateDialog::onRotateLeft);
+
+    m_pRotateRightBtn = new QPushButton(tr("Rotate Right"), this);
+    m_pRotateRightBtn->setIcon(styling.createThemedIconFromSvg(":/icons/rotate-right.svg", palette()));
+    m_pRotateRightBtn->setIconSize(iconSize);
+    connect(m_pRotateRightBtn, &QPushButton::clicked, this, &ImageCropRotateDialog::onRotateRight);
+
+    QHBoxLayout* pRotateLayout = new QHBoxLayout();
+    pRotateLayout->addStretch();
+    pRotateLayout->addWidget(m_pRotateLeftBtn);
+    pRotateLayout->addWidget(m_pRotateRightBtn);
+    pRotateLayout->addStretch();
+    pMainLayout->addLayout(pRotateLayout);
     
     // Graphics View
     m_pView = new ImageCropRotateView(this);

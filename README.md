@@ -27,7 +27,7 @@ A shot group analysis application for rifle shooters. Analyze shooting accuracy 
 
 ```bash
 # Install dependencies
-sudo apt-get install qt6-base-dev qt6-tools-dev libzip-dev cmake build-essential
+sudo apt-get install qt6-base-dev qt6-tools-dev qt6-svg-dev libzip-dev cmake build-essential
 
 # Build
 mkdir build && cd build
@@ -38,35 +38,8 @@ cmake --build .
 ./ShotPlot
 ```
 
-### macOS
-
-```bash
-# Install dependencies via Homebrew
-brew install qt@6 libzip cmake
-
-# Build
-mkdir build && cd build
-cmake -DCMAKE_PREFIX_PATH=$(brew --prefix qt@6) ..
-cmake --build .
-
-# Run
-./ShotPlot
-```
-
-### Windows
-
-```powershell
-# Using vcpkg for dependencies
-vcpkg install qt6 libzip
-
-# Build
-mkdir build && cd build
-cmake -DCMAKE_TOOLCHAIN_FILE=[vcpkg-root]/scripts/buildsystems/vcpkg.cmake ..
-cmake --build . --config Release
-
-# Run
-.\Release\ShotPlot.exe
-```
+### Windows and MacOS
+Instructions coming...later.
 
 ## Usage
 
@@ -77,15 +50,6 @@ cmake --build . --config Release
 5. **Mark Impacts** - Click each shot hole
 6. **View Statistics** - See group sizes in inches, MOA, or milliradians
 7. **Save/Export** - Save session or export annotated image
-
-## Documentation
-
-See the `Documents/` folder for detailed design documentation:
-
-- [DESIGN.md](Documents/DESIGN.md) - Overview and requirements
-- [ARCHITECTURE.md](Documents/ARCHITECTURE.md) - Technical architecture
-- [ALGORITHM.md](Documents/ALGORITHM.md) - Group calculation algorithms
-- [UI_WORKFLOWS.md](Documents/UI_WORKFLOWS.md) - User interface design
 
 ## License
 

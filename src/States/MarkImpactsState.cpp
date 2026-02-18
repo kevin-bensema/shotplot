@@ -61,13 +61,15 @@ void MarkImpactsState::handleRightClick(const QPointF& scenePos)
     double hitRadius = bulletDiameterPixels() / 2.0;
     
     const auto impacts = m_pDocument->impacts();
-    for (int i = 0; i < impacts.size(); ++i) {
+    for (int i = 0; i < impacts.size(); ++i) 
+    {
         QPointF impactPos = impacts[i].position();
         double dx = scenePos.x() - impactPos.x();
         double dy = scenePos.y() - impactPos.y();
         double dist = std::sqrt(dx * dx + dy * dy);
         
-        if (dist <= hitRadius) {
+        if (dist <= hitRadius) 
+        {
             // TODO: Use RemoveImpactCommand for undo support
             m_pDocument->removeImpact(i);
             break;

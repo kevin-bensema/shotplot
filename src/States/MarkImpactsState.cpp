@@ -51,7 +51,7 @@ void MarkImpactsState::handleMouseClick(const QPointF& scenePos)
     ShotImpact impact(id, scenePos.x(), scenePos.y());
     
     // Use undo command
-    m_pUndoStack->push(new AddImpactCommand(m_pDocument, m_pView->targetScene(), impact, bulletDiameterPixels()));
+    m_pUndoStack->push(new AddImpactCommand(m_pDocument, impact));
 }
 
 void MarkImpactsState::handleRightClick(const QPointF& scenePos)
@@ -68,9 +68,7 @@ void MarkImpactsState::handleRightClick(const QPointF& scenePos)
         double dist = std::sqrt(dx * dx + dy * dy);
         
         if (dist <= hitRadius) {
-            // Remove this impact
             // TODO: Use RemoveImpactCommand for undo support
-            m_pView->targetScene()->removeImpactGlyph(impacts[i].id);
             m_pDocument->removeImpact(i);
             break;
         }
@@ -106,7 +104,7 @@ void MarkImpactsState::populateToolbar(QToolBar* pToolbar)
     connect(pClearButton, &QPushButton::clicked, [this]() {
         if (m_pDocument->impactCount() > 0)
         {
-            m_pUndoStack->push(new ClearImpactsCommand(m_pDocument, m_pView->targetScene()));
+            m_pUndoStack->push(new ClearImpactsCommand(m_pDocument));
         }
     });
     pToolbar->addWidget(pClearButton);

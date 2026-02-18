@@ -9,15 +9,19 @@ set(QX_SOURCES
     Src/QService.cpp
     Src/QServiceLocator.cpp
     Src/Services.cpp
+    Src/QStylingService.cpp
+    Src/SvgIconEngine.cpp
 )
 
 set(QX_HEADERS
     Inc/QX/QService.h
     Inc/QX/Services.h
+    Inc/QX/QStylingService.h
 )
 
 set(QX_INTERNAL_HEADERS
     Src/QServiceLocator.h
+    Src/SvgIconEngine.h
 )
 
 # Shared library target
@@ -40,10 +44,13 @@ target_include_directories(QX
         ${CMAKE_CURRENT_SOURCE_DIR}/Src
 )
 
-# Link Qt6::Core
+# Link Qt modules
 target_link_libraries(QX
     PUBLIC
         Qt6::Core
+        Qt6::Gui
+        Qt6::Svg
+        Qt6::Xml
 )
 
 # Library versioning

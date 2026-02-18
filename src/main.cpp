@@ -3,6 +3,7 @@
 #include <QX/QStylingService.h>
 #include "App/MainWindow.h"
 #include "Services/GraphicsSettingsService.h"
+#include "ShotPlotVersion.h"
 
 int main(int argc, char *argv[])
 {
@@ -10,7 +11,7 @@ int main(int argc, char *argv[])
     
     // Set application metadata
     QApplication::setApplicationName("ShotPlot");
-    QApplication::setApplicationVersion("0.1.0");
+    QApplication::setApplicationVersion(APP_VERSION_STRING);
     QApplication::setOrganizationName("ShotPlot");
     QApplication::setOrganizationDomain("shotplot.app");
     

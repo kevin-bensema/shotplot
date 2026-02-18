@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.16)
-project(ShotPlot VERSION 0.1.0 LANGUAGES CXX)
+project(ShotPlot VERSION 0.0.8 LANGUAGES CXX)
 
 # Default to Debug build type if not specified
 if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)

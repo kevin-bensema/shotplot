@@ -1,3 +1,6 @@
+# Generate version header from project() VERSION
+configure_file(ShotPlotVersion.h.in ShotPlotVersion.h @ONLY)
+
 # Collect source files by subdirectory
 set(APP_SOURCES
     App/MainWindow.cpp
@@ -83,6 +86,7 @@ add_executable(ShotPlot
 # Include directories
 target_include_directories(ShotPlot PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}
+    ${CMAKE_CURRENT_BINARY_DIR}
     ${LIBZIP_INCLUDE_DIRS}
 )
 

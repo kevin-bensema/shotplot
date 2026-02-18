@@ -19,15 +19,16 @@ namespace {
     constexpr int kDefaultWindowWidth = 1200;
     constexpr int kDefaultWindowHeight = 800;
     
-    constexpr const char* kImageExtensionPng = ".png";
-    constexpr const char* kImageExtensionJpg = ".jpg";
-    constexpr const char* kImageExtensionJpeg = ".jpeg";
-    constexpr const char* kSessionExtension = ".spz";
-    
-    constexpr const char* kSettingsDisplayUnits = "display/units";
-    constexpr const char* kSettingsLastImportDir = "directories/lastImport";
-    constexpr const char* kSettingsLastSaveLoadDir = "directories/lastSaveLoad";
-    constexpr const char* kDefaultDisplayUnit = "inches";
+    const QString kImageExtensionPng = QStringLiteral(".png");
+    const QString kImageExtensionJpg = QStringLiteral(".jpg");
+    const QString kImageExtensionJpeg = QStringLiteral(".jpeg");
+    const QString kSessionExtension = QStringLiteral(".spz");
+
+    const QString kSettingsDisplayUnits = QStringLiteral("View.Display.Units");
+    const QString kSettingsLastImportDir = QStringLiteral("Paths.Import.LastDirectory");
+    const QString kSettingsLastSaveLoadDir = QStringLiteral("Paths.SaveLoad.LastDirectory");
+    const QString kSettingsLastExportDir = QStringLiteral("Paths.Export.LastDirectory");
+    const QString kDefaultDisplayUnit = QStringLiteral("inches");
 }
 
 #include <Widgets/TargetView.h>
@@ -463,8 +464,39 @@ void MainWindow::onSaveAs()
 
 void MainWindow::onExportImage()
 {
-    // TODO: Implement image export
-    QMessageBox::information(this, tr("Export"), tr("Export functionality not yet implemented."));
+    if (!m_document || !m_pTargetView) return;
+
+    QSettings settings;
+    QString lastDir = settings.value(kSettingsLastExportDir,
+        QStandardPaths::writableLocation(QStandardPaths::PicturesLocation)).toString();
+
+    QString path = QFileDialog::getSaveFileName(this, tr("Export Image"),
+        lastDir, tr("PNG Images (*.png)"));
+
+    if (path.isEmpty()) return;
+
+    if (!path.toLower().endsWith(".png"))
+    {
+        path += ".png";
+    }
+
+    settings.setValue(kSettingsLastExportDir, QFileInfo(path).absolutePath());
+
+    QImage image = m_pTargetView->grabViewportImage();
+    if (image.isNull())
+    {
+        QMessageBox::warning(this, tr("Export Error"), tr("Failed to capture view."));
+        return;
+    }
+
+    if (!image.save(path, "PNG"))
+    {
+        QMessageBox::warning(this, tr("Export Error"),
+            tr("Failed to save image to %1").arg(path));
+        return;
+    }
+
+    statusBar()->showMessage(tr("Exported: %1").arg(path));
 }
 
 void MainWindow::onEditMetadata()

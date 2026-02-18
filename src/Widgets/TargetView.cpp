@@ -301,3 +301,25 @@ void TargetView::leaveEvent(QEvent* pEvent)
     viewport()->update();
 }
 
+QImage TargetView::grabViewportImage() const
+{
+    if (!scene())
+    {
+        return QImage();
+    }
+
+    QRect vpRect = viewport()->rect();
+    QImage image(vpRect.size(), QImage::Format_ARGB32_Premultiplied);
+    image.fill(backgroundBrush().color());
+
+    QPainter painter(&image);
+    painter.setRenderHint(QPainter::Antialiasing);
+    painter.setRenderHint(QPainter::SmoothPixmapTransform);
+
+    // Map the viewport rect to scene coordinates so render() knows what to show
+    QRectF sceneRect = mapToScene(vpRect).boundingRect();
+    scene()->render(&painter, QRectF(vpRect), sceneRect);
+
+    return image;
+}
+

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <QGraphicsView>
+#include <QImage>
 #include <QPointF>
 
 class WorkflowState;
@@ -87,6 +88,15 @@ public:
     /// zoom factor tracking to match the actual transform. Does nothing
     /// if no scene is set or the scene rectangle is empty.
     void zoomFit();
+
+    /// Renders the current viewport content to a QImage without the custom cursor overlay
+    ///
+    /// Captures what is currently visible in the view at the current zoom and
+    /// pan position by rendering the scene directly into a QImage. The custom
+    /// cursor glyph drawn during paintEvent is intentionally excluded.
+    ///
+    /// \return A QImage of the viewport contents, or a null QImage if no scene is set
+    QImage grabViewportImage() const;
 
 signals:
     /// Emitted when the mouse position changes over the view

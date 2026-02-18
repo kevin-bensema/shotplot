@@ -324,23 +324,23 @@ bool MainWindow::eventFilter(QObject* pObject, QEvent* pEvent)
                 else
                 {
                     // Import image file
-                    if (maybeSave())
+                    QImage image(path);
+                    if (!image.isNull())
                     {
-                        QImage image(path);
-                        if (!image.isNull())
+                        ImageCropRotateDialog dialog(image, this);
+                        if (dialog.exec() == QDialog::Accepted)
                         {
-                            ImageCropRotateDialog dialog(image, this);
-                            if (dialog.exec() == QDialog::Accepted)
+                            if (maybeSave())
                             {
                                 createNewDocument(dialog.resultImage());
                                 statusBar()->showMessage(tr("Imported: %1").arg(path));
                             }
                         }
-                        else
-                        {
-                            QMessageBox::warning(this, tr("Import Error"),
-                                tr("Could not load image: %1").arg(path));
-                        }
+                    }
+                    else
+                    {
+                        QMessageBox::warning(this, tr("Import Error"),
+                            tr("Could not load image: %1").arg(path));
                     }
                 }
                 pDropEvent->acceptProposedAction();
@@ -355,8 +355,6 @@ bool MainWindow::eventFilter(QObject* pObject, QEvent* pEvent)
 
 void MainWindow::onImport()
 {
-    if (!maybeSave()) return;
-    
     QSettings settings;
     QString lastDir = settings.value(kSettingsLastImportDir,
         QStandardPaths::writableLocation(QStandardPaths::PicturesLocation)).toString();
@@ -365,6 +363,8 @@ void MainWindow::onImport()
         lastDir, tr("Images (*.png *.jpg *.jpeg);;All Files (*)"));
     
     if (path.isEmpty()) return;
+    
+    if (!maybeSave()) return;
     
     // Save directory preference
     settings.setValue(kSettingsLastImportDir, QFileInfo(path).absolutePath());
@@ -389,8 +389,6 @@ void MainWindow::onImport()
 
 void MainWindow::onLoad()
 {
-    if (!maybeSave()) return;
-    
     QSettings settings;
     QString lastDir = settings.value(kSettingsLastSaveLoadDir,
         QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation)).toString();
@@ -399,6 +397,8 @@ void MainWindow::onLoad()
         lastDir, tr("ShotPlot Sessions (*.spz);;All Files (*)"));
     
     if (path.isEmpty()) return;
+    
+    if (!maybeSave()) return;
     
     // Save directory preference
     settings.setValue(kSettingsLastSaveLoadDir, QFileInfo(path).absolutePath());

@@ -13,6 +13,7 @@ class ShotGroupDocument;
 class WorkflowState;
 class GraphicsSettingsDialog;
 class PlaqueSettingsWidget;
+class QStatusBar;
 
 /// @brief Main application window for ShotPlot
 /// 
@@ -122,6 +123,7 @@ private:
     StatisticsPanel* m_pStatisticsPanel = nullptr;    ///< Dock widget displaying shot group statistics
     PlaqueSettingsWidget* m_pPlaqueSettingsWidget = nullptr; ///< Dock widget for plaque configuration (left dock)
     GraphicsSettingsDialog* m_pGraphicsSettingsDialog = nullptr;  ///< Non-modal graphics settings dialog
+    QStatusBar* m_pInlineStatusBar = nullptr;         ///< Status bar embedded in central widget (between docks)
     
     // Document
     std::unique_ptr<ShotGroupDocument> m_document;   ///< Current document model (null if no document loaded)

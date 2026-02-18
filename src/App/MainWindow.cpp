@@ -14,6 +14,7 @@
 #include <QSettings>
 #include <QActionGroup>
 #include <QStandardPaths>
+#include <QVBoxLayout>
 
 namespace {
     constexpr int kDefaultWindowWidth = 1200;
@@ -67,7 +68,7 @@ MainWindow::MainWindow(QWidget* pParent)
     // Set reasonable default size
     resize(kDefaultWindowWidth, kDefaultWindowHeight);
     
-    statusBar()->showMessage(tr("No document loaded"));
+    m_pInlineStatusBar->showMessage(tr("No document loaded"));
 }
 
 MainWindow::~MainWindow() = default;
@@ -177,16 +178,8 @@ void MainWindow::setupMenus()
 
 void MainWindow::setupToolbars()
 {
-    // Workflow toolbar (pipeline visualization)
     m_pWorkflowToolbar = new WorkflowToolbar(this);
-    addToolBar(Qt::TopToolBarArea, m_pWorkflowToolbar);
-    
-    // Force per-state toolbar onto a new row
-    addToolBarBreak(Qt::TopToolBarArea);
-    
-    // Per-state toolbar (state-specific controls)
     m_pPerStateToolbar = new PerStateToolbar(this);
-    addToolBar(Qt::TopToolBarArea, m_pPerStateToolbar);
 }
 
 void MainWindow::setupCentralWidget()
@@ -195,12 +188,34 @@ void MainWindow::setupCentralWidget()
     m_pTargetScene = new TargetScene(this);
     m_pTargetView = new TargetView(this);
     m_pTargetView->setTargetScene(m_pTargetScene);
-    
+
     // Enable drag and drop on TargetView's viewport (QGraphicsView uses a viewport widget)
     m_pTargetView->viewport()->setAcceptDrops(true);
     m_pTargetView->viewport()->installEventFilter(this);
-    
-    setCentralWidget(m_pTargetView);
+
+    // Build a container so the layout is:
+    //   [Workflow toolbar ]
+    //   [Per-state toolbar]
+    //   [TargetView       ]  (expanding)
+    //   [Status bar       ]
+    // This keeps the toolbars and status bar between the left/right dock areas
+    // rather than spanning the full window width above/below them.
+    QWidget* pCentral = new QWidget(this);
+    QVBoxLayout* pLayout = new QVBoxLayout(pCentral);
+    pLayout->setContentsMargins(0, 0, 0, 0);
+    pLayout->setSpacing(0);
+
+    pLayout->addWidget(m_pWorkflowToolbar);
+    pLayout->addWidget(m_pPerStateToolbar);
+    pLayout->addWidget(m_pTargetView, 1);
+
+    m_pInlineStatusBar = new QStatusBar(pCentral);
+    pLayout->addWidget(m_pInlineStatusBar);
+
+    setCentralWidget(pCentral);
+
+    // Hide the QMainWindow native status bar — messages go to m_pInlineStatusBar instead.
+    QMainWindow::statusBar()->hide();
 }
 
 void MainWindow::setupDockWidgets()
@@ -333,7 +348,7 @@ bool MainWindow::eventFilter(QObject* pObject, QEvent* pEvent)
                             if (maybeSave())
                             {
                                 createNewDocument(dialog.resultImage());
-                                statusBar()->showMessage(tr("Imported: %1").arg(path));
+                                m_pInlineStatusBar->showMessage(tr("Imported: %1").arg(path));
                             }
                         }
                     }
@@ -384,7 +399,7 @@ void MainWindow::onImport()
     }
     
     createNewDocument(dialog.resultImage());
-    statusBar()->showMessage(tr("Imported: %1").arg(path));
+    m_pInlineStatusBar->showMessage(tr("Imported: %1").arg(path));
 }
 
 void MainWindow::onLoad()
@@ -424,7 +439,7 @@ void MainWindow::onSave()
     }
     
     m_document->setDirty(false);
-    statusBar()->showMessage(tr("Saved: %1").arg(m_document->filePath()));
+    m_pInlineStatusBar->showMessage(tr("Saved: %1").arg(m_document->filePath()));
 }
 
 void MainWindow::onSaveAs()
@@ -459,7 +474,7 @@ void MainWindow::onSaveAs()
     m_document->setFilePath(path);
     m_document->setDirty(false);
     updateWindowTitle();
-    statusBar()->showMessage(tr("Saved: %1").arg(path));
+    m_pInlineStatusBar->showMessage(tr("Saved: %1").arg(path));
 }
 
 void MainWindow::onExportImage()
@@ -496,7 +511,7 @@ void MainWindow::onExportImage()
         return;
     }
 
-    statusBar()->showMessage(tr("Exported: %1").arg(path));
+    m_pInlineStatusBar->showMessage(tr("Exported: %1").arg(path));
 }
 
 void MainWindow::onEditMetadata()
@@ -754,5 +769,5 @@ void MainWindow::loadDocumentFromFile(const QString &filePath)
     
     updateWindowTitle();
     updateMenuState();
-    statusBar()->showMessage(tr("Loaded: %1").arg(filePath));
+    m_pInlineStatusBar->showMessage(tr("Loaded: %1").arg(filePath));
 }

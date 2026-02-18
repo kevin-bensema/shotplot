@@ -27,6 +27,14 @@ WorkflowToolbar::~WorkflowToolbar() = default;
 
 void WorkflowToolbar::setupButtons()
 {
+    auto makeSpacer = [this]() {
+        QWidget* pSpacer = new QWidget(this);
+        pSpacer->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
+        return pSpacer;
+    };
+
+    addWidget(makeSpacer());
+
     for (int i = 0; i < kStateNames.size(); ++i)
     {
         if (i > 0)
@@ -52,6 +60,8 @@ void WorkflowToolbar::setupButtons()
         addWidget(pButton);
         m_buttons.append(pButton);
     }
+
+    addWidget(makeSpacer());
 }
 
 void WorkflowToolbar::setDocument(ShotGroupDocument* pDocument)

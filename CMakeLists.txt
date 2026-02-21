@@ -1,10 +1,15 @@
 cmake_minimum_required(VERSION 3.16)
+
+if(WIN32 AND DEFINED ENV{VCPKG_ROOT} AND NOT DEFINED CMAKE_TOOLCHAIN_FILE)
+    set(CMAKE_TOOLCHAIN_FILE "$ENV{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake" CACHE STRING "")
+endif()
+
 project(ShotPlot VERSION 0.0.8 LANGUAGES CXX)
 
 # Default to Debug build type if not specified
 if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
-    message(STATUS "Setting build type to 'Debug' as none was specified.")
-    set(CMAKE_BUILD_TYPE Debug CACHE STRING "Choose the type of build." FORCE)
+    message(STATUS "Setting build type to 'Release' as none was specified.")
+    set(CMAKE_BUILD_TYPE Release CACHE STRING "Choose the type of build." FORCE)
     set_property(CACHE CMAKE_BUILD_TYPE PROPERTY STRINGS "Debug" "Release" "MinSizeRel" "RelWithDebInfo")
 endif()
 
@@ -23,8 +28,7 @@ set(CMAKE_AUTOUIC ON)
 
 # Find required packages
 find_package(Qt6 REQUIRED COMPONENTS Core Widgets Gui Svg Xml)
-find_package(PkgConfig REQUIRED)
-pkg_check_modules(LIBZIP REQUIRED libzip)
+find_package(libzip REQUIRED)
 
 # Add QX shared library (must come before src so the target is available)
 add_subdirectory(src/QX)

@@ -87,7 +87,7 @@ add_executable(ShotPlot
 target_include_directories(ShotPlot PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}
     ${CMAKE_CURRENT_BINARY_DIR}
-    ${LIBZIP_INCLUDE_DIRS}
+
 )
 
 # Link libraries
@@ -96,12 +96,24 @@ target_link_libraries(ShotPlot PRIVATE
     Qt6::Core
     Qt6::Widgets
     Qt6::Gui
-    ${LIBZIP_LIBRARIES}
+    libzip::zip
 )
 
 # Platform-specific settings
 if(WIN32)
     set_target_properties(ShotPlot PROPERTIES WIN32_EXECUTABLE TRUE)
+
+    find_program(WINDEPLOYQT windeployqt HINTS "${Qt6_DIR}/../../../bin")
+    if(WINDEPLOYQT)
+        add_custom_command(TARGET ShotPlot POST_BUILD
+            COMMAND "${WINDEPLOYQT}"
+                --no-compiler-runtime
+                "$<TARGET_FILE:ShotPlot>"
+            COMMENT "Running windeployqt..."
+        )
+    else()
+        message(WARNING "windeployqt not found - Qt DLLs will not be deployed to the build directory")
+    endif()
 elseif(APPLE)
     set_target_properties(ShotPlot PROPERTIES
         MACOSX_BUNDLE TRUE

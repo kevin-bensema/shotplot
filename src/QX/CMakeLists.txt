@@ -24,11 +24,15 @@ set(QX_INTERNAL_HEADERS
     Src/SvgIconEngine.h
 )
 
-# Shared library target
 add_library(QX SHARED
     ${QX_SOURCES}
     ${QX_HEADERS}
     ${QX_INTERNAL_HEADERS}
+)
+
+set_target_properties(QX PROPERTIES
+    VERSION   ${QX_VERSION}
+    SOVERSION ${QX_SOVERSION}
 )
 
 # Generate export header into Inc/QX/Export.h
@@ -53,8 +57,3 @@ target_link_libraries(QX
         Qt6::Xml
 )
 
-# Library versioning
-set_target_properties(QX PROPERTIES
-    VERSION ${QX_VERSION}
-    SOVERSION ${QX_SOVERSION}
-)

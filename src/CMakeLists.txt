@@ -111,6 +111,28 @@ if(WIN32)
                 "$<TARGET_FILE:ShotPlot>"
             COMMENT "Running windeployqt..."
         )
+
+        # Install rules for CPack packaging
+        install(TARGETS ShotPlot QX DESTINATION .)
+
+        # Run windeployqt first so Qt DLLs/plugins are in the install tree.
+        # --compiler-runtime bundles the MSVC redistributable for end users.
+        install(CODE "
+            execute_process(
+                COMMAND \"${WINDEPLOYQT}\"
+                    --compiler-runtime
+                    \"\${CMAKE_INSTALL_PREFIX}/ShotPlot.exe\"
+            )
+        ")
+
+        # Install all vcpkg runtime DLLs (e.g. zip.dll, bz2.dll, zlib1.dll).
+        # Grabbing the whole bin/ directory is safe - vcpkg never puts system DLLs there.
+        file(GLOB VCPKG_RUNTIME_DLLS
+            "${VCPKG_INSTALLED_DIR}/${VCPKG_TARGET_TRIPLET}/bin/*.dll")
+        install(FILES ${VCPKG_RUNTIME_DLLS} DESTINATION .)
+        # TODO: When app icon is available, add:
+        #   set_target_properties(ShotPlot PROPERTIES RC_ICONS resources/windows/app.ico)
+        #   (and create resources/windows/app.rc referencing the .ico)
     else()
         message(WARNING "windeployqt not found - Qt DLLs will not be deployed to the build directory")
     endif()
@@ -119,4 +141,8 @@ elseif(APPLE)
         MACOSX_BUNDLE TRUE
         MACOSX_BUNDLE_INFO_PLIST ${CMAKE_SOURCE_DIR}/packaging/macos/Info.plist
     )
+endif()
+
+if(NOT WIN32)
+    install(TARGETS ShotPlot QX)
 endif()

@@ -6,8 +6,12 @@
 #include <QComboBox>
 #include <QDoubleSpinBox>
 #include <QDialogButtonBox>
+#include <QSettings>
 
 namespace {
+    const QString kSettingsBulletDiameter = QStringLiteral("Caliber.BulletDiameter");
+    constexpr double kDefaultBulletDiameter = 0.224; // .223 / 5.56mm
+
     const QList<QPair<QString, double>> kPresets = {
     {".17 HMR", 0.172},
     {".22 LR / .223 / 5.56mm", 0.224},
@@ -86,7 +90,7 @@ void CaliberDialog::setupUi()
     // Buttons
     QDialogButtonBox* pButtonBox = new QDialogButtonBox(
         QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
-    connect(pButtonBox, &QDialogButtonBox::accepted, this, &QDialog::accept);
+    connect(pButtonBox, &QDialogButtonBox::accepted, this, &CaliberDialog::accept);
     connect(pButtonBox, &QDialogButtonBox::rejected, this, &QDialog::reject);
     pLayout->addWidget(pButtonBox);
     
@@ -99,21 +103,22 @@ void CaliberDialog::populatePresets()
     {
         m_pPresetCombo->addItem(preset.first, preset.second);
     }
-    
-    // Default to .308
-    for (int i = 0; i < kPresets.size(); ++i)
-    {
-        if (qFuzzyCompare(kPresets[i].second, 0.308))
-        {
-            m_pPresetCombo->setCurrentIndex(i);
-            break;
-        }
-    }
+
+    QSettings settings;
+    const double savedDiameter = settings.value(kSettingsBulletDiameter, kDefaultBulletDiameter).toDouble();
+    setBulletDiameter(savedDiameter);
 }
 
 double CaliberDialog::bulletDiameter() const
 {
     return m_pDiameterSpin->value();
+}
+
+void CaliberDialog::accept()
+{
+    QSettings settings;
+    settings.setValue(kSettingsBulletDiameter, bulletDiameter());
+    QDialog::accept();
 }
 
 void CaliberDialog::setBulletDiameter(double diameter)

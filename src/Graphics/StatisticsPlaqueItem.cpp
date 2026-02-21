@@ -14,7 +14,7 @@
 
 namespace
 {
-    constexpr const char* kDisplayUnitsKey = "display/units";
+    const QString kDisplayUnitsKey = QStringLiteral("View.Display.Units");
     constexpr const char* kDefaultUnitString = "inches";
     constexpr int kTitleFontSizeOffset = 2;      // Points larger than default
     constexpr int kMinImpactCountForStats = 2;

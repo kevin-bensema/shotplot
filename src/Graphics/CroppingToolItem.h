@@ -43,7 +43,7 @@ private:
     QRectF m_cropRect;
     HandleType m_activeHandle = None;
     
-    const qreal m_handleSize = 40.0;
+    const qreal m_handleSize = 20.0;
     const QColor m_rectColor = QColor(0, 120, 215, 50); // 20% opaque blue
     const QColor m_edgeColor = QColor(0, 120, 215, 255); // Opaque blue
 };

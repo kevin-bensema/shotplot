@@ -11,7 +11,7 @@
 
 namespace
 {
-    constexpr const char* kDisplayUnitsKey = "display/units";
+    const QString kDisplayUnitsKey = QStringLiteral("View.Display.Units");
     constexpr const char* kDefaultUnitString = "inches";
     constexpr const char* kShotCountStyleSheet = "font-weight: bold; font-size: 14px;";
     constexpr int kLayoutSpacing = 10;
